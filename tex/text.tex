@@ -13,9 +13,46 @@ Formátování druhého odstavce. Text text text text text text text text text t
 \cast{Theory}
 
 \n{1}{Postgres}
-PostgreSQL is an object-relational database management system (ORDBMS) based on POSTGRES, Version 4.2, developed at the University of California at Berkeley Computer Science Department. POSTGRES pioneered many concepts that only became available in some commercial database systems much later. \cite{HRW1997}
+\n{2}{History}
+PostgreSQL is a powerful object-relational database management system (ORDBMS) derived from the POSTGRES package written at the University of California at Berkeley. The first version of POSTGRES was released in June 1989. POSTGRES has been used in many applications, including financial data analysis systems, asteroid tracking databases, medical information database, and several geographic information systems. The size of external community users has nearly doubled by 1993.\cite{the_postgresql_global_development_group_postgresql_2022}
+    
+ POSTGRES was using its POSTQUEL query language from version one until 1995, when Andrew Yu and Jolly Chen introduced SQL to POSTGRES. The name has changed to Postgres95. Postgres95 was completely ANSI C code reduced by 25 \% and was 30 – 50 \% faster than Postgres 4.2.  \cite{the_postgresql_global_development_group_postgresql_2022}
 
-PostgreSQL is a powerful, open-source database management system with an enviable reputation for high performance and stability. [2]
+It was clear by 1996 that the name would not stand the test of time therefore it has been renamed to PostgreSQL. As stated by PostgreSQL documentation \cite{the_postgresql_global_development_group_postgresql_2022}: “Many people continue to refer to PostgreSQL as “Postgres” (now rarely in all capital letters) because of tradition or because it is easier to pronounce. This usage is widely accepted as a nickname or alias.“ This thesis will use Postgres as an alias for PostgreSQL as well. 
+\cite{the_postgresql_global_development_group_postgresql_2022}
+
+\n{2}{Current State of Postgres}
+More than 30 years after the first version Postgres was considered the most used ORDBMS for professional developers in Stack Overflow survey \cite{so2022survey}. According to Riggs \cite{Riggs2022}: “The PostgreSQL feature set attracts serious users who have serious applications. Financial services companies may be PostgreSQL's largest user group, although governments, telecommunication companies, and many other segments are strong users as well.“ It is fully ACID compliant \cite{juba2015learning} and supports many kinds of data models such as relational, document, and key/value. \cite{Riggs2022}
+
+%Database engines survey https://db-engines.com/en/ranking
+%Describe postgres usage
+%Describe scaling etc.
+%DSK time consuming Postgres
+
+\n{1}{Kubernetes}
+Kubernetes, also known as K8s, is an open-source platform for automating deployment, scaling, and management of containerized applications. It provides a way to manage and orchestrate containers, which are units of software that package up an application and its dependencies into a single, isolated package that can run consistently on any infrastructure. \cite{vayghan2019kubernetes}
+
+Kubernetes provides several key features, including:
+\begin{itemize}
+\item \textbf{Service discovery:} bla blab olkjdlkaj lkjasdkla sjd
+\item \textbf{Load balancing:}
+\item \textbf{Storage Orchestration:}
+\item \textbf{Automated rollouts and rollbacks:}
+\item \textbf{Automatic bin packing:}
+\item \textbf{Self healing:}
+\item \textbf{Secret and configuration management:}
+\end{itemize}
+
+
+\n{2}{Microservices}
+\n{2}{Architecture}
+
+
+
+%\obr{2022 Developer Survey \cite{so2022survey}}{}{1}{graphics/postgres_stack_overflow_survey.png}
+
+
+
 
 
 \n{1}{Nadpisy a podnadpisy}
