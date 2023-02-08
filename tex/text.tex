@@ -12,8 +12,9 @@ Formátování druhého odstavce. Text text text text text text text text text t
 % ============================================================================ %
 \cast{Theory}
 
-\n{1}{Postgres}
-\n{2}{History}
+\n{1}{Background}
+This chapter introduces the key technologies used in this thesis including Postgres, Kubernetes, and Kubernetes operators. 
+\n{2}{Postgres}
 PostgreSQL is a powerful object-relational database management system (ORDBMS) derived from the POSTGRES package written at the University of California at Berkeley. The first version of POSTGRES was released in June 1989. POSTGRES has been used in many applications, including financial data analysis systems, asteroid tracking databases, medical information database, and several geographic information systems. The size of external community users has nearly doubled by 1993.\cite{the_postgresql_global_development_group_postgresql_2022}
     
  POSTGRES was using its POSTQUEL query language from version one until 1995, when Andrew Yu and Jolly Chen introduced SQL to POSTGRES. The name has changed to Postgres95. Postgres95 was completely ANSI C code reduced by 25 \% and was 30 – 50 \% faster than Postgres 4.2.  \cite{the_postgresql_global_development_group_postgresql_2022}
@@ -21,30 +22,50 @@ PostgreSQL is a powerful object-relational database management system (ORDBMS) d
 It was clear by 1996 that the name would not stand the test of time therefore it has been renamed to PostgreSQL. As stated by PostgreSQL documentation \cite{the_postgresql_global_development_group_postgresql_2022}: “Many people continue to refer to PostgreSQL as “Postgres” (now rarely in all capital letters) because of tradition or because it is easier to pronounce. This usage is widely accepted as a nickname or alias.“ This thesis will use Postgres as an alias for PostgreSQL as well. 
 \cite{the_postgresql_global_development_group_postgresql_2022}
 
-\n{2}{Current State of Postgres}
-More than 30 years after the first version Postgres was considered the most used ORDBMS for professional developers in Stack Overflow survey \cite{so2022survey}. According to Riggs \cite{Riggs2022}: “The PostgreSQL feature set attracts serious users who have serious applications. Financial services companies may be PostgreSQL's largest user group, although governments, telecommunication companies, and many other segments are strong users as well.“ It is fully ACID compliant \cite{juba2015learning} and supports many kinds of data models such as relational, document, and key/value. \cite{Riggs2022}
+More than 30 years after the first version Postgres has been considered the most used ORDBMS for professional developers by Stack Overflow survey \cite{so2022survey}. According to Riggs and Ciolli \cite{Riggs2022}: “The PostgreSQL feature set attracts serious users who have serious applications. Financial services companies may be PostgreSQL's largest user group, although governments, telecommunication companies, and many other segments are strong users as well.“ It is fully ACID compliant \cite{juba2015learning} and supports many kinds of data models such as relational, document, and key/value. \cite{Riggs2022}
 
 %Database engines survey https://db-engines.com/en/ranking
 %Describe postgres usage
 %Describe scaling etc.
 %DSK time consuming Postgres
 
-\n{1}{Kubernetes}
+\n{2}{Kubernetes}
 Kubernetes, also known as K8s, is an open-source platform for automating deployment, scaling, and management of containerized applications. It provides a way to manage and orchestrate containers, which are units of software that package up an application and its dependencies into a single, isolated package that can run consistently on any infrastructure. \cite{vayghan2019kubernetes}
 
-Kubernetes provides several key features, including:
+As described by Sayfan \cite{Sayfan2020} Kubernetes provides several key features, including:
 \begin{itemize}
-\item \textbf{Service discovery:} bla blab olkjdlkaj lkjasdkla sjd
-\item \textbf{Load balancing:}
-\item \textbf{Storage Orchestration:}
-\item \textbf{Automated rollouts and rollbacks:}
-\item \textbf{Automatic bin packing:}
-\item \textbf{Self healing:}
-\item \textbf{Secret and configuration management:}
+\item \textbf{Service discovery:} A container can be exposed by Kubernetes either through its DNS name or its own IP address.
+\item \textbf{Load balancing:} In the case of high traffic to a container, stability of the deployment can be ensured by Kubernetes load balancing and distributing the network traffic.
+\item \textbf{Storage Orchestration:} Storage orchestration in Kubernetes allows for the automatic mounting of a storage system of choice, including local storage, public cloud providers, and others. 
+\item \textbf{Automated rollouts and rollbacks:} The desired state of deployed containers can be described using Kubernetes, and the actual state can be changed to the desired state at a controlled rate. For instance, the automation of Kubernetes can be utilized to create new containers for the deployment, remove existing containers, and transfer all their resources to the newly created container.
+\item \textbf{Automatic bin packing:} A cluster of nodes for running containerized tasks is provided to Kubernetes. The amount of CPU and memory required by each container is specified to Kubernetes. The optimal utilization of resources can be achieved by Kubernetes fitting the containers onto the nodes.
+\item \textbf{Self healing:} Containers that fail are restarted by Kubernetes, those that do not respond to the user-defined health check are replaced or killed, and they are not advertised to clients until they are deemed ready to serve.
+\item \textbf{Secret and configuration management:} Sensitive information, such as passwords, OAuth tokens, and SSH keys, can be stored and managed by Kubernetes. The deployment and updating of secrets and application configuration can be done without the need to rebuild container images and without the exposure of secrets in the stack configuration.
+\end{itemize}
+\n{3}{Kubernetes components}
+Kubernetes cluster is composed of a set of worker machines that run containerized applications called nodes. Each cluster must have at least one node. \cite{kubedocu2022}
+\obr{The components of a Kubernetes cluster \cite{kubedocu2022}}{}{1}{graphics/kubernetes_cluster_components.png}
+
+The Kubernetes control plane is the management system of a Kubernetes cluster, responsible for maintaining the desired state of the cluster. It consists of multiple components that work together to manage the cluster and its resources, including pods, services, and volumes. The key components of control plane are \cite{Sayfan2020}:
+\begin{itemize}
+\item \textbf{kube-apiserver:} Acts as the front-end for the Kubernetes API and exposes the API to other components. \cite{kubedocu2022}
+\item \textbf{etcd:} Highly available distributed key-value store that serves as the backing store for the cluster's configuration data. \cite{Dobies2020}
+\item \textbf{kube-scheduler:} Assigns work to nodes in the cluster, such as scheduling pods to run on nodes. \cite{kubeUpAndRunning}
+\item \textbf{kube-controller-manager:} Monitors the cluster's state and makes adjustments as necessary to maintain the desired state. \cite{Sayfan2020}
+\item \textbf{cloud-controller-manager:} Manages cloud-related tasks such as node creation and management, volume management, and load balancing, allowing the other components of the control plane to focus on their specific responsibilities. Cloud manager is optional. Can be avoided when Kubernetes not used in cloud. \cite{kubedocu2022}
+\end{itemize}
+\textbf{Node components:} 
+Node components in a Kubernetes cluster run on each node and provide crucial functionality for the operation of containers on that node. \cite{kubedocu2022}
+\begin{itemize}
+\item \textbf{kubelet:} Is responsible for communicating with the control plane and ensuring that containers are running and healthy. \cite{kubeUpAndRunning}
+\item \textbf{kube-proxy:} Is responsible for maintaining network rules on the nodes, allowing network communication to the containers. It enables the containers in a pod to communicate with other containers and the outside world, and performs tasks such as load balancing and traffic routing. \cite{kubeUpAndRunning}
+\item \textbf{container runtime:} Is responsible for running containers. \cite{kubedocu2022}
 \end{itemize}
 
+\n{3}{Kubernetes objects}
 
-\n{2}{Microservices}
+
+\n{2}{Running Postgres in Kubernetes}
 \n{2}{Architecture}
 
 
@@ -101,20 +122,6 @@ Tabulka \ref{tab:priklad} obsahuje dva řádky a celkem 7 sloupců.
    & 1 & 2 & 3 & 4 & 5 & Cena [Kč] \\ \hline
   \emph{F} & (jedna) & (dva) & (tři) & (čtyři) & (pět) & 300 \\ \hline
 }
-
-
-\n{2}{Citování}
-Následuje ukázka odkazování na různé zdroje:
-\begin{itemize}
-	\item kniha \cite{HRW1997},
-	\item kapitola v knize \cite{Delorme2006},
-	\item článek v odborném žurnálu \cite{Bourreau2006},
-	\item konferenční příspěvek \cite{Judish1999},
-	\item doktorská práce \cite{Valente2005},
-	\item technická zpráva \cite{Fralick1997},
-	\item webová stránka \cite{WWWCST}.
-\end{itemize}
-
 
 % ============================================================================ %
 
