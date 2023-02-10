@@ -5,7 +5,7 @@
 % ============================================================================ %
 \nn{Introduction}
 We live in the age of the cloud. The cloud has made our jobs easier. We no longer have to physically connect new machines to the network, configure network connections, add disks, or even plug in those virtual machines. Kubernetes together with the cloud can automatically allocate new resources for our applications and thanks to operators stateful services such database system
-for us. Thanks to Kubernetes Operators, it can also automatically set up scaling or backups. It can even restore the entire database system from backup. This paper focuses on Kubernetes operators for the popular Postgres database management system. Its goal is to find Operators for Postgres. To evaluate their pros and cons. To test them and recommend the best one.
+for us. Thanks to Kubernetes Operators, it can also automatically set up scaling or backups. It can even restore the entire database system from backup. This thesis focuses on Kubernetes operators for the popular Postgres database management system. Its goal is to find Operators for Postgres. To evaluate their pros and cons. To test them and recommend the best one.
 
 % ============================================================================ %
 \cast{Theory}
@@ -67,7 +67,21 @@ A Pod's specifications are outlined in a Pod manifest, which is simply a JSON or
 ReplicaSet’s purpose is to ensure a consistent number of replica Pods are running at all times. It is commonly used to guarantee a specified number of identical Pods are available. However, a Deployment is a more advanced concept that oversees ReplicaSets and provides a more streamlined way to make updates to Pods. It also offers additional features. As a result, it's advisable to use Deployments instead of directly utilizing ReplicaSets, unless you have specific update requirements or don't need to make updates at all. \cite{docuKubeReplicaset}
 
 Service is an abstraction layer and defines a group of Pods and the method to access them (often referred to as a micro-service). The group of Pods targeted by a Service is usually specified through a selector. The Service abstraction makes this possible by enabling the decoupling of components. \cite{docuKubeSevice}
+
+\textbf{TBD service, service discover, volumes etc, stateful vs stateles}
+
+
+
 \n{2}{Running Postgres in Kubernetes}
+
+
+\n{1}{Database System Lifecycle}
+The database system itself is a software like any other. It is therefore also subject to the same life cycle as software.
+As depicted in figure 2.1 application lifecycle consists of three main parts. It is the governance part, development, and operations. Only the operations part is important for this thesis.
+\obr{Application Life Cycle \cite{ALM}}{}{1}{graphics/aplication-lifecycle.png}
+
+Operation is the process of running and managing the application, which starts with deployment and continues until the application is taken out of service. This aspect of the application lifecycle management covers the release of the application into production, ongoing monitoring, and other related tasks. \cite{ALM}
+
 \n{2}{Architecture}
 
 
