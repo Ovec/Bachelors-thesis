@@ -69,17 +69,56 @@ Service is an abstraction layer and defines a group of Pods and the method to ac
 
 \textbf{TBD service, service discover, volumes etc, stateful vs stateles}
 
-
+\n{2}{Operators}
+TBD - operators capability levels
+TBD - where to find operators (best operator are from the developers of postgres)
+TBD - define Operator hub
 
 \n{2}{Running Postgres in Kubernetes}
+TBD - statefull set, risk of loosing data without statefull set, high availability, scaling
 
 
 \n{1}{Database System Lifecycle}
 The database system itself is a software like any other. It is therefore also subject to the same life cycle as software.
-As depicted in figure 2.1 application lifecycle consists of three main parts. It is the governance part, development, and operations. Only the operations part is important for this thesis.
+As depicted in figure 2.1 application lifecycle consists of three main parts. It is the governance part, development, and operations. For this thesis, only the operations part is relevant because it is the only part we are able to control.
 \obr{Application Life Cycle \cite{ALM}}{}{1}{graphics/aplication-lifecycle.png}
 
 Operation is the process of running and managing the application, which starts with deployment and continues until the application is taken out of service. This aspect of the application lifecycle management covers the release of the application into production, ongoing monitoring, and other related tasks. \cite{ALM}
+
+TBD: connect to capability levels of Operator (define related tasks, chose the capability that would suit them all)
+
+
+
+\n{1}{Search for Postgres Operators}
+TBD: connect Operators (where to find operators)
+
+As previously stated in the section on Operators, the most suitable operators for a software are those developed by the software developers themselves, as they possess an in-depth understanding of the software. Regrettably, no such operator has been created for Postgres.
+
+Operator Hub presents eight operators with varying levels of capabilities, including Crunchy Postgres for Kubernetes by Crunchy Data, EDB Postgres for Kubernetes by EnterpriseDB Corporation, Ext Postgres Operator by movetokube.com, Percona Operator for PostgreSQL by Percona, Postgres-Operator by Zalando SE, Postgresql Operator by Openlabs, and PostgreSQL Operator by Dev4Ddevs.com.
+
+Of the eight operators available through Operator Hub, only three meet our minimum capability requirement of Deep Insight, namely: Crunchy Postgres for Kubernetes, EDB Postgres for Kubernetes, and Percona Operator for PostgreSQL. As a result, only these three will be subjected to testing and evaluation.
+
+\n{2}{Crunchy Postgres for Kubernetes}
+Crunchy Postgres for Kubernetes (PGO) is a Postgres Operator provided by Crunchy Data, which offers a declarative solution for the management of PostgreSQL clusters, with a focus on automation.
+Crunchy Data is a company that specializes in providing open-source software solutions for Postgres. The company also provides a range of support, consulting, and training services to help organizations implement and optimize their Postgres deployment. \cite{Crunchy}:
+
+The current version of PGO is 5.3.0 and it is compatible with a minimum Kubernetes version of 1.21.0. PGO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PGO is considered to have the highest level, labeled as Autopilot. \cite{OperatorHubCrunchy}
+
+PGO’s main features are:
+\begin{itemize}
+  \item Postgres Cluster Provisioning (create, scale, delete)
+  \item High Availability
+  \item Disaster Recovery (backups, restores)
+  \item Monitoring
+  \item Upgrade Management
+  \item Clone
+  \item Connection Pooling
+  \item Affinity and Tolerations
+  \item Full Customizability
+\end{itemize}
+
+
+
 
 \n{2}{Architecture}
 
