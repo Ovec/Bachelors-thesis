@@ -92,6 +92,12 @@ TBD: connect to capability levels of Operator (define related tasks, chose the c
 \n{1}{Search for Postgres Operators}
 TBD: connect Operators (where to find operators)
 
+TBD: describe CloudNativePG and Patroni
+
+TBD: describe EDB licence
+
+TBD: each operator security Artifact hub https://artifacthub.io/packages/olm/community-operators/postgresql
+
 As previously stated in the section on Operators, the most suitable operators for a software are those developed by the software developers themselves, as they possess an in-depth understanding of the software. Regrettably, no such operator has been created for Postgres.
 
 Operator Hub presents eight operators with varying levels of capabilities, including Crunchy Postgres for Kubernetes by Crunchy Data, EDB Postgres for Kubernetes by EnterpriseDB Corporation, Ext Postgres Operator by movetokube.com, Percona Operator for PostgreSQL by Percona, Postgres-Operator by Zalando SE, Postgresql Operator by Openlabs, and PostgreSQL Operator by Dev4Ddevs.com.
@@ -117,12 +123,21 @@ PGO’s main features are:
   \item Full Customizability
 \end{itemize}
 
+\n{2}{EDB Postgres for Kubernetes}
+The EDB Postgres for Kubernetes (EDBO) is a fully supported operator that has been designed, developed, and maintained by EnterpriseDB Corporation. It provides comprehensive coverage of the entire lifecycle of highly available PostgreSQL database clusters with a primary/standby architecture, utilizing native streaming replication. The operator is based on the open-source CloudNativePG operator and offers additional benefits. \cite{OperatorHubEDB}
+
+EnterpriseDB (EDB) is a software company that provides enterprise-class PostgreSQL software and services. EDB is a leading provider of PostgreSQL technology, offering a range of products and services designed to help organizations adopt, deploy, and manage PostgreSQL databases. \cite{EDB}
+
+The current version of EDBO is 1.18.1 (Fast channel) and it is compatible with a minimum Kubernetes version of 1.22.0. EDBO is distributed under the EDB Limited Usage License Agreement, proprietary license that is specific to software provided by EnterpriseDB Corporation. License key is always required for the operator to work. With regards to capability, EDBO is considered to have the highest level, labeled as Autopilot. \cite{EDBdocu}
+
+EDBO’s main features are the same as PGO’s \cite{EDBdocu}
+
+\n{2}{EDB Postgres for Kubernetes}
+The EDB Postgres for Kubernetes (EDBO) is a fully supported operator that has been designed, developed, and maintained by EnterpriseDB Corporation. It provides comprehensive coverage of the entire lifecycle of highly available PostgreSQL database clusters with a primary/standby architecture, utilizing native streaming replication. The operator is based on the open-source CloudNativePG operator and offers additional benefits. \cite{OperatorHubEDB}
 
 
 
-\n{2}{Architecture}
-
-
+\n{1}{Architecture}
 %\obr{2022 Developer Survey \cite{so2022survey}}{}{1}{graphics/postgres_stack_overflow_survey.png}
 
 
