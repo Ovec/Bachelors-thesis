@@ -98,7 +98,9 @@ TBD: describe EDB licence
 
 TBD: each operator security Artifact hub https://artifacthub.io/packages/olm/community-operators/postgresql
 
-TBD: What does Percona different to Crunchy?
+TBD: What does Percona different to Crunchy to EDB?
+
+TBD: Postgres update every three months https://access.crunchydata.com/documentation/postgres-operator/5.3.0/tutorial/update-cluster/
 
 As previously stated in the section on Operators, the most suitable operators for a software are those developed by the software developers themselves, as they possess an in-depth understanding of the software. Regrettably, no such operator has been created for Postgres.
 
@@ -106,26 +108,63 @@ Operator Hub presents eight operators with varying levels of capabilities, inclu
 
 Of the eight operators available through Operator Hub, only three meet our minimum capability requirement of Deep Insight, namely: Crunchy Postgres for Kubernetes, EDB Postgres for Kubernetes, and Percona Operator for PostgreSQL. As a result, only these three will be subjected to testing and evaluation.
 
+\pagebreak
 \n{2}{Crunchy Postgres for Kubernetes}
 Crunchy Postgres for Kubernetes (PGO) is a Postgres Operator provided by Crunchy Data, which offers a declarative solution for the management of PostgreSQL clusters, with a focus on automation.
 Crunchy Data is a company that specializes in providing open-source software solutions for Postgres. The company also provides a range of support, consulting, and training services to help organizations implement and optimize their Postgres deployment. \cite{Crunchy}:
 
-The current stable version of PGO is 5.3.0 and it is compatible with following platforms: Kubernetes 1.22-1.25, OpenShift 4.8-4.11, Rancher, Google Kubernetes Engine (GKE), including Anthos, Amazon EKS, Microsoft AKS, VMware Tanzu. \cite{CrunchyDoc}
+PGO’s capabilities are the following:
+\begin{itemize}
+  \item \textbf{Postgres Cluster Provisioning:} PGO is able to create \cite{CrunchyDocCreate}, update \cite{CrunchyDocUpdate} or delete Postgres cluster \cite{CrunchyDocDelete}
+  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique. \cite{CrunchyDocHA}
+  \item \textbf{Postgres updates:} PGO is able to apply minor patches. \cite{CrunchyDocMinorUpdates}
+  \item \textbf{Backups:} PGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), ad hoc backups, and backup encryption. \cite{CrunchyDocBackups}
+  \item \textbf{Disaster Recovery:} PGO is capable of Point In Time recovery, in place Point in Time Recovery, restore of an individual database. \cite{CrunchyDocDisasterRecovery}
+  \item \textbf{Cloning:} PGO is able to clone cluster. \cite{CrunchyDocDisasterRecovery}
+  \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager. \cite{CrunchyDocMonitoring}
+  \item \textbf{Connection Pooling:} PgBouncer connection pooler from Postgres is part of PGO. \cite{CrunchyDocConnectionPooling}
+\end{itemize}
+
+The current stable version of PGO is 5.3.0 was released on 13th January 2023 and has one critical bug, 7 highly critical bugs, 31 medium, and 31 low. \cite{ArtifactHubCrunchy}
+PGO is compatible with following platforms: Kubernetes 1.22-1.25, OpenShift 4.8-4.11, Rancher, Google Kubernetes Engine (GKE), including Anthos, Amazon EKS, Microsoft AKS, VMware Tanzu. \cite{CrunchyDoc}
 
 PGO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PGO is considered to have the highest level, labeled as Autopilot. \cite{OperatorHubCrunchy}
 
-PGO’s main features are:
+PGO consists of the following components \cite{CrunchyPGOGit}:
 \begin{itemize}
-  \item Postgres Cluster Provisioning (create, scale, delete)
-  \item High Availability
-  \item Disaster Recovery (backups, restores)
-  \item Monitoring
-  \item Upgrade Management
-  \item Clone
-  \item Connection Pooling
-  \item Affinity and Tolerations
-  \item Full Customizability
+  \item Postgres:
+        \begin{itemize}
+          \item PostgreSQL Contrib Modules
+          \item PL/Python + PL/Python 3
+          \item PL/Perl
+          \item PL/Tcl
+          \item pgAudit
+          \item pgAudit Analyze
+          \item pg\_cron
+          \item pg\_partman
+          \item pgnodemx
+          \item set\_user
+          \item TimescaleDB
+          \item wal2json
+        \end{itemize}
+  \item pgBackRest
+  \item pgBouncer
+  \item pgAdmin 4
+  \item pgMonitor
+        \begin{itemize}
+          \item pgMonitor
+          \item Prometheus
+          \item Grafana
+          \item Alertmanager
+        \end{itemize}
+  \item Patroni
+  \item LLVM (JIT compilation)
 \end{itemize}
+
+\obr{PGO’s architecture \cite{CrunchyDocArchitecture}}{}{1}{graphics/pgo_architecture.png}
+
+
+\pagebreak
 
 \n{2}{EDB Postgres for Kubernetes}
 The EDB Postgres for Kubernetes (EDBO) is a fully supported operator that has been designed, developed, and maintained by EnterpriseDB Corporation. It provides comprehensive coverage of the entire lifecycle of highly available PostgreSQL database clusters with a primary/standby architecture, utilizing native streaming replication. The operator is based on the open-source CloudNativePG operator and offers additional benefits. \cite{OperatorHubEDB}
