@@ -125,7 +125,7 @@ PGO’s capabilities are the following:
   \item \textbf{Connection Pooling:} PgBouncer connection pooler from Postgres is part of PGO. \cite{CrunchyDocConnectionPooling}
 \end{itemize}
 
-The current stable version of PGO is 5.3.0 was released on 13th January 2023 and has one critical bug, 7 highly critical bugs, 31 medium, and 31 low. \cite{ArtifactHubCrunchy}
+The current stable version of PGO is 5.3.0 was released on 13th January 2023 and has one critical vulnerability, 7 highly critical vulnerabilities, 31 medium, and 31 low. \cite{ArtifactHubCrunchy}
 PGO is compatible with following platforms: Kubernetes 1.22-1.25, OpenShift 4.8-4.11, Rancher, Google Kubernetes Engine (GKE), including Anthos, Amazon EKS, Microsoft AKS, VMware Tanzu. \cite{CrunchyDoc}
 
 PGO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PGO is considered to have the highest level, labeled as Autopilot. \cite{OperatorHubCrunchy}
@@ -171,9 +171,40 @@ The EDB Postgres for Kubernetes (EDBO) is a fully supported operator that has be
 
 EnterpriseDB (EDB) is a software company that provides enterprise-class PostgreSQL software and services. EDB is a leading provider of PostgreSQL technology, offering a range of products and services designed to help organizations adopt, deploy, and manage PostgreSQL databases. \cite{EDB}
 
-The current stable version of EDBO is 1.16.2. EDBO is distributed under the EDB Limited Usage License Agreement, proprietary license that is specific to software provided by EnterpriseDB Corporation. License key is always required for the operator to work. With regards to capability, EDBO is considered to have the highest level, labeled as Autopilot. \cite{EDBdocu}
+EDBO’s capabilities are the following:
+\begin{itemize}
+  \item \textbf{Postgres Cluster Provisioning:} PGO is able to create, update or delete Postgres cluster. \cite{EDBdocuCapabilityLevels}
+  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique. \cite{EDBdocuReplication}
+  \item \textbf{Postgres updates:} EDBO is able to apply minor patches. \cite{EDBdocuUpdates}
+  \item \textbf{Backups:} EDBO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), on-demand backups, and backup encryption \cite{EDBdocuBackup}\cite{EDBdocuTDE}. Due to EDB’s own backup software Barman backup compression is available also. \cite{EDBdocuBackup}
+  \item \textbf{Disaster Recovery:} EDBO is capable of Point In Time recovery. Database recovery was not mentioned in the documentation. \cite{EDBdocuBackup}
+  \item \textbf{Cloning:} EDBO is able to create cluster replicas. \cite{EDBdocuReplication}
+  \item \textbf{Monitoring:} Monitoring can be provided by the additional installation of Prometheus, and Grafana, and Alertmanager. \cite{EDBdocuQuickstart}
+  \item \textbf{Connection Pooling:} Is provided by native Postgres pooler PgBouncer. \cite{EDBdocuConnectionPooling}
+  \item \textbf{Customization:} EDBO provides a wide area of Postgres customization such as max parallel workers tuning or WAL configuration \cite{EDBdocuConfiguration}
+\end{itemize}
 
-EDBO’s main features are the same as PGO’s \cite{EDBdocu}
+EDB provides an interactive demo of their Operator online\footnote[1]{EDBO’s online demo http://bit.ly/3xr7iD3}.
+
+The current stable version of EDBO is 1.19.2. was released on 15th February 2023 and has 27 medium vulnerabilities, and 31 low vulnerabilities\footnote[2]{Observed on 16th February at https://artifacthub.io/packages/olm/community-operators/cloud-native-postgresql}. EDBO is distributed under the EDB Limited Usage License Agreement, a proprietary license that is specific to software provided by EnterpriseDB Corporation. A license key is always required for the operator to work. With regards to capability, EDBO is considered to have the highest level, labeled as Autopilot. \cite{EDBdocu}
+
+EDBO consists of the following components \cite{EDBdocu} \cite{EDBdocuQuickstart}:
+\begin{itemize}
+  \item Postgres:
+        \begin{itemize}
+          \item CloudNativePG
+        \end{itemize}
+  \item Monitoring
+        \begin{itemize}
+          \item Prometheus
+          \item Grafana
+          \item Alertmanager
+        \end{itemize}
+\end{itemize}
+
+
+\obr{EDBO’s architecture \cite{EDBdocuConnectionPooling}}{}{1}{graphics/edbo_architecture.png}
+
 
 \n{2}{Percona Operator for PostgreSQL}
 Percona is a company that provides services and solutions for open-source database technologies. It offers expertise, support, and software for MySQL, MongoDB, and PostgreSQL. The company's offerings help organizations manage their open-source databases and ensure optimal performance, security, and scalability. \cite{Percona}
