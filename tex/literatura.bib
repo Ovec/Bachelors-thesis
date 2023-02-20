@@ -276,9 +276,9 @@
 }
 
 @misc{CrunchyDocArchitecture,
-  author  = {Crunchy Data Solutions, Inc.},
-  journal = {GitHub},
-  title   = {GitHub - CrunchyData/postgres-operator: Production PostgreSQL for Kubernetes, from high availability Postgres clusters to full-scale database-as-a-service.},
+  author  = {Andrew L'Ecuyer},
+  journal = {Crunchy Data},
+  title   = {Easy Postgres Major Version Upgrades Using PGO v5.1},
   url     = {https://access.crunchydata.com/documentation/postgres-operator/5.3.0/architecture/overview/},
   note    = {[visited 2023-02-15]}
 }
@@ -291,6 +291,13 @@
   note    = {[visited 2023-02-15]}
 }
 
+@misc{CrunchyBlogUpdates,
+  author  = {Crunchy Data Solutions, Inc.},
+  journal = {Crunchy Data},
+  title   = {PGO, the Postgres Operator from Crunchy Data},
+  url     = {https://www.crunchydata.com/blog/easy-major-postgresql-upgrades-using-pgo-v51},
+  note    = {[visited 2023-02-17]}
+}
 
 % EDB 
 @misc{EDB,
@@ -309,70 +316,168 @@
   note    = {[visited 2023-02-13]}
 }
 
-@misc{EDBdocuConfiguration,
+@misc{EDBdocuLicence,
   author  = {EnterpriseDB Corporation},
   journal = {EDB Docs},
   title   = {EDB Postgres for Kubernetes v1},
-  url     = {https://www.enterprisedb.com/docs/postgres_for_kubernetes/latest/postgresql_conf/},
-  note    = {[visited 2023-02-16]}
+  url     = {https://www.enterprisedb.com/docs/postgres_for_kubernetes/latest/license_keys},
+  note    = {[visited 2023-02-17]}
 }
 
-@misc{EDBdocuUpdates,
+
+% Cloud Native PG
+@misc{CNPGdocuConfiguration,
+  author  = {The CloudNativePG Contributors},
+  journal = {CloudNativePG},
+  title   = {CloudNativePG},
+  url     = {https://cloudnative-pg.io/documentation/1.19/postgres_for_kubernetes/latest/postgresql_conf/},
+  note    = {[visited 2023-02-17]}
+}
+
+@misc{CNPGdocuTDE,
+  author  = {The CloudNativePG Contributors},
+  journal = {CloudNativePG},
+  title   = {CloudNativePG},
+  url     = {https://cloudnative-pg.io/documentation/1.19/postgres_for_kubernetes/latest/tde/},
+  note    = {[visited 2023-02-17]}
+}
+
+@misc{CNPGdocuQuickstart,
+  author  = {The CloudNativePG Contributors},
+  journal = {CloudNativePG},
+  title   = {CloudNativePG},
+  url     = {https://cloudnative-pg.io/documentation/1.19/quickstart/},
+  note    = {[visited 2023-02-17]}
+}
+
+@misc{CNPGdocuConnectionPooling,
+  author  = {The CloudNativePG Contributors},
+  journal = {CloudNativePG},
+  title   = {CloudNativePG},
+  url     = {https://cloudnative-pg.io/documentation/1.19/postgres_for_kubernetes/latest/connection_pooling/},
+  note    = {[visited 2023-02-17]}
+}
+
+@misc{CNPGdocuCapabilityLevels,
+  author  = {The CloudNativePG Contributors},
+  journal = {CloudNativePG},
+  title   = {CloudNativePG},
+  url     = {https://cloudnative-pg.io/documentation/1.19/postgres_for_kubernetes/latest/replica_cluster/},
+  note    = {[visited 2023-02-17]}
+}
+
+@misc{CNPGdocuLicence,
   author  = {EnterpriseDB Corporation},
   journal = {EDB Docs},
   title   = {EDB Postgres for Kubernetes v1},
-  url     = {https://www.enterprisedb.com/docs/postgres_for_kubernetes/latest/rolling_update/},
-  note    = {[visited 2023-02-16]}
+  url     = {https://cloudnative-pg.io/documentation/1.19/postgres_for_kubernetes/latest/license_keys},
+  note    = {[visited 2023-02-17]}
 }
 
-@misc{EDBdocuReplication,
+@misc{CNPGdocu,
+  author  = {The CloudNativePG Contributors},
+  journal = {CloudNativePG},
+  title   = {CloudNativePG},
+  url     = {https://cloudnative-pg.io/documentation/1.19/},
+  note    = {[visited 2023-02-17]}
+}
+
+@misc{CNPGdocuReplication,
+  author  = {The CloudNativePG Contributors},
+  journal = {CloudNativePG},
+  title   = {CloudNativePG},
+  url     = {https://cloudnative-pg.io/documentation/1.19/replication/},
+  note    = {[visited 2023-02-17]}
+}
+
+@misc{CNPGdocuUpdates,
+  author  = {The CloudNativePG Contributors},
+  journal = {CloudNativePG},
+  title   = {CloudNativePG},
+  url     = {https://cloudnative-pg.io/documentation/1.19/rolling_update/#rolling-updates},
+  note    = {[visited 2023-02-17]}
+}
+
+@misc{CNPGdocuDatabaseImports,
+  author  = {The CloudNativePG Contributors},
+  journal = {CloudNativePG},
+  title   = {CloudNativePG},
+  url     = {https://cloudnative-pg.io/documentation/1.19/database_import/},
+  note    = {[visited 2023-02-17]}
+}
+
+@misc{CNPGdocuBackup,
   author  = {EnterpriseDB Corporation},
   journal = {EDB Docs},
   title   = {EDB Postgres for Kubernetes v1},
-  url     = {https://www.enterprisedb.com/docs/postgres_for_kubernetes/latest/replication/},
+  url     = {https://cloudnative-pg.io/documentation/1.19/postgres_for_kubernetes/latest/backup_recovery/},
   note    = {[visited 2023-02-16]}
 }
 
-@misc{EDBdocuBackup,
-  author  = {EnterpriseDB Corporation},
-  journal = {EDB Docs},
-  title   = {EDB Postgres for Kubernetes v1},
-  url     = {https://www.enterprisedb.com/docs/postgres_for_kubernetes/latest/backup_recovery/},
-  note    = {[visited 2023-02-16]}
+% StackGres
+@misc{SPGOgitlab,
+  author  = {OnGres Inc.},
+  journal = {GitLab},
+  title   = {OnGres Inc. / StackGres},
+  url     = {https://gitlab.com/ongresinc/stackgres},
+  note    = {[visited 2023-02-20]}
 }
 
-@misc{EDBdocuTDE,
-  author  = {EnterpriseDB Corporation},
-  journal = {EDB Docs},
-  title   = {EDB Postgres for Kubernetes v1},
-  url     = {https://www.enterprisedb.com/docs/postgres_for_kubernetes/latest/tde/},
-  note    = {[visited 2023-02-16]}
+@misc{SPGOgitlabChangelog,
+  author  = {OnGres Inc.},
+  journal = {GitLab},
+  title   = {CHANGELOG.md · main · OnGres Inc. / StackGres},
+  url     = {https://gitlab.com/ongresinc/stackgres/-/blob/main/CHANGELOG.md},
+  note    = {[visited 2023-02-20]}
 }
 
-@misc{EDBdocuQuickstart,
-  author  = {EnterpriseDB Corporation},
-  journal = {EDB Docs},
-  title   = {EDB Postgres for Kubernetes v1},
-  url     = {https://www.enterprisedb.com/docs/postgres_for_kubernetes/latest/quickstart/#installation},
-  note    = {[visited 2023-02-16]}
+@misc{OnGres,
+  author  = {OnGres Inc.},
+  journal = {OnGres},
+  title   = {About},
+  url     = {https://www.ongres.com/about-us/},
+  note    = {[visited 2023-02-20]}
 }
 
-@misc{EDBdocuConnectionPooling,
-  author  = {EnterpriseDB Corporation},
-  journal = {EDB Docs},
-  title   = {EDB Postgres for Kubernetes v1},
-  url     = {https://www.enterprisedb.com/docs/postgres_for_kubernetes/latest/connection_pooling/},
-  note    = {[visited 2023-02-16]}
+@misc{SPGOFeatures,
+  author  = {OnGres Inc.},
+  journal = {StackGres},
+  title   = {Features},
+  url     = {https://stackgres.io/features/},
+  note    = {[visited 2023-02-20]}
 }
 
-@misc{EDBdocuCapabilityLevels,
-  author  = {EnterpriseDB Corporation},
-  journal = {EDB Docs},
-  title   = {EDB Postgres for Kubernetes v1},
-  url     = {https://www.enterprisedb.com/docs/postgres_for_kubernetes/latest/replica_cluster/},
-  note    = {[visited 2023-02-16]}
+@misc{SPGODocuMajorUpdates,
+  author  = {OnGres Inc.},
+  journal = {StackGres Documentation},
+  title   = {SGDbOps},
+  url     = {https://stackgres.io/doc/latest/reference/crd/sgdbops/#major-version-upgrade},
+  note    = {[visited 2023-02-20]}
 }
 
+@misc{SPGODocuCustomization,
+  author  = {OnGres Inc.},
+  journal = {StackGres Documentation},
+  title   = {SGPostgresConfig},
+  url     = {https://stackgres.io/doc/latest/reference/crd/sgpgconfig/},
+  note    = {[visited 2023-02-20]}
+}
+
+@misc{SPGODocuLicence,
+  author  = {OnGres Inc.},
+  journal = {StackGres Documentation},
+  title   = {Licensing},
+  url     = {https://stackgres.io/doc/latest/intro/license/},
+  note    = {[visited 2023-02-20]}
+}
+
+@misc{SPGODocuArchitecture,
+  author  = {OnGres Inc.},
+  journal = {StackGres Documentation},
+  title   = {Architecture},
+  url     = {https://stackgres.io/doc/latest/intro/architecture/},
+  note    = {[visited 2023-02-20]}
+}
 
 % Percona
 @misc{Percona,
@@ -415,6 +520,24 @@
   title   = {postgresql 5.3.0 · operator-framework/community-operators},
   url     = {https://artifacthub.io/packages/olm/community-operators/postgresql},
   note    = {[visited 2023-02-15]}
+}
+
+% ProOpenSource OÜ Blog
+@misc{PostgresOnKubernetes,
+  author  = {Stefanie Janine Stölting},
+  journal = {ProOpenSource OÜ Blog},
+  title   = {PostgreSQL On Kubernetes Experiences},
+  url     = {https://proopensource.it/blog/postgresql-on-k8s-experiences},
+  note    = {[visited 2023-02-20]}
+}
+
+% Palark
+@misc{PalarkComparingKubernetes,
+  author  = {Nikolay Bogdanov},
+  journal = {Palark | Blog},
+  title   = {Comparing Kubernetes operators for PostgreSQL},
+  url     = {https://blog.palark.com/comparing-kubernetes-operators-for-postgresql/},
+  note    = {[visited 2023-02-20]}
 }
 
 

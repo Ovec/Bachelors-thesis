@@ -69,6 +69,12 @@ Service is an abstraction layer and defines a group of Pods and the method to ac
 
 \textbf{TBD service, service discover, volumes etc, stateful vs stateles}
 
+\textcolor{cyan}{TBD - Read https://containerjournal.com/kubecon-cnc-eu-2022/why-run-postgres-in-kubernetes/}
+
+\textcolor{cyan}{TBD - Read data on Kubernetes https://dok.community/dokc-2021-report/}
+
+
+
 \n{2}{Operators}
 TBD - operators capability levels
 TBD - where to find operators (best operator are from the developers of postgres)
@@ -102,11 +108,15 @@ TBD: What does Percona different to Crunchy to EDB?
 
 TBD: Postgres update every three months https://access.crunchydata.com/documentation/postgres-operator/5.3.0/tutorial/update-cluster/
 
+TBD: Container types CloudNativePG is built on immutable application containers. What does it mean? https://cloudnative-pg.io/documentation/1.19/faq/
+
 As previously stated in the section on Operators, the most suitable operators for a software are those developed by the software developers themselves, as they possess an in-depth understanding of the software. Regrettably, no such operator has been created for Postgres.
 
 Operator Hub presents eight operators with varying levels of capabilities, including Crunchy Postgres for Kubernetes by Crunchy Data, EDB Postgres for Kubernetes by EnterpriseDB Corporation, Ext Postgres Operator by movetokube.com, Percona Operator for PostgreSQL by Percona, Postgres-Operator by Zalando SE, Postgresql Operator by Openlabs, and PostgreSQL Operator by Dev4Ddevs.com.
 
-Of the eight operators available through Operator Hub, only three meet our minimum capability requirement of Deep Insight, namely: Crunchy Postgres for Kubernetes, EDB Postgres for Kubernetes, and Percona Operator for PostgreSQL. As a result, only these three will be subjected to testing and evaluation.
+Deeper internet research revealed three more operators: CloudNativePG, StackGres, and Stolon. \cite{PostgresOnKubernetes} \cite{PalarkComparingKubernetes}
+
+Of the eleven operators available, only five meet our minimum capability requirement of Deep Insight, namely: Crunchy Postgres for Kubernetes, EDB Postgres for Kubernetes, Percona Operator for PostgreSQL, CloudNativePG Operator, and StackGres Operator. As a result, only these five will be subjected to deeper research, testing, and evaluation.
 
 \pagebreak
 \n{2}{Crunchy Postgres for Kubernetes}
@@ -117,7 +127,7 @@ PGO’s capabilities are the following:
 \begin{itemize}
   \item \textbf{Postgres Cluster Provisioning:} PGO is able to create \cite{CrunchyDocCreate}, update \cite{CrunchyDocUpdate} or delete Postgres cluster \cite{CrunchyDocDelete}
   \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique. \cite{CrunchyDocHA}
-  \item \textbf{Postgres updates:} PGO is able to apply minor patches. \cite{CrunchyDocMinorUpdates}
+  \item \textbf{Postgres updates:} PGO is able to apply minor patches \cite{CrunchyDocMinorUpdates}, and major upgrades since version 5.1. \cite{CrunchyBlogUpdates}
   \item \textbf{Backups:} PGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), ad hoc backups, and backup encryption. \cite{CrunchyDocBackups}
   \item \textbf{Disaster Recovery:} PGO is capable of Point In Time recovery, in place Point in Time Recovery, restore of an individual database. \cite{CrunchyDocDisasterRecovery}
   \item \textbf{Cloning:} PGO is able to clone cluster. \cite{CrunchyDocDisasterRecovery}
@@ -128,88 +138,100 @@ PGO’s capabilities are the following:
 The current stable version of PGO is 5.3.0 was released on 13th January 2023 and has one critical vulnerability, 7 highly critical vulnerabilities, 31 medium, and 31 low. \cite{ArtifactHubCrunchy}
 PGO is compatible with following platforms: Kubernetes 1.22-1.25, OpenShift 4.8-4.11, Rancher, Google Kubernetes Engine (GKE), including Anthos, Amazon EKS, Microsoft AKS, VMware Tanzu. \cite{CrunchyDoc}
 
-PGO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PGO is considered to have the highest level, labeled as Autopilot. \cite{OperatorHubCrunchy}
+PGO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PGO is considered to have the highest capability level, labeled as Autopilot. \cite{OperatorHubCrunchy}
 
-PGO consists of the following components \cite{CrunchyPGOGit}:
+PGO consists of the following key components \cite{CrunchyPGOGit}:
 \begin{itemize}
-  \item Postgres:
-        \begin{itemize}
-          \item PostgreSQL Contrib Modules
-          \item PL/Python + PL/Python 3
-          \item PL/Perl
-          \item PL/Tcl
-          \item pgAudit
-          \item pgAudit Analyze
-          \item pg\_cron
-          \item pg\_partman
-          \item pgnodemx
-          \item set\_user
-          \item TimescaleDB
-          \item wal2json
-        \end{itemize}
-  \item pgBackRest
-  \item pgBouncer
-  \item pgAdmin 4
-  \item pgMonitor
-        \begin{itemize}
-          \item pgMonitor
-          \item Prometheus
-          \item Grafana
-          \item Alertmanager
-        \end{itemize}
-  \item Patroni
-  \item LLVM (JIT compilation)
+  \item High Availability: Patroni
+  \item Backups: PgBackRest
+  \item Connection Pooler: PgBouncer
+  \item Monitoring: PgMonitor, Prometheus, Grafana, and Alertmanager
 \end{itemize}
-
 \obr{PGO’s architecture \cite{CrunchyDocArchitecture}}{}{1}{graphics/pgo_architecture.png}
 
 
 \pagebreak
-
 \n{2}{EDB Postgres for Kubernetes}
 The EDB Postgres for Kubernetes (EDBO) is a fully supported operator that has been designed, developed, and maintained by EnterpriseDB Corporation. It provides comprehensive coverage of the entire lifecycle of highly available PostgreSQL database clusters with a primary/standby architecture, utilizing native streaming replication. The operator is based on the open-source CloudNativePG operator and offers additional benefits. \cite{OperatorHubEDB}
 
 EnterpriseDB (EDB) is a software company that provides enterprise-class PostgreSQL software and services. EDB is a leading provider of PostgreSQL technology, offering a range of products and services designed to help organizations adopt, deploy, and manage PostgreSQL databases. \cite{EDB}
 
-EDBO’s capabilities are the following:
+As stated previously EDBO is based on open-source CloudNativePG operator. The operator that is not listed on Operator Hub. EDBO provides additional features on top of CloudNativePG operator such as support for Oracle compatibility using EDB Postgres Advanced Server, support for additional platforms such as IBM Power, and additional enterprise-grade security features. \cite{EDBdocu}
+
+EDBO is distributed under the EDB Limited Usage License Agreement, a proprietary license that is specific to software provided by EnterpriseDB Corporation. A license key is always required for the operator to work longer than 30 days. \cite{EDBdocuLicence} Due to the restrictive nature of the license EDBO will no longer be subject to testing and evaluation but CloudNativePG will.
+
+\pagebreak
+
+\n{2}{CloudNativePG}
+The CloudNativePG operator (CNPGO) is an operator that is available as an open-source solution and aims to manage PostgreSQL workloads across various Kubernetes clusters running in private, public, hybrid, or multi-cloud environments. The operator aligns with DevOps principles and concepts like immutable infrastructure and declarative configuration. \cite{CNPGdocu}
+
+Initially developed by EDB, CNPGO was later made available to the public as an open-source software under the Apache License 2.0. In April 2022, the project was submitted to CNCF Sandbox for further development and community engagement. \cite{CNPGdocu}
+
+CNPGO’s capabilities are the following:
 \begin{itemize}
-  \item \textbf{Postgres Cluster Provisioning:} PGO is able to create, update or delete Postgres cluster. \cite{EDBdocuCapabilityLevels}
-  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique. \cite{EDBdocuReplication}
-  \item \textbf{Postgres updates:} EDBO is able to apply minor patches. \cite{EDBdocuUpdates}
-  \item \textbf{Backups:} EDBO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), on-demand backups, and backup encryption \cite{EDBdocuBackup}\cite{EDBdocuTDE}. Due to EDB’s own backup software Barman backup compression is available also. \cite{EDBdocuBackup}
-  \item \textbf{Disaster Recovery:} EDBO is capable of Point In Time recovery. Database recovery was not mentioned in the documentation. \cite{EDBdocuBackup}
-  \item \textbf{Cloning:} EDBO is able to create cluster replicas. \cite{EDBdocuReplication}
-  \item \textbf{Monitoring:} Monitoring can be provided by the additional installation of Prometheus, and Grafana, and Alertmanager. \cite{EDBdocuQuickstart}
-  \item \textbf{Connection Pooling:} Is provided by native Postgres pooler PgBouncer. \cite{EDBdocuConnectionPooling}
-  \item \textbf{Customization:} EDBO provides a wide area of Postgres customization such as max parallel workers tuning or WAL configuration \cite{EDBdocuConfiguration}
+  \item \textbf{Postgres Cluster Provisioning:} CNPGO is able to create, update or delete Postgres cluster. \cite{CNPGdocuCapabilityLevels}
+  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique. \cite{CNPGdocuReplication}
+  \item \textbf{Direct database imports:} CNPGO provides direct database import from remote Postgres server by using pg\_dump and pg\_restore even on different Postgres versions. \cite{CNPGdocuDatabaseImports}
+  \item \textbf{Postgres updates:} CNPGO is able to apply minor patches. \cite{CNPGdocuUpdates} Major updates are possible by previously mentioned Direct database imports.
+  \item \textbf{Backups:} CNPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), on-demand backups, and backup encryption \cite{CNPGdocuBackup}\cite{CNPGdocuTDE}. Due to EDB’s backup software Barman backup compression is available also. \cite{CNPGdocuBackup}
+  \item \textbf{Disaster Recovery:} CNPGO is capable of Point In Time recovery. Database recovery was not mentioned in the documentation. \cite{CNPGdocuBackup}
+  \item \textbf{Cloning:} CNPGO is able to create cluster replicas. \cite{CNPGdocuReplication}
+  \item \textbf{Monitoring:} Monitoring can be provided by the additional installation of Prometheus, and Grafana, and Alertmanager. \cite{CNPGdocuQuickstart}
+  \item \textbf{Connection Pooling:} Is provided by native Postgres pooler PgBouncer. \cite{CNPGdocuConnectionPooling}
+  \item \textbf{Customization:} CNPGO provides a wide area of Postgres customization such as max parallel workers tuning or WAL configuration \cite{CNPGdocuConfiguration}
 \end{itemize}
 
-EDB provides an interactive demo of their Operator online\footnote[1]{EDBO’s online demo http://bit.ly/3xr7iD3}.
+The current major stable version of CNPGO is 1.19 was released on 14th February 2023. CNPGO is distributed under the Apache License 2.0 open-source license. CNPGO is considered to have the highest capability level, labeled as Autopilot. \cite{CNPGdocu}
 
-The current stable version of EDBO is 1.19.2. was released on 15th February 2023 and has 27 medium vulnerabilities, and 31 low vulnerabilities\footnote[2]{Observed on 16th February at https://artifacthub.io/packages/olm/community-operators/cloud-native-postgresql}. EDBO is distributed under the EDB Limited Usage License Agreement, a proprietary license that is specific to software provided by EnterpriseDB Corporation. A license key is always required for the operator to work. With regards to capability, EDBO is considered to have the highest level, labeled as Autopilot. \cite{EDBdocu}
-
-EDBO consists of the following components \cite{EDBdocu} \cite{EDBdocuQuickstart}:
+CNPGO consists of the following key components \cite{PostgresOnKubernetes} \cite{CNPGdocuQuickstart}:
 \begin{itemize}
-  \item Postgres:
-        \begin{itemize}
-          \item CloudNativePG
-        \end{itemize}
-  \item Monitoring
-        \begin{itemize}
-          \item Prometheus
-          \item Grafana
-          \item Alertmanager
-        \end{itemize}
+  \item High Availability: Postgres instance manager
+  \item Backups: Barman
+  \item Connection Pooler: PgBouncer
+  \item Monitoring: Prometheus, Grafana, and Alertmanager
+\end{itemize}
+
+\obr{CNPGO’s architecture \cite{CNPGdocuConnectionPooling}}{}{1}{graphics/CNPGO_architecture.png}
+
+\pagebreak
+\n{2}{StackGres Operator}
+StackGres (SPGO) is a comprehensive distribution of PostgreSQL for Kubernetes, delivered in a user-friendly deployment package. The distribution includes a set of PostgreSQL components that have been carefully selected and optimized to work seamlessly with each other. \cite{SPGOgitlab}
+
+SPGO is developed by OnGres that was established as a result of years of experience in working with and creating products based on Postgres and supporting clients with their Postgres infrastructures. Postgres databases are at the heart of the company's business, as the name suggests. \cite{OnGres}
+
+SPGO’s capabilities are the following \cite{OnGres}:
+\begin{itemize}
+  \item \textbf{Postgres Cluster Provisioning:} SPGO is able to create, update or delete Postgres cluster.
+  \item \textbf{High Availability:} High availability is achieved by adding additional nodes.
+  \item \textbf{Postgres updates:} SPGO is able to apply minor patches. Major updates are possible by SGDbOps \cite{SPGODocuMajorUpdates}.
+  \item \textbf{Backups:} SPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob)
+  \item \textbf{Disaster Recovery:} SPGO is capable of Point In Time recovery. Database recovery was not mentioned in the documentation.
+  \item \textbf{Cloning:} SPGO is able to create cluster replicas.
+  \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager.
+  \item \textbf{Connection Pooling:} Is provided by native Postgres pooler PgBouncer.
+  \item \textbf{Customization:} SPGO provides a wide area of Postgres customization such as WAL configuration, archive mode, vacuum, etc. \cite{SPGODocuCustomization}
+  \item \textbf{Mamagement Console:} SPGO provides a fully featured management web console.
+
+\end{itemize}
+
+The current stable version of SPGO is 1.4.2 was released on 24th January 2022. \cite{ SPGOgitlabChangelog} SPGO is distributed under the AGPL3 open-source license. \cite{SPGODocuLicence} SPGO capability level hasn’t been mentioned in the documentation or its web pages.
+
+SPGO consists of the following key components \cite{PostgresOnKubernetes}:
+\begin{itemize}
+  \item High Availability: Patroni
+  \item Backups: WAL-G
+  \item Connection Pooler: PgBouncer
+  \item Monitoring: Prometheus, Grafana, and Alertmanager.
 \end{itemize}
 
 
-\obr{EDBO’s architecture \cite{EDBdocuConnectionPooling}}{}{1}{graphics/edbo_architecture.png}
+\obr{SPGO’s architecture \cite{SPGOdocuArchitecture}}{}{1}{graphics/SPGO_architecture.png}
 
-
+\pagebreak
 \n{2}{Percona Operator for PostgreSQL}
 Percona is a company that provides services and solutions for open-source database technologies. It offers expertise, support, and software for MySQL, MongoDB, and PostgreSQL. The company's offerings help organizations manage their open-source databases and ensure optimal performance, security, and scalability. \cite{Percona}
 
-The current stable version of PPO is 1.3.0 and it is compatible with a minimum Kubernetes version of 1.11.0. The upcoming version 2.0.0 is not yet production ready but will be included in the evaluation. PPO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PPO is considered to have the second highest level, labeled as Deep Insights. \cite{OperatorHubPercona}
+The current stable version of PPO is 1.3.0 and it is compatible with a minimum Kubernetes version of 1.11.0. The upcoming version 2.0.0 is not yet production ready but will be included in the evaluation. PPO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PPO is considered to have the second highest capability level, labeled as Deep Insights. \cite{OperatorHubPercona}
 
 PPO’s main features are the same as PGO’s \cite{OperatorHubPercona}
 
