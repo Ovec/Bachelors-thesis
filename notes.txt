@@ -1,0 +1,3 @@
+Cluster deployment - https://www.percona.com/blog/run-postgresql-in-kubernetes-solutions-pros-and-cons/
+Stolting o operartorech - https://proopensource.it/blog/postgresql-on-k8s-experiences
+5 min of Postgres - https://pganalyze.com/blog/5mins-postgres-kubernetes-operator-handling-major-version-upgrades
