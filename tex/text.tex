@@ -20,6 +20,10 @@ It was clear by 1996 that the name would not stand the test of time therefore it
 
 More than 30 years after the first version Postgres has been considered the most used ORDBMS for professional developers by Stack Overflow survey \cite{so2022survey}. According to Riggs and Ciolli \cite{pg14introduction}: “The PostgreSQL feature set attracts serious users who have serious applications. Financial services companies may be PostgreSQL's largest user group, although governments, telecommunication companies, and many other segments are strong users as well.“ It is fully ACID compliant \cite{juba2015learningTransactionIsolation} and supports many kinds of data models such as relational, document, and key/value. \cite{pg14introduction}
 
+\n{3}{Write Ahead Log}
+
+\n{3}{Scaling}
+\n{4}{Patroni}
 %Database engines survey https://db-engines.com/en/ranking
 %Describe postgres usage
 %Describe scaling etc.
@@ -231,20 +235,38 @@ SPGO consists of the following key components \cite{PostgresOnKubernetes}:
 \n{2}{Percona Operator for PostgreSQL}
 Percona is a company that provides services and solutions for open-source database technologies. It offers expertise, support, and software for MySQL, MongoDB, and PostgreSQL. The company's offerings help organizations manage their open-source databases and ensure optimal performance, security, and scalability. \cite{Percona}
 
-The current stable version of PPO is 1.3.0 and it is compatible with a minimum Kubernetes version of 1.11.0. The upcoming version 2.0.0 is not yet production ready but will be included in the evaluation. PPO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PPO is considered to have the second highest capability level, labeled as Deep Insights. \cite{OperatorHubPercona}
+Percona Operator for PostgreSQL (PPO) is based on Crunchy Postgres for Kubernetes. Percona forked PGO v 4.7 and has added enhancements for monitoring, upgradability, and flexibility. \cite{PerconaBlogProsAndCons}
 
-PPO’s main features are the same as PGO’s \cite{OperatorHubPercona}
+Differences between PGO and PPO are the following:
+\begin{itemize}
+  \item \textbf{Postgres updates:} PPO provides automatic Postgres updates for minor and major versions of Postgres.  \cite{PerconaDocuUpdate}
+  \item \textbf{Backups:} PPO is not able to back up to Azure. \cite{PerconaDocuCompare}
+  \item \textbf{Disaster Recovery:} PPO documentation does not mention the possibility of restoring a single database from a backup. \cite{PerconaDocuBackups}
+  \item \textbf{Monitoring:} PPO is not using the usual monitoring stack consisting of Prometheus and Grafana but their own Percona Monitoring and Management. \cite{PerconaDocuMonitoring}
+\end{itemize}
+
+The current stable version of PPO is 1.3.0 was released on 4th August 2022. The upcoming version 2.0.0 is not yet production ready therefore will not be subject to testing and evaluation. \cite{PerconaDocuV2} PPO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PPO is considered to have the second highest capability level, labeled as Deep Insights. \cite{OperatorHubPercona}
+
+PPO consists of the following key components \cite{PostgresOnKubernetes}:
+\begin{itemize}
+  \item High Availability: Patroni
+  \item Backups: PgBackRest
+  \item Connection Pooler: PgBouncer
+  \item Monitoring: Percona Monitoring and Management
+\end{itemize}
+\obr{PPO’s architecture \cite{CrunchyDocArchitecture}}{}{1}{graphics/PPO_architecture.png}
+
+
 
 
 \tab{Comparison of selected Operators}{tab:priklad2}{1}{|l|l|l|l|l|}{
   \hline
-  & PGO 5.3.0 & EDBO 1.18.1 & PPO 1.3.0 & PPO 2.0.0\\ \hline
-  Release date & 1.22.0 & unknown & 1.21.0 & 1.22.0 \\ \hline
-  Minimal K8s version & 1.22.0 & unknown & 1.21.0 & 1.22.0 \\ \hline
-  Postgres versions supported & 15 & EDBO 1.18.1 & PPO 1.12.0 \\ \hline
-  Licence & PGO 5.3.0 & EDBO 1.18.1 & PPO 1.12.0 \\ \hline
-  Capability & Autopilot & Autopilot & Deep Insights & Deep Insights  \\ \hline
-  Security & PGO 5.3.0 & EDBO 1.18.1 & PPO 1.12.0 \\ \hline
+  & PGO 5.3.0 & CNPGO 1.18.1 & SPGO 1.4.2 & PPO 1.3.0\\ \hline
+  Programing language & GO & GO & JAVA & GO\\ \hline
+  Supported Postgres versions & 12, 13, 14, 15 & 11, 12, 13, 14, 15 & 12, 13, 14, 15 & 12, 13, 14\\ \hline
+  Major version update & Manual & Manual & Manual & Automatic\\ \hline
+  Licence & Apache 2.0 & Apache 2.0 & Apache 2.0 & AGPL 3\\ \hline
+  User interface &  No & No & Yes & No\\ \hline
 }
 
 % \emph{F} & (jedna) & (dva) & (tři) & (čtyři) & (pět) & 300 \\ \hline
