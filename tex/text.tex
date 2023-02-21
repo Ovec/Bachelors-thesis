@@ -20,7 +20,11 @@ It was clear by 1996 that the name would not stand the test of time therefore it
 
 More than 30 years after the first version Postgres has been considered the most used ORDBMS for professional developers by Stack Overflow survey \cite{so2022survey}. According to Riggs and Ciolli \cite{pg14introduction}: “The PostgreSQL feature set attracts serious users who have serious applications. Financial services companies may be PostgreSQL's largest user group, although governments, telecommunication companies, and many other segments are strong users as well.“ It is fully ACID compliant \cite{juba2015learningTransactionIsolation} and supports many kinds of data models such as relational, document, and key/value. \cite{pg14introduction}
 
-\n{3}{Write Ahead Log}
+\n{3}{Write Ahead Logging}
+Write-ahead Logging (WAL) is a standard technique to ensure data integrity. Its main concept is that changes in data files (where tables and indexes are stored) can only be written after they are logged. That is, they are written to disk only after they have been logged. When this procedure is followed, we do not have to write to disk after each transaction is completed. In the event of a system crash, all transactions will be recovered from the disk. \cite{docuPgWal}
+
+\n{3}{Backups}
+
 
 \n{3}{Scaling}
 \n{4}{Patroni}
