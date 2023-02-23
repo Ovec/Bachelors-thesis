@@ -20,18 +20,29 @@ It was clear by 1996 that the name would not stand the test of time therefore it
 
 More than 30 years after the first version Postgres has been considered the most used ORDBMS for professional developers by Stack Overflow survey \cite{so2022survey}. According to Riggs and Ciolli \cite{pg14introduction}: “The PostgreSQL feature set attracts serious users who have serious applications. Financial services companies may be PostgreSQL's largest user group, although governments, telecommunication companies, and many other segments are strong users as well.“ It is fully ACID compliant \cite{juba2015learningTransactionIsolation} and supports many kinds of data models such as relational, document, and key/value. \cite{pg14introduction}
 
-\n{3}{Write Ahead Logging}
-Write-ahead Logging (WAL) is a standard technique to ensure data integrity. Its main concept is that changes in data files (where tables and indexes are stored) can only be written after they are logged. That is, they are written to disk only after they have been logged. When this procedure is followed, we do not have to write to disk after each transaction is completed. In the event of a system crash, all transactions will be recovered from the disk. \cite{docuPgWal}
+\n{3}{Write Ahead Log}
+Write-ahead Logging (WAL) used by Postgres is a standard technique to ensure data integrity. Its main concept is that changes in data files (where tables and indexes are stored) can only be written after they are logged. That is, they are written to disk only after they have been logged. When this procedure is followed, we do not have to write to disk after each transaction is completed. In the event of a system crash, all transactions will be recovered from the disk. \cite{docuPgWal}
 
-\n{3}{Backups}
+\n{3}{Backup and restore}
+A full set of backup commands is included in Postgres. Among the simple backup commands are pg\_dump and pg\_dumpall, which enable one or more databases to be saved in SQL format. A wide range of configuration options are available for these commands, including compression for large databases or exporting only the database schema. To restore a database from a file at a later time, the psql command can be used, which is capable of restoring a database from its dump. \cite{DocuPgDump} These commands are also helpful with migration from one major Postges version to another because the dumped files are plain SQL commands.
+
+Although WAL is primarily designed for recovery after a database server crash, its design also allows any changes to the database server state to be replayed backward. A copy of the log is also a form of backup. Thus, for recovery to a point in time, only logs that have been saved to that point in time can be restored. This technique is called Point-In-Time Recovery (PITR). \cite{DocuPgPITR}
+
+\n{4}{PgBackRest}
+PgBackRest is a reliable and simple backup and restore solution that provides many features on top of classic Postgres backup and restore tools like parallel backup options with compression, local or remote backu, cloud backup (S3. Azure and Google Cloud), or backup encryption. Full, incremental, or differential backup is also supported. \cite{PGbackRest}
+
+TBD: why is it here? Conect to crunhy and operatores
 
 
-\n{3}{Scaling}
+\n{3}{High Availability}
+The basic structure of a database cluster consists of one or more database servers, which can be called nodes. In Postgres there are two types of nodes, master node and standby node.  A master node is such a node that allows reading and writing information. The newly written information is then streamed to the standby nodes. Standby nodes are read-only, they do not allow writing. \cite{pg14replication}
+
+Achieving high availability with Postgres is possible by using more than one node in the cluster. Two options are possible here. A single primary node option, where the primary node is read and write enabled, and the other nodes are standby nodes. If the primary node is unavailable, then the standby node is promoted to the primary node. This event is called failover. In this variant, the primary node streams the logs of the standby nodes. The second option is to use multiple primary nodes. However, conflicts can occur here because all primary nodes allow writes. \cite{docuPgHA}
 \n{4}{Patroni}
-%Database engines survey https://db-engines.com/en/ranking
-%Describe postgres usage
-%Describe scaling etc.
-%DSK time consuming Postgres
+Since Postgres does not provide any software that can detect that a node is unavailable, it is necessary to use software outside of Postgres \cite{docuPgFailover}, such as Patroni.
+
+\n{3}{Load balancing}
+\n{4}{PgBouncer}
 
 \n{2}{Kubernetes}
 Kubernetes, also known as K8s, is an open-source platform for automating deployment, scaling, and management of containerized applications. It provides a way to manage and orchestrate containers, which are units of software that package up an application and its dependencies into a single, isolated package that can run consistently on any infrastructure. \cite{vayghan2019kubernetes}
