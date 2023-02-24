@@ -37,12 +37,14 @@ TBD: why is it here? Conect to crunhy and operatores
 \n{3}{High Availability}
 The basic structure of a database cluster consists of one or more database servers, which can be called nodes. In Postgres there are two types of nodes, master node and standby node.  A master node is such a node that allows reading and writing information. The newly written information is then streamed to the standby nodes. Standby nodes are read-only, they do not allow writing. \cite{pg14replication}
 
-Achieving high availability with Postgres is possible by using more than one node in the cluster. Two options are possible here. A single primary node option, where the primary node is read and write enabled, and the other nodes are standby nodes. If the primary node is unavailable, then the standby node is promoted to the primary node. This event is called failover. In this variant, the primary node streams the logs of the standby nodes. The second option is to use multiple primary nodes. However, conflicts can occur here because all primary nodes allow writes. \cite{docuPgHA}
+Achieving high availability with Postgres is possible by using more than one node in the cluster. Two options are possible here. A single primary node option, where the primary node is read and write enabled, and the other nodes are standby nodes. If the primary node is unavailable, then the standby node is promoted to the primary node. This event is called failover. In this variant, the primary node streams the logs of the standby nodes. The second option is to use multiple primary nodes. However, conflicts can occur because all primary nodes allow writes. \cite{docuPgHA}
 \n{4}{Patroni}
 Since Postgres does not provide any software that can detect that a node is unavailable, it is necessary to use software outside of Postgres \cite{docuPgFailover}, such as Patroni.
+Patroni is a popular open-source tool created by Zalando to achieve high availability of Postgres clusters. Patroni uses a distributed configuration source such as ZooKeeper, Etcd, Consul, or Kubernetes for its operation. Patroni can automatically adjust the settings of all managed nodes, therefore it can automate failover and make it seamless. \cite{PalarkMigratingPg} \cite{PatroniDocu}
 
-\n{3}{Load balancing}
-\n{4}{PgBouncer}
+
+\n{3}{Load Balancing and Connection Pooling}
+Using more than one node allows to direct traffic to a node that is less busy and thus achieves load balancing. Postgres doesn't come with any software that allows splitting the load on different nodes, so it is necessary to use an external load balancer such as HA Proxy or pgBouncer. The load balancer then acts as an intermediary between the database and the client and directs the traffic to the available nodes according to the set rules. These load balancers also enable connection pooling which is a technique for managing and reusing database connections to increase performance and reduce overhead. Connection pooling involves creating a pool of pre-created connections that can be shared and reused by multiple client requests, instead of creating a new connection for each request. This removes the overhead of creating a new process each time a client connects to Postgres and allows the client to use resources that would otherwise be used to service multiple requests (or complete them faster). \cite{PerconaBlogConnectionPooling}
 
 \n{2}{Kubernetes}
 Kubernetes, also known as K8s, is an open-source platform for automating deployment, scaling, and management of containerized applications. It provides a way to manage and orchestrate containers, which are units of software that package up an application and its dependencies into a single, isolated package that can run consistently on any infrastructure. \cite{vayghan2019kubernetes}
@@ -86,21 +88,33 @@ ReplicaSet’s purpose is to ensure a consistent number of replica Pods are runn
 
 Service is an abstraction layer and defines a group of Pods and the method to access them (often referred to as a micro-service). The group of Pods targeted by a Service is usually specified through a selector. The Service abstraction makes this possible by enabling the decoupling of components. \cite{docuKubeSevice}
 
-\textbf{TBD service, service discover, volumes etc, stateful vs stateles}
+Kubernetes includes built-in service discovery mechanisms. When a service is created in Kubernetes, it is automatically assigned an IP address and DNS name. Clients and other services can use this name or address to access the service within the Kubernetes cluster. \cite{docuKubeSevice}
+
+Containers and pods in Kubernetes are ephemeral. When a container is terminated, any data it has written to its own filesystem is lost. In Kubernetes, storage is represented by a basic abstraction called "volumes". Containers use these volumes by binding them to their respective pods, and can then access the storage regardless of its physical location as if it were a part of their local filesystem. \cite{masteringKubernetesStorage}
+
+Kubernetes version 1.5 came with a new object called StatefulSet that allows a set of stateful pods to be deployed and managed. Each pod has a unique, stable network identity and a persistent storage volume. This enables stateful applications like databases to be run on Kubernetes. Advantages of using StatefulSets include predictable naming schemes, ordered pod creation and deletion, and unique persistent storage. \cite{docuKubeStatefulSet} \cite{githubKube15}
+
+\textbf{CRD}
 
 \textcolor{cyan}{TBD - Read https://containerjournal.com/kubecon-cnc-eu-2022/why-run-postgres-in-kubernetes/}
 
 \textcolor{cyan}{TBD - Read data on Kubernetes https://dok.community/dokc-2021-report/}
 
 
+\n{2}{Running Postgres in Kubernetes}
+The easiest way to run Postgres in Kubernetes is through the StatefulSet just mentioned. This StatefulSet can start a Postgres pod, create a persistent volume, and connect this volume to the pod. A stateful set can do this for all replicas set in its configuration. It can also scale up or down. Unfortunately, however, all independent Postgres instances are not synchronized in any manner. For replication, selecting a new primary node on failover, connection pooling and backup, you need to use software described above.
+
+TBD – najít zdroj
+
+
+TBD - statefull set, risk of loosing data without statefull set, high availability, scaling
 
 \n{2}{Operators}
 TBD - operators capability levels
 TBD - where to find operators (best operator are from the developers of postgres)
 TBD - define Operator hub
 
-\n{2}{Running Postgres in Kubernetes}
-TBD - statefull set, risk of loosing data without statefull set, high availability, scaling
+
 
 
 \n{1}{Database System Lifecycle}
