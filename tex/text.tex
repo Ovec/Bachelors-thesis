@@ -85,6 +85,8 @@ Node components in a Kubernetes cluster run on each node and provide crucial fun
 \end{itemize}
 
 \n{3}{Kubernetes Concepts}
+\textcolor{cyan}{RepliceSet extension - Operators p. 28 (Replica is general and appllication agnostic) }
+
 Pod is the smallest deployable unit that can be created in Kubernetes. \cite{docuKubePods} A Pod in Kubernetes is comprised of multiple containers and storage volumes that are run together within the same execution environment. Pods, not individual containers, are considered to be the smallest unit that can be deployed in a cluster. As a result, all containers included in a single Pod will always run on the same machine. \cite{kubeUpAndRunningPods}
 
 A Pod's specifications are outlined in a Pod manifest, which is simply a JSON or YAML text file that represents the Kubernetes API object. Kubernetes follows a declarative configuration approach, where the system's desired state is defined in a configuration file, and the service then implements the necessary changes to make the desired state a reality. \cite{docuKubeStaticPod}
@@ -99,7 +101,7 @@ Containers and pods in Kubernetes are ephemeral. When a container is terminated,
 
 Kubernetes version 1.5 came with a new object called StatefulSet that allows a set of stateful pods to be deployed and managed. Each pod has a unique, stable network identity and a persistent storage volume. This enables stateful applications like databases to be run on Kubernetes. Advantages of using StatefulSets include predictable naming schemes, ordered pod creation and deletion, and unique persistent storage. \cite{docuKubeStatefulSet} \cite{githubKube15}
 
-\textbf{CRD}
+In version 1.7, Kubernetes introduced the Custom Resources extension to its API. \cite{githubIBMCr} This extension allows Kubernetes to use user-defined resources that are not native to Kubernetes as if they were native. \cite{NewStackCRDs} Custom resources (CR) is an extension to the Kubernetes API that extends the deployment with additional parameters that are not part of it. CR stores these parameters and allows the API server to access them just like the native Kubernetes parts. CR is created in the Kubernetes cluster using a definition called Custom Resource Definition (CRD). \cite{OperatorsAtK8sIface}
 
 \textcolor{red}{TBD - show that Kubernetes can run stateless very well, maybe from Operator book}
 
@@ -130,7 +132,7 @@ As described in the previous chapters, Kubernetes can run stateless applications
 
 This has changed in 2016 when CoreOS came up with Operators as a way to deploy complex applications with state such as databases, caches, or monitoring systems. \cite{IArchiveCOSOperators}
 
-An operator is a special kind of software that extends the kubernetes api and has a particular knowledge of managed software that kubernetes does not have. The operator also serves as a packaging mechanism for distributing applications including their dependencies in Kubernetes. The operator can manage, restore, update or monitor the software. It can also manage very complex applications. The Kubernetes Operator thus replaces the human operator after which it is named, who would otherwise take care of these tasks. \cite{OperatorsPreface} \cite{IArchiveCOSOperators}
+An operator is a special kind of software that extends the kubernetes api and has a particular knowledge of managed software that kubernetes does not have. The Operator also serves as a packaging mechanism for distributing applications including their dependencies in Kubernetes. The Operator can manage, restore, update or monitor the software. It can also manage very complex applications. The Kubernetes Operator thus replaces the human operator after which it is named, who would otherwise take care of these tasks. \cite{OperatorsPreface} \cite{IArchiveCOSOperators}
 
 \obr{Definition of Kubernetes Operator \cite{IArchiveCOSOperators}}{}{1}{graphics/coreos_operator.png}
 
@@ -213,7 +215,7 @@ EDBO is distributed under the EDB Limited Usage License Agreement, a proprietary
 \pagebreak
 
 \n{2}{CloudNativePG}
-The CloudNativePG operator (CNPGO) is an operator that is available as an open-source solution and aims to manage PostgreSQL workloads across various Kubernetes clusters running in private, public, hybrid, or multi-cloud environments. The operator aligns with DevOps principles and concepts like immutable infrastructure and declarative configuration. \cite{CNPGdocu}
+The CloudNativePG operator (CNPGO) is an operator that is available as an open-source solution and aims to manage PostgreSQL workloads across various Kubernetes clusters running in private, public, hybrid, or multi-cloud environments. The Operator aligns with DevOps principles and concepts like immutable infrastructure and declarative configuration. \cite{CNPGdocu}
 
 Initially developed by EDB, CNPGO was later made available to the public as an open-source software under the Apache License 2.0. In April 2022, the project was submitted to CNCF Sandbox for further development and community engagement. \cite{CNPGdocu}
 
