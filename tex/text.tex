@@ -103,9 +103,11 @@ Kubernetes version 1.5 came with a new object called StatefulSet that allows a s
 
 In version 1.7, Kubernetes introduced the Custom Resources extension to its API. \cite{githubIBMCr} This extension allows Kubernetes to use user-defined resources that are not native to Kubernetes as if they were native. \cite{NewStackCRDs} Custom resources (CR) is an extension to the Kubernetes API that extends the deployment with additional parameters that are not part of it. CR stores these parameters and allows the API server to access them just like the native Kubernetes parts. CR is created in the Kubernetes cluster using a definition called Custom Resource Definition (CRD). \cite{OperatorsAtK8sIface}
 
+Kuberentes controllers are control loops\footnote[1]{A control loop is a process that continuously monitors the state of a system, compares it to a desired state, and makes adjustments to bring the system closer to the desired state.} that constantly check the state of their controlled objects. If the controlled objects are not in the desired state, the controller performs actions to get the controlled objects into that state. For example, restart a crashed node, add a new replica, modify settings, etc. \cite{docuKubeControllers}
+However, to work with CR, you need to create custom controllers that can work with these resources, these controllers are called Custom Controllers. \cite{docuKubeCR}
+
 \textcolor{red}{TBD - show that Kubernetes can run stateless very well, maybe from Operator book}
 
-\textcolor{red}{TBD - describe controllers}
 
 \textcolor{cyan}{TBD - Read https://containerjournal.com/kubecon-cnc-eu-2022/why-run-postgres-in-kubernetes/}
 
