@@ -106,6 +106,8 @@ In version 1.7, Kubernetes introduced the Custom Resources extension to its API.
 Kuberentes controllers are control loops\footnote[1]{A control loop is a process that continuously monitors the state of a system, compares it to a desired state, and makes adjustments to bring the system closer to the desired state.} that constantly check the state of their controlled objects. If the controlled objects are not in the desired state, the controller performs actions to get the controlled objects into that state. For example, restart a crashed node, add a new replica, modify settings, etc. \cite{docuKubeControllers}
 However, to work with CR, you need to create custom controllers that can work with these resources, these controllers are called Custom Controllers. \cite{docuKubeCR}
 
+\obr{Kubernetes controller \cite{OperatorWhitepaper} }{}{1}{graphics/kubernetes_controller.png}
+
 \textcolor{red}{TBD - show that Kubernetes can run stateless very well, maybe from Operator book}
 
 
@@ -117,13 +119,21 @@ However, to work with CR, you need to create custom controllers that can work wi
 \n{2}{Running Postgres in Kubernetes}
 Kubernetes cannot know all complex stateful applications, which can contain a large number of nodes and have a wide range of uses while remaining general-purpose. The goal of Kubernetes is to provide an abstraction covering basic application concepts and providing options for extensions for more complex applications and their specific operations. Kubernetes cannot and should not know all the possible settings and operations that, for example, a Postgres cluster needs to run. \cite{OperatorsTeaches}
 
-The easiest way to run Postgres in Kubernetes is through the StatefulSet just mentioned. This StatefulSet can start a Postgres pod, create a persistent volume, and connect this volume to the pod. A stateful set can do this for all replicas set in its configuration. It can also scale up or down. Unfortunately, however, all independent Postgres instances are not synchronized in any manner.
+The easiest way to run Postgres in Kubernetes is through the StatefulSet just mentioned. This StatefulSet can start a Postgres pod, create a persistent volume, and connect this volume to the pod. A stateful set can do this for all replicas set in its configuration. It can also scale up or down. Unfortunately, however, all independent Postgres instances created by StatefulSet controller are not synchronized in any manner.
 
 This basic setup may be sufficient for running a single node, but it is no longer sufficient for database clusters that require high availability, adjusting the settings of individual nodes, creating backups, restoring from backup, connection pooling, or even monitoring the entire cluster. For such clusters it is necessary to install other applications in the kubernetes cluster and then configure the entire Postgres cluster to work with them. This represents a large amount of work and subsequent maintenance that Kubernetes Operators can facilitate.
 
-\n{2}{Operators}
-TBD - operators capability levels
+\n{1}{Database System Lifecycle}
+The database system itself is a software like any other. It is therefore also subject to the same life cycle as software.
+As depicted in figure 2.1 application lifecycle consists of three main parts. It is the governance part, development, and operations. For this thesis, only the operations part is relevant because it is the only part we are able to control.
+\obr{Application Life Cycle \cite{ALM}}{}{1}{graphics/aplication-lifecycle.png}
 
+Operation is the process of running and managing the application, which starts with deployment and continues until the application is taken out of service. This aspect of the application lifecycle management covers the release of the application into production, ongoing monitoring, and other related tasks. \cite{ALM}
+
+TBD: connect to capability levels of Operator (define related tasks, chose the capability that would suit them all)
+
+\pagebreak
+\n{2}{Operators}
 TBD - where to find operators (best operator are from the developers of postgres)
 
 TBD - define Operator hub
@@ -140,14 +150,22 @@ An operator is a special kind of software that extends the kubernetes api and ha
 
 CoreOS demonstrated the use of its Operator on etcd (described in the Kubernetes Components chapter). When new etcd nodes are created, it is necessary to give them a DNS names and use the etcd cluster management tools to add the new nodes to an existing cluster. CoreOS has automated these tasks with the etcd Operator so that all that is required is to increase the number of replicas in the Operator settings and the etcd Operator will perform these tasks instead of a human operator. \cite{IArchiveCOSOperators}
 
-\n{1}{Database System Lifecycle}
-The database system itself is a software like any other. It is therefore also subject to the same life cycle as software.
-As depicted in figure 2.1 application lifecycle consists of three main parts. It is the governance part, development, and operations. For this thesis, only the operations part is relevant because it is the only part we are able to control.
-\obr{Application Life Cycle \cite{ALM}}{}{1}{graphics/aplication-lifecycle.png}
+As described by Kubernetes The Whitepaper \cite{OperatorWhitepaper} and depicted in figure 2.3, Operator consists of the following parts
+\begin{itemize}
+  \item The managed application or infrastructure
+  \item Software that has some specific knowledge of the managed application or infrastructure and allows the user to declaratively set the desired state
+  \item Custom Controller, which is responsible for achieving the desired state
+\end{itemize}
 
-Operation is the process of running and managing the application, which starts with deployment and continues until the application is taken out of service. This aspect of the application lifecycle management covers the release of the application into production, ongoing monitoring, and other related tasks. \cite{ALM}
+\obr{Operator pattern \cite{OperatorWhitepaper} }{}{1}{graphics/operator_patern.png}
 
-TBD: connect to capability levels of Operator (define related tasks, chose the capability that would suit them all)
+Like human operators, Kubernetes Operators can have a level of manual skill ranging from basic software installation and setup skills to a high level where they can scale software vertically or horizontally to automatically change the configuration or detect abnormalities. All Operator maturity levels are depicted in the figure 2.3. The highest level can only be reached by programming the Operator in the GO programming language or by using the Ansible automation tool. \cite{OperatorsOframework}
+
+\obr{Operator maturity levels described by Operator Framework \cite{OFrameworkMaturity}}{}{1}{graphics/operator_capabilities.png}
+
+
+The Kubernetes cluster is divided into individual namespaces that separate the objects and names in the cluster and can have constraints applied to them. This partitioning makes it easier to share the cluster between users or entire teams. The object name must be unique within a namespace, but not between namespaces.  An operator usually operates in its own namespace so it has a Namespace Scope, but it can also operate in the whole cluster in which case it will be a Cluster Scope Operator. Namespace Scope operators are more flexible and easier to upgrade due to their independence from the rest of the cluster. Operator rights are further restricted by the so-called Role-Based Acceess Control (RBAC), which grants the rights assigned to the Operator. \cite{ OperatorsAtK8sIface}
+
 
 \n{1}{Search for Postgres Operators}
 TBD: connect Operators (where to find operators)
