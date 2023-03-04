@@ -134,8 +134,6 @@ TBD: connect to capability levels of Operator (define related tasks, chose the c
 
 \pagebreak
 \n{2}{Operators}
-TBD - where to find operators (best operator are from the developers of postgres)
-
 TBD - define Operator hub
 
 
@@ -144,13 +142,14 @@ As described in the previous chapters, Kubernetes can run stateless applications
 
 This has changed in 2016 when CoreOS came up with Operators as a way to deploy complex applications with state such as databases, caches, or monitoring systems. \cite{IArchiveCOSOperators}
 
-An operator is a special kind of software that extends the kubernetes api and has a particular knowledge of managed software that kubernetes does not have. The Operator also serves as a packaging mechanism for distributing applications including their dependencies in Kubernetes. The Operator can manage, restore, update or monitor the software. It can also manage very complex applications. The Kubernetes Operator thus replaces the human operator after which it is named, who would otherwise take care of these tasks. \cite{OperatorsPreface} \cite{IArchiveCOSOperators}
+An operator is a special kind of software that extends the kubernetes api and has a particular knowledge of managed resource that kubernetes does not have. The Operator also serves as a packaging mechanism for distributing applications including their dependencies in Kubernetes. The Operator can manage, restore, update or monitor the resource. It can also manage very complex applications. The Kubernetes Operator thus replaces the human operator after which it is named, who would otherwise take care of these tasks. \cite{OperatorsPreface} \cite{IArchiveCOSOperators}
 
 \obr{Definition of Kubernetes Operator \cite{IArchiveCOSOperators}}{}{1}{graphics/coreos_operator.png}
 
-CoreOS demonstrated the use of its Operator on etcd (described in the Kubernetes Components chapter). When new etcd nodes are created, it is necessary to give them a DNS names and use the etcd cluster management tools to add the new nodes to an existing cluster. CoreOS has automated these tasks with the etcd Operator so that all that is required is to increase the number of replicas in the Operator settings and the etcd Operator will perform these tasks instead of a human operator. \cite{IArchiveCOSOperators}
+CoreOS demonstrated the use of its Operator on etcd (described in the Kubernetes Components chapter). When new etcd nodes are created, it is necessary to give them a DNS names and use the etcd cluster management tools to add the new nodes to an existing cluster. CoreOS has automated these tasks with the etcd Operator so that all that is required is to increase the number of replicas in the Operator CRD and the etcd Operator will perform these tasks instead of a human operator. \cite{IArchiveCOSOperators}
+By embedding the human operator's operational knowledge into the code, this ensures that these tasks are repeatable, testable and upgradable. It also ensures that the necessary operations are always performed, executed in the order in which they are supposed to be performed, and none are skipped. This will reduce the number of hours spent on dull but essential work such as backups. \cite{OperatorWhitepaper}
 
-As described by Kubernetes The Whitepaper \cite{OperatorWhitepaper} and depicted in figure 2.3, Operator consists of the following parts
+As described by Operator White Paper \cite{OperatorWhitepaper} and depicted in figure 2.3, Operator consists of the following parts
 \begin{itemize}
   \item The managed application or infrastructure
   \item Software that has some specific knowledge of the managed application or infrastructure and allows the user to declaratively set the desired state
@@ -165,6 +164,13 @@ Like human operators, Kubernetes Operators can have a level of manual skill rang
 
 
 The Kubernetes cluster is divided into individual namespaces that separate the objects and names in the cluster and can have constraints applied to them. This partitioning makes it easier to share the cluster between users or entire teams. The object name must be unique within a namespace, but not between namespaces.  An operator usually operates in its own namespace so it has a Namespace Scope, but it can also operate in the whole cluster in which case it will be a Cluster Scope Operator. Namespace Scope operators are more flexible and easier to upgrade due to their independence from the rest of the cluster. Operator rights are further restricted by the so-called Role-Based Acceess Control (RBAC), which grants the rights assigned to the Operator. \cite{ OperatorsAtK8sIface}
+
+The following options are advised by the Operator white paper \cite{OperatorsOframework} in case the Operator is to be used for controlling the resource:
+\begin{itemize}
+  \item	Consultation with the creator of the resource to be controlled about the possibilities of using the Operator.
+  \item	The search for public Operator registries that provide a platform for publishing Operators and the underlying documentation.
+  \item	The creation of your own Operator.
+\end{itemize}
 
 
 \n{1}{Search for Postgres Operators}
