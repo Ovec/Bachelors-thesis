@@ -2,7 +2,7 @@
 % Encoding: UTF-8 (žluťoučký kůň úpěl ďábelšké ódy)
 % ============================================================================ %
 
-% ============================================================================ %
+% ============================================================================ % 
 \nn{Introduction}
 It is essential for the database server to be as close as possible to the applications that are using it. This reduces the number of men in the middle between the database and the application, which reduces database access latency and thus reduces overall application latency and increases security. The mass migration of applications to Kubernetes clusters implies a necessary shift of Postgres to Kubernetes. This thesis defines Postgres, Kubernetes, and their Operators. It then further describes the lifecycle of a Postgres cluster, and searches for Operators capable of managing this lifecycle. It establishes metrics by which it tests and evaluates these Operators.  The result of this thesis is the recommendation of a suitable Operator based on the defined metrics.
 
@@ -16,48 +16,46 @@ TBD - remove end
 \cast{Theory}
 
 \n{1}{Background}
-This chapter introduces the key technologies used in this thesis including Postgres, Kubernetes, and Kubernetes operators.
+This chapter introduces the key technologies used in this thesis including Postgres, Kubernetes, and Kubernetes Operators.
 \n{2}{Postgres}
 PostgreSQL is a powerful object-relational database management system (ORDBMS) derived from the POSTGRES package written at the University of California at Berkeley. \cite{docuPgwhatIsPg} \cite{pg14introduction} The first version of POSTGRES was released in June 1989. POSTGRES has been used in many applications, including financial data analysis systems, asteroid tracking databases, medical information database, and several geographic information systems. The size of external community users has nearly doubled by 1993. \cite{docuPgBriefHistory}
 
-POSTGRES was using its POSTQUEL query language from version one until 1995, until Andrew Yu and Jolly Chen introduced SQL to POSTGRES. The name has changed to Postgres95. Postgres95 was completely ANSI C code reduced by 25 \% and was 30 – 50 \% faster than Postgres 4.2.  \cite{docuPgBriefHistory}
+POSTGRES was using its POSTQUEL query language from version, until Andrew Yu and Jolly Chen introduced SQL to POSTGRES in 1995. The name has changed to Postgres95. Postgres95 was completely ANSI C code reduced by 25 \% and was 30 – 50 \% faster than Postgres 4.2.  \cite{docuPgBriefHistory}
 
-It was clear by 1996 that the name would not stand the test of time therefore it has been renamed to PostgreSQL. As stated by PostgreSQL documentation \cite{docuPgBriefHistory}: “Many people continue to refer to PostgreSQL as “Postgres” (now rarely in all capital letters) because of tradition or because it is easier to pronounce. This usage is widely accepted as a nickname or alias.“ This thesis will use Postgres as an alias for PostgreSQL as well.
+It was clear by 1996 that the name would not stand the test of time therefore it has been renamed to PostgreSQL. As stated by PostgreSQL documentation \cite{docuPgBriefHistory}: “Many people continue to refer to PostgreSQL as “Postgres” (now rarely in all cAPItal letters) because of tradition or because it is easier to pronounce. This usage is widely accepted as a nickname or alias.“ This thesis will use Postgres as an alias for PostgreSQL as well.
 
 More than 30 years after the first version Postgres has been considered the most used ORDBMS for professional developers by Stack Overflow survey \cite{so2022survey}. According to Riggs and Ciolli \cite{pg14introduction}: “The PostgreSQL feature set attracts serious users who have serious applications. Financial services companies may be PostgreSQL's largest user group, although governments, telecommunication companies, and many other segments are strong users as well.“ It is fully ACID compliant \cite{juba2015learningTransactionIsolation} and supports many kinds of data models such as relational, document, and key/value. \cite{pg14introduction}
 
 \n{3}{Write Ahead Log}
 Write-ahead Logging (WAL) used by Postgres is a standard technique to ensure data integrity. Its main concept is that changes in data files (where tables and indexes are stored) must only be written after they are logged (saved to a log file). That means the database is updated after the changes are written to disk. In the event of a system crash, all transactions will be recovered from the disk. \cite{docuPgWal}
 
-Although WAL is primarily designed for recovery after a database server crash, its design also allows any changes to the database server state to be replayed backward. A copy of the log is also a form of backup. Thus, for recovery to a point in time, only logs that have been saved to that point in time can be restored. This technique is called Point-In-Time Recovery (PITR). \cite{DocuPgPITR}
+Although WAL is primarily designed for recovery after a database server crash, its design also allows any changes to the database server state to be replayed backward. A copy of the log is also a form of backup. Thus, for recovery to a point in time, only logs that have been saved to that point in time can be restored. This technique is called Point-In-Time Recovery (PITR). \cite{DocuPgPITR} These log files can also be streamed to other nodes to serve as a replica or remote backup. \cite{pg14replication}
 
 \n{3}{Backup and restore}
 A full set of backup commands is included in Postgres. Among the simple backup commands are pg\_dump and pg\_dumpall, which enable one or more databases to be saved in SQL format. A wide range of configuration options are available for these commands, including compression for large databases or exporting only the database schema. To restore a database from a file at a later time, the psql command can be used, which is capable of restoring a database from its dump. \cite{DocuPgDump} These commands are also helpful with migration from one major Postges version to another because the dumped files are plain SQL commands.
 
-Because log files, mentioned earlier, contain all changes to the Database Server state, saving a copy of the log files is also a form of backup. These log files can also be streamed to other nodes to serve as a replica or backup. \cite{pg14replication}
-
 The backup options in Postgres are quite limited. Postgres allows to set up of a backup command that runs after the next log file is created, database dumps, and log streaming. For more advanced backup techniques, additional software such as PgBackRest must be used. \cite{DocuPgPITR}
 
 \n{4}{PgBackRest}
-PgBackRest is a reliable and simple backup and restore solution that provides many features on top of classic Postgres backup and restore tools like parallel backup options with compression, local or remote backu, cloud backup (S3. Azure and Google Cloud), or backup encryption. Full, incremental, or differential backup is also supported. \cite{PGbackRest}
+PgBackRest is a reliable and simple backup and restore solution that provides many features on top of classic Postgres backup and restore tools like parallel backup options with compression, local or remote backups, cloud backup (S3. Azure and Google Cloud), or backup encryption. Full, incremental, or differential backup is also supported. \cite{PGbackRest}
 
 TBD: why is it here? Conect to crunhy and operatores
 
 
 \n{3}{High Availability}
-The basic structure of a database cluster consists of one or more database servers, which can be called nodes. In Postgres there are two types of nodes, primary node and standby node.  A primary node is such a node that allows reading and writing information. The newly written information is then streamed to the standby nodes. Standby nodes are read-only, they do not allow writing. \cite{pg14replication}
+The basic structure of a database cluster consists of one or more database servers, which can be called nodes. In Postgres there are two types of nodes, Primary node and Standby node.  A Primary node is such a node that allows reading and writing information. The newly written information is then streamed to the Standby nodes. Standby nodes are read-only, they do not allow writing. \cite{pg14replication}
 
-Achieving high availability with Postgres is possible by using more than one node in the cluster. Two options are possible here. A single primary node option, where the primary node is read and write enabled, and the other nodes are standby nodes. If the primary node is unavailable, then the standby node is promoted to the primary node. This event is called failover. In this variant, the primary node streams the logs to the standby nodes. The second option is to use multiple primary nodes. However, conflicts can occur because all primary nodes allow writes. \cite{docuPgHA}
+Achieving high availability with Postgres is possible by using more than one node in the cluster. Two options are possible here. A single Primary node option, where the Primary node is read and write enabled, and the other nodes are Standby nodes. If the Primary node is unavailable, then the Standby node is promoted to the Primary node. This event is called failover. In this variant, the Primary node streams the logs to the Standby nodes. The second option is to use multiple Primary nodes. However, conflicts can occur because all Primary nodes allow concurrent writes. \cite{docuPgHA}
 \n{4}{Patroni}
 Since Postgres does not provide any software that can detect that a node is unavailable, it is necessary to use software outside of Postgres \cite{docuPgFailover}, such as Patroni.
 Patroni is a popular open-source tool created by Zalando to achieve high availability of Postgres clusters. Patroni uses a distributed configuration source such as ZooKeeper, Etcd, Consul, or Kubernetes for its operation. Patroni can automatically adjust the settings of all managed nodes, therefore it can automate failover and make it seamless. \cite{PalarkMigratingPg} \cite{PatroniDocu}
 
 
 \n{3}{Load Balancing and Connection Pooling}
-Using more than one node allows to direct traffic to a node that is less busy and thus achieves load balancing. Postgres doesn't come with any software that allows splitting the load on different nodes, so it is necessary to use an external load balancer such as HA Proxy or pgBouncer. The load balancer then acts as an intermediary between the database and the client and directs the traffic to the available nodes according to the set rules. These load balancers also enable connection pooling which is a technique for managing and reusing database connections to increase performance and reduce overhead. Connection pooling involves creating a pool of pre-created connections that can be shared and reused by multiple client requests, instead of creating a new connection for each request. This removes the overhead of creating a new process each time a client connects to Postgres and allows the client to use resources that would otherwise be used to service multiple requests (or complete them faster). \cite{PerconaBlogConnectionPooling}
+Using more than one node allows to direct traffic to a node that is less busy and thus achieve load balancing. Postgres doesn't come with any software that allows splitting the load on different nodes, so it is necessary to use an external load balancer such as HA Proxy or pgBouncer. The load balancer then acts as an intermediary between the database and the client and directs the traffic to the available nodes according to the set rules. These load balancers also enable connection pooling which is a technique for managing and reusing database connections to increase performance and reduce overhead. Connection pooling involves creating a pool of pre-created connections that can be shared and reused by multiple client requests, instead of creating a new connection for each request. This removes the overhead of creating a new process each time a client connects to Postgres and allows the client to use resources that would otherwise be used to service multiple requests (or complete them faster). \cite{PerconaBlogConnectionPooling}
 
 \n{2}{Kubernetes}
-Kubernetes, also known as K8s, is an open-source platform for automating deployment, scaling, and management of containerized applications. It provides a way to manage and orchestrate containers, which are units of software that package up an application and its dependencies into a single, isolated package that can run consistently on any infrastructure. \cite{vayghan2019kubernetes}
+Kubernetes, also known as K8s, is an open-source platform for automating deployment, scaling, and management of containerized applications. It provides a way to manage and orchestrate containers, which are units of software that package up an application and its dependencies into a single, isolated package that can run consistently on any infrastructure. \cite{vayghan2019Kubernetes}
 
 As described by Kubernetes Documentation \cite{docuKubeComponents} Kubernetes provides several key features, including:
 \begin{itemize}
@@ -71,12 +69,12 @@ As described by Kubernetes Documentation \cite{docuKubeComponents} Kubernetes pr
 \end{itemize}
 \n{3}{Kubernetes Components}
 Kubernetes cluster is composed of a set of worker machines that run containerized applications called nodes. Each cluster must have at least one node. \cite{docuKubeComponents}
-\obr{The components of a Kubernetes cluster \cite{docuKubeComponents}}{}{1}{graphics/kubernetes_cluster_components.png}
+\obr{The components of a Kubernetes cluster \cite{docuKubeComponents}}{}{1}{graphics/Kubernetes_cluster_components.png}
 
 The Kubernetes control plane is the management system of a Kubernetes cluster, responsible for maintaining the desired state of the cluster. It consists of multiple components that work together to manage the cluster and its resources, including pods, services, and volumes. The key components of control plane are \cite{masteringKubernetesConcepts}:
 \begin{itemize}
-  \item \textbf{kube-apiserver:} Acts as the front-end for the Kubernetes API and exposes the API to other components. \cite{docuKubeComponents}
-  \item \textbf{etcd:} Highly available distributed key-value store that serves as the backing store for the cluster's configuration data. \cite{Dobies2020}
+  \item \textbf{kube-APIserver:} Acts as the front-end for the Kubernetes API and exposes the API to other components. \cite{docuKubeComponents}
+  \item \textbf{Etcd:} Highly available distributed key-value store that serves as the backing store for the cluster's configuration data. \cite{Dobies2020}
   \item \textbf{kube-scheduler:} Assigns work to nodes in the cluster, such as scheduling pods to run on nodes. \cite{kubeUpAndRunningPods}
   \item \textbf{kube-controller-manager:} Monitors the cluster's state and makes adjustments as necessary to maintain the desired state. \cite{masteringKubernetesConcepts}
   \item \textbf{cloud-controller-manager:} Manages cloud-related tasks such as node creation and management, volume management, and load balancing, allowing the other components of the control plane to focus on their specific responsibilities. Cloud manager is optional. Can be avoided when Kubernetes not used in cloud. \cite{docuKubeComponents}
@@ -92,15 +90,12 @@ Node components in a Kubernetes cluster run on each node and provide crucial fun
 \n{3}{Kubernetes Concepts}
 \textcolor{cyan}{RepliceSet extension - Operators p. 28 (Replica is general and appllication agnostic) }
 
-Pod is the smallest deployable unit that can be created in Kubernetes. \cite{docuKubePods} A Pod in Kubernetes is comprised of multiple containers and storage volumes that are run together within the same execution environment. Pods, not individual containers, are considered to be the smallest unit that can be deployed in a cluster. As a result, all containers included in a single Pod will always run on the same machine. \cite{kubeUpAndRunningPods}
-
+Pod is the smallest deployable unit that can be created in Kubernetes. \cite{docuKubePods} A Pod in Kubernetes is comprised of multiple containers and storage volumes that are run together within the same execution environment. As a result, all containers included in a single Pod will always run on the same machine. \cite{kubeUpAndRunningPods}
 A Pod's specifications are outlined in a Pod manifest, which is simply a JSON or YAML text file that represents the Kubernetes API object. Kubernetes follows a declarative configuration approach, where the system's desired state is defined in a configuration file, and the service then implements the necessary changes to make the desired state a reality. \cite{docuKubeStaticPod}
 
 ReplicaSet’s purpose is to ensure a consistent number of replica Pods are running at all times. It is commonly used to guarantee a specified number of identical Pods are available. However, a Deployment is a more advanced concept that oversees ReplicaSets and provides a more streamlined way to make updates to Pods. It also offers additional features. As a result, it's advisable to use Deployments instead of directly utilizing ReplicaSets, unless you have specific update requirements or don't need to make updates at all. \cite{docuKubeReplicaset}
 
-Service is an abstraction layer and defines a group of Pods and the method to access them (often referred to as a micro-service). The group of Pods targeted by a Service is usually specified through a selector. The Service abstraction makes this possible by enabling the decoupling of components. \cite{docuKubeSevice}
-
-Kubernetes includes built-in service discovery mechanisms. When a service is created in Kubernetes, it is automatically assigned an IP address and DNS name. Clients and other services can use this name or address to access the service within the Kubernetes cluster. \cite{docuKubeSevice}
+Service is an abstraction layer and defines a group of Pods and the method to access them (often referred to as a micro-service). The group of Pods targeted by a Service is usually specified through a selector. The Service abstraction makes this possible by enabling the decoupling of components. \cite{docuKubeSevice} Kubernetes includes built-in service discovery mechanisms. When a service is created in Kubernetes, it is automatically assigned an IP address and DNS name. Clients and other services can use this name or address to access the service within the Kubernetes cluster. \cite{docuKubeSevice}
 
 Containers and pods in Kubernetes are ephemeral. When a container is terminated, any data it has written to its own filesystem is lost. In Kubernetes, storage is represented by a basic abstraction called "volumes". Containers use these volumes by binding them to their respective pods, and can then access the storage regardless of its physical location as if it were a part of their local filesystem. \cite{masteringKubernetesStorage}
 
@@ -109,14 +104,14 @@ Kubernetes version 1.5 came with a new object called StatefulSet that allows a s
 In version 1.7, Kubernetes introduced the Custom Resources extension to its API. \cite{githubIBMCr} This extension allows Kubernetes to use user-defined resources that are not native to Kubernetes as if they were native. \cite{NewStackCRDs} Custom resources (CR) is an extension to the Kubernetes API that extends the deployment with additional parameters that are not part of it. CR stores these parameters and allows the API server to access them just like the native Kubernetes parts. CR is created in the Kubernetes cluster using a definition called Custom Resource Definition (CRD). \cite{OperatorsAtK8sIface}
 
 Kuberentes controllers are control loops\footnote[1]{A control loop is a process that continuously monitors the state of a system, compares it to a desired state, and makes adjustments to bring the system closer to the desired state.} that constantly check the state of their controlled objects. If the controlled objects are not in the desired state, the controller performs actions to get the controlled objects into that state. For example, restart a crashed node, add a new replica, modify settings, etc. \cite{docuKubeControllers}
-However, to work with CR, you need to create custom controllers that can work with these resources, these controllers are called Custom Controllers. \cite{docuKubeCR}
+However, to work with CR, custom controllers that can work with these resources must be created, these controllers are called Custom Controllers. \cite{docuKubeCR}
 
-\obr{Kubernetes controller \cite{OperatorWhitepaper} }{}{1}{graphics/kubernetes_controller.png}
+\obr{Kubernetes controller \cite{OperatorWhitepaper} }{}{1}{graphics/Kubernetes_controller.png}
 
 \textcolor{red}{TBD - show that Kubernetes can run stateless very well, maybe from Operator book}
 
 
-\textcolor{cyan}{TBD - Read https://containerjournal.com/kubecon-cnc-eu-2022/why-run-postgres-in-kubernetes/}
+\textcolor{cyan}{TBD - Read https://containerjournal.com/kubecon-cnc-eu-2022/why-run-postgres-in-Kubernetes/}
 
 \textcolor{cyan}{TBD - Read data on Kubernetes https://dok.community/dokc-2021-report/}
 
@@ -126,12 +121,12 @@ Kubernetes cannot know all complex stateful applications, which can contain a la
 
 The easiest way to run Postgres in Kubernetes is through the StatefulSet just mentioned. This StatefulSet can start a Postgres pod, create a persistent volume, and connect this volume to the pod. A stateful set can do this for all replicas set in its configuration. It can also scale up or down. Unfortunately, however, all independent Postgres instances created by StatefulSet controller are not synchronized in any manner.
 
-This basic setup may be sufficient for running a single node, but it is no longer sufficient for database clusters that require high availability, adjusting the settings of individual nodes, creating backups, restoring from backup, connection pooling, or even monitoring the entire cluster. For such clusters it is necessary to install other applications in the kubernetes cluster and then configure the entire Postgres cluster to work with them. This represents a large amount of work and subsequent maintenance that Kubernetes Operators can facilitate.
+This basic setup may be sufficient for running a single node, but it is no longer sufficient fro managing the whole Postgres lifecycle. For managing whole Postgres lifecycle it is necessary to install other applications in the Kubernetes cluster and then configure the entire Postgres cluster to work with them. This represents a large amount of work and subsequent maintenance that Kubernetes Operators can facilitate.
 
 \n{1}{Database System Lifecycle}
 The database system itself is a software like any other. It is therefore also subject to the same life cycle as software.
-As depicted in figure 2.1 application lifecycle consists of three main parts. It is the governance part, development, and operations. For this thesis, only the operations part is relevant because it is the only part we are able to control.
-\obr{Application Life Cycle \cite{ALM}}{}{1}{graphics/aplication-lifecycle.png}
+As depicted in figure \ref{fig:applifecycle} application lifecycle consists of three main parts. It is the governance part, development, and operations. For this thesis, only the operations part is relevant because it is the only part we are able to control.
+\obr{Application Life Cycle \cite{ALM}}{fig:applifecycle}{1}{graphics/aplication-lifecycle.png}
 
 Operation is the process of running and managing the application, which starts with deployment and continues until the application is taken out of service. This aspect of the application lifecycle management covers the release of the application into production, ongoing monitoring, and other related tasks. \cite{ALM}
 
@@ -147,34 +142,34 @@ As described in the previous chapters, Kubernetes can run stateless applications
 
 This has changed in 2016 when CoreOS came up with Operators as a way to deploy complex applications with state such as databases, caches, or monitoring systems. \cite{IArchiveCOSOperators}
 
-An operator is a special kind of software that extends the kubernetes api and has a particular knowledge of managed resource that kubernetes does not have. The Operator also serves as a packaging mechanism for distributing applications including their dependencies in Kubernetes. The Operator can manage, restore, update or monitor the resource. It can also manage very complex applications. The Kubernetes Operator thus replaces the human operator after which it is named, who would otherwise take care of these tasks. \cite{OperatorsPreface} \cite{IArchiveCOSOperators}
+An operator is a special kind of software that extends the Kubernetes API and has a particular knowledge of managed resource that Kubernetes does not have. The Operator also serves as a packaging mechanism for distributing applications including their dependencies in Kubernetes. The Operator can manage, restore, update or monitor the resource. It can also manage very complex applications. The Kubernetes Operator thus replaces the human operator after which it is named, who would otherwise take care of these tasks. \cite{OperatorsPreface} \cite{IArchiveCOSOperators}
 
 \obr{Definition of Kubernetes Operator \cite{IArchiveCOSOperators}}{}{1}{graphics/coreos_operator.png}
 
-CoreOS demonstrated the use of its Operator on etcd (described in the Kubernetes Components chapter). When new etcd nodes are created, it is necessary to give them a DNS names and use the etcd cluster management tools to add the new nodes to an existing cluster. CoreOS has automated these tasks with the etcd Operator so that all that is required is to increase the number of replicas in the Operator CRD and the etcd Operator will perform these tasks instead of a human operator. \cite{IArchiveCOSOperators}
-By embedding the human operator's operational knowledge into the code, this ensures that these tasks are repeatable, testable and upgradable. It also ensures that the necessary operations are always performed, executed in the order in which they are supposed to be performed, and none are skipped. This will reduce the number of hours spent on dull but essential work such as backups. \cite{OperatorWhitepaper}
+CoreOS demonstrated the use of its Operator on Etcd (described in the Kubernetes Components chapter). When new Etcd nodes are created, it is necessary to give them a DNS names and use the Etcd cluster management tools to add the new nodes to an existing cluster. CoreOS has automated these tasks with the Etcd Operator so that all that is required is to increase the number of replicas in the Operator CRD and the Etcd Operator will perform these tasks instead of a human operator. \cite{IArchiveCOSOperators}
+By embedding the human operator's operational knowledge into the code, this ensures that these tasks are repeatable, testable and upgradable. It also ensures that the necessary operations are always performed, executed in the order in which they are supposed to be performed, and none are skipped. This reduces the number of hours spent on dull but essential work such as backups. \cite{OperatorWhitepaper}
 
-As described by Operator White Paper \cite{OperatorWhitepaper} and depicted in figure 2.3, Operator consists of the following parts
+As described by Operator White Paper \cite{OperatorWhitepaper} and depicted in figure \ref{fig:operatorPatern}, Operator consists of the following parts
 \begin{itemize}
   \item The managed application or infrastructure
   \item Software that has some specific knowledge of the managed application or infrastructure and allows the user to declaratively set the desired state
   \item Custom Controller, which is responsible for achieving the desired state
 \end{itemize}
 
-\obr{Operator pattern \cite{OperatorWhitepaper} }{}{1}{graphics/operator_patern.png}
+\obr{Operator pattern \cite{OperatorWhitepaper} }{fig:operatorPatern}{1}{graphics/operator_patern.png}
 
-Like human operators, Kubernetes Operators can have a level of manual skill ranging from basic software installation and setup skills to a high level where they can scale software vertically or horizontally to automatically change the configuration or detect abnormalities. All Operator maturity levels are depicted in the figure 2.3. The highest level can only be reached by programming the Operator in the GO programming language or by using the Ansible automation tool. \cite{OperatorsOframework}
+Like human operators, Kubernetes Operators can have a level of manual skill ranging from basic software installation and setup skills to a high level where they can scale software vertically or horizontally to automatically change the configuration or detect abnormalities. All Operator maturity levels are depicted in the figure \ref{fig:operatorCapabilities}. The highest level can only be reached by programming the Operator in the GO programming language or by using the Ansible automation tool. \cite{OperatorsOframework}
 
-\obr{Operator maturity levels described by Operator Framework \cite{OFrameworkMaturity}}{}{1}{graphics/operator_capabilities.png}
+\obr{Operator maturity levels described by Operator Framework \cite{OFrameworkMaturity}}{fig:operatorCapabilities}{1}{graphics/operator_capabilities.png}
 
 
-The Kubernetes cluster is divided into individual namespaces that separate the objects and names in the cluster and can have constraints applied to them. This partitioning makes it easier to share the cluster between users or entire teams. The object name must be unique within a namespace, but not between namespaces.  An operator usually operates in its own namespace so it has a Namespace Scope, but it can also operate in the whole cluster in which case it will be a Cluster Scope Operator. Namespace Scope operators are more flexible and easier to upgrade due to their independence from the rest of the cluster. Operator rights are further restricted by the so-called Role-Based Acceess Control (RBAC), which grants the rights assigned to the Operator. \cite{ OperatorsAtK8sIface}
+The Kubernetes cluster is divided into individual namespaces that separate the objects and names in the cluster and can have constraints applied to them. This partitioning makes it easier to share the cluster between users or entire teams. The object name must be unique within a namespace, but not between namespaces.  An operator usually operates in its own namespace so it has a Namespace Scope, but it can also operate in the whole cluster in which case it will be a Cluster Scope Operator. Namespace Scope Operators are more flexible and easier to upgrade due to their independence from the rest of the cluster. Operator rights are further restricted by the so-called Role-Based Acceess Control (RBAC), which grants the rights assigned to the Operator. \cite{ OperatorsAtK8sIface}
 
 The following options are advised by the Operator white paper \cite{OperatorsOframework} in case the Operator is to be used for controlling the resource:
 \begin{itemize}
   \item	Consultation with the creator of the resource to be controlled about the possibilities of using the Operator.
   \item	The search for public Operator registries that provide a platform for publishing Operators and the underlying documentation.
-  \item	The creation of your own Operator.
+  \item	The creation of own Operator.
 \end{itemize}
 
 
@@ -235,7 +230,7 @@ PGO consists of the following key components \cite{CrunchyPGOGit}:
 
 \pagebreak
 \n{2}{EDB Postgres for Kubernetes}
-The EDB Postgres for Kubernetes (EDBO) is a fully supported operator that has been designed, developed, and maintained by EnterpriseDB Corporation. It provides comprehensive coverage of the entire lifecycle of highly available PostgreSQL database clusters with a primary/standby architecture, utilizing native streaming replication. The operator is based on the open-source CloudNativePG operator and offers additional benefits. \cite{OperatorHubEDB}
+The EDB Postgres for Kubernetes (EDBO) is a fully supported operator that has been designed, developed, and maintained by EnterpriseDB Corporation. It provides comprehensive coverage of the entire lifecycle of highly available PostgreSQL database clusters with a Primary/Standby architecture, utilizing native streaming replication. The operator is based on the open-source CloudNativePG operator and offers additional benefits. \cite{OperatorHubEDB}
 
 EnterpriseDB (EDB) is a software company that provides enterprise-class PostgreSQL software and services. EDB is a leading provider of PostgreSQL technology, offering a range of products and services designed to help organizations adopt, deploy, and manage PostgreSQL databases. \cite{EDB}
 
@@ -415,7 +410,7 @@ Tabulka \ref{tab:priklad} obsahuje dva řádky a celkem 7 sloupců.
 
 % ============================================================================ %
 \cast{Praktická část}
-\n{1}{Nadpis první kapitoly praktické části}
+\n{1}{Nadpis první kAPItoly praktické části}
 Text je text
 
 
