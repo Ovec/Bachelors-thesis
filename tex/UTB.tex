@@ -113,10 +113,10 @@
 
 % \convertDate converts D:20080419103507+02'00' to 2008-04-19T10:35:07+02:00
 \def\convertDate{%
-	\getYear
+\getYear
 }
 {\catcode`\D=12
- \gdef\getYear D:#1#2#3#4{\edef\xYear{#1#2#3#4}\getMonth}
+\gdef\getYear D:#1#2#3#4{\edef\xYear{#1#2#3#4}\getMonth}
 }
 \def\getMonth#1#2{\edef\xMonth{#1#2}\getDay}
 \def\getDay#1#2{\edef\xDay{#1#2}\getHour}
@@ -125,8 +125,8 @@
 \def\getSec#1#2{\edef\xSec{#1#2}\getTZh}
 \def\getTZh +#1#2{\edef\xTZh{#1#2}\getTZm}
 \def\getTZm '#1#2'{%
-	\edef\xTZm{#1#2}%
-	\edef\convDate{\xYear-\xMonth-\xDay T\xHour:\xMin:\xSec+\xTZh:\xTZm}%
+\edef\xTZm{#1#2}%
+\edef\convDate{\xYear-\xMonth-\xDay T\xHour:\xMin:\xSec+\xTZh:\xTZm}%
 }
 \expandafter\convertDate\pdfcreationdate
 
@@ -134,13 +134,13 @@
 
 \immediate\pdfobj stream attr{/N 3} file{graphics/sRGBIEC1966-2.1.icm}
 \pdfcatalog{%
-	/OutputIntents [ <<
-	/Type /OutputIntent
-	/S/GTS_PDFA1
-	/DestOutputProfile \the\pdflastobj\space 0 R
-	/OutputConditionIdentifier (sRGB IEC61966-2.1)
-	/Info(sRGB IEC61966-2.1)
- >> ]
+/OutputIntents [ <<
+/Type /OutputIntent
+/S/GTS_PDFA1
+/DestOutputProfile \the\pdflastobj\space 0 R
+/OutputConditionIdentifier (sRGB IEC61966-2.1)
+/Info(sRGB IEC61966-2.1)
+>> ]
 }
 
 \providecommand{\xmpOrg}{Tomas Bata University in Zlín, Czech Republic}
@@ -174,22 +174,22 @@
 			pdflang={cz}
 		}
 	\else \ifenglish
-		\providecommand{\xmpTitle}{\nazeven}
-		\providecommand{\xmpAuthor}{\autor}
-		\providecommand{\xmpKeywords}{\klicovaslovaen}
-		\hypersetup{
-			pdftitle={\nazeven},
-			pdfauthor={\autor},
-			pdfsubject={\abstrakten},
-			pdfkeywords={\klicovaslovaen},
-			%pdfproducer={pdfTeX-1.40.20},
-			pdflang=la,
-			pdfapart=3,
-			pdfaconformance=B,
-			pdflang={en}
-		}
-	\fi \fi
-	
+			\providecommand{\xmpTitle}{\nazeven}
+			\providecommand{\xmpAuthor}{\autor}
+			\providecommand{\xmpKeywords}{\klicovaslovaen}
+			\hypersetup{
+				pdftitle={\nazeven},
+				pdfauthor={\autor},
+				pdfsubject={\abstrakten},
+				pdfkeywords={\klicovaslovaen},
+				%pdfproducer={pdfTeX-1.40.20},
+				pdflang=la,
+				pdfapart=3,
+				pdfaconformance=B,
+				pdflang={en}
+			}
+		\fi \fi
+
 	\makeatletter
 	\includexmp{tex/pdfa-1b}
 	\makeatother
@@ -210,15 +210,15 @@
 
 % Styl n{ur}{nadp} pro nadpisy, kde ur je číslo úrovně a nadp je text nadpisu
 \def\n#1#2{
-	
+
 	\ifthenelse{#1=1}{
 		\sectionfont{\normalsize\MakeUppercase}
 		\clearpage\section{#2}
 		\sectionfont{\normalsize}
-		}{
+	}{
 		\ifthenelse{#1=2}{\subsection{#2}}{
 			\ifthenelse{#1=3}{\subsubsection{#2}}{\paragraph{\itshape\bfseries{#2}}
-}}}}
+			}}}}
 
 % Styl pro obrázky
 % \obr{popisek}{label}{rozměr (0.0 - 1.0)}{soubor}
@@ -244,6 +244,7 @@
 		\caption{#1}
 		\label{#2}
 		\centering
+		\def\arraystretch{1.5}% 
 		\begin{tabular}{#4}
 			#5
 		\end{tabular}
@@ -254,28 +255,28 @@
 % \tabpri{popisek}{definice sloupců}{data tabulky}
 \def\tabpri#1#2#3{
 	\begin{table}[h]
-	\begin{center}
-	#1
-	\end{center}
-	\begin{center}
-	\begin{tabular}{#2}
-	#3
-	\end{tabular}
-	\end{center}
+		\begin{center}
+			#1
+		\end{center}
+		\begin{center}
+			\begin{tabular}{#2}
+				#3
+			\end{tabular}
+		\end{center}
 	\end{table}
 }
-	
+
 % Styl pro tabulky z MS Excelu exportované do EPS
 % \extab{popisek}{rozměr (0.0 - 1.0)}{soubor}
 \def\extab#1#2#3{
 	\begin{table}
-	%\captionwidth{#2\linewidth}
-	%\changecaptionwidth
-	\captionsetup{width=#2\linewidth}
-	\caption{#1}
-	\begin{center}
-	\includegraphics[width=#2\linewidth]{#3}
-	\end{center}
+		%\captionwidth{#2\linewidth}
+		%\changecaptionwidth
+		\captionsetup{width=#2\linewidth}
+		\caption{#1}
+		\begin{center}
+			\includegraphics[width=#2\linewidth]{#3}
+		\end{center}
 	\end{table}
 }
 
@@ -283,11 +284,11 @@
 % \rov[klíčové slovo]{rovnice}
 \newcommand{\rov}[2][chybejici rovnice]{
 	\begin{equation}
-	#2
-	\label{#1}
+		#2
+		\label{#1}
 	\end{equation}
 }
-	
+
 % Příkaz pro vysázení seznamu obrázků
 \def\seznamobr{
 	\clearpage
@@ -295,8 +296,8 @@
 	\ifczech
 		\addcontentsline{toc}{section}{Seznam obrázků}
 	\else \ifenglish
-		\addcontentsline{toc}{section}{List of Figures}
-	\fi \fi
+			\addcontentsline{toc}{section}{List of Figures}
+		\fi \fi
 	\listoffigures
 	\clearpage
 }
@@ -308,8 +309,8 @@
 	\ifczech
 		\addcontentsline{toc}{section}{Seznam tabulek}
 	\else \ifenglish
-		\addcontentsline{toc}{section}{List of Tables}
-	\fi \fi
+			\addcontentsline{toc}{section}{List of Tables}
+		\fi \fi
 	\listoftables
 	\clearpage
 }
@@ -318,16 +319,16 @@
 	\ifenglish
 		\setlength{\parskip}{5mm} % English indentation of paragraphs
 	\else \ifczech
-		\setlength{\parindent}{5mm} % Czech indentation of paragraphs
-	\fi \fi
+			\setlength{\parindent}{5mm} % Czech indentation of paragraphs
+		\fi \fi
 }
 
 \newcommand{\OdsazovaniOdstavcuStop}[0]{
 	\ifenglish
 		\setlength{\parskip}{0mm} % English indentation of paragraphs
 	\else \ifczech
-		\setlength{\parindent}{0mm} % Czech indentation of paragraphs
-	\fi \fi
+			\setlength{\parindent}{0mm} % Czech indentation of paragraphs
+		\fi \fi
 }
 
 % Příkaz pro vysázení seznamu literatury
@@ -337,10 +338,10 @@
 	\ifczech
 		\addcontentsline{toc}{section}{Seznam použité literatury}
 	\else \ifenglish
-		\addcontentsline{toc}{section}{References}
-	\fi \fi
+			\addcontentsline{toc}{section}{References}
+		\fi \fi
 	\begin{thebibliography}{99}
-	#1
+		#1
 	\end{thebibliography}
 }
 
@@ -359,8 +360,8 @@
 	\ifczech
 		\nn{Seznam použitých symbolů a zkratek}
 	\else \ifenglish
-		\nn{List of Abbreviations}
-	\fi \fi
+			\nn{List of Abbreviations}
+		\fi \fi
 }
 
 % Příkaz \cast jako alternativa k \part
@@ -402,9 +403,9 @@
 	\clearpage
 	\thispagestyle{empty}
 	\voffset=\valueVOffset\evensidemargin=\valueSideMargin\oddsidemargin=\valueSideMargin\headsep=\valueHeadSep\headheight=\valueHeadHeight\setlength{\parskip}{3pt}\textheight=\valueTextHeight\textwidth=\valueTextWidth
-    \includegraphics[width=160mm]{graphics/zadani_p1.jpg}
+	\includegraphics[width=160mm]{graphics/zadani_p1.jpg}
 
-    \clearpage
+	\clearpage
 	\thispagestyle{empty}
 	\includegraphics[width=160mm]{graphics/zadani_p2.jpg}
 }
@@ -413,12 +414,12 @@
 \newcommand{\aktivujZahlavi}{
 	\renewcommand{\headrulewidth}{1pt}
 	\rhead{\thepage}
-	
+
 	\ifczech
 		\lhead{\b{UTB ve Zlíně, \ifthenelse{\equal{\fakulta}{FAI}}{Fakulta aplikované informatiky}{\ifthenelse{\equal{\fakulta}{FAME}}{Fakulta managementu a ekonomiky}{\ifthenelse{\equal{\fakulta}{FHS}}{Fakulta humanitních studií}{\ifthenelse{\equal{\fakulta}{FLKR}}{Fakulta logistiky a krizového řízení}{\ifthenelse{\equal{\fakulta}{FMK}}{Fakulta multimediálních komunikací}{\ifthenelse{\equal{\fakulta}{FT}}{Fakulta technologická}{\ifthenelse{\equal{\fakulta}{UNI}}{Univerzitní institut}{}}}}}}}}}
 	\else \ifenglish
-		\lhead{\b{TBU in Zlín, \ifthenelse{\equal{\fakulta}{FAI}}{Faculty of Applied Informatics}{\ifthenelse{\equal{\fakulta}{FAME}}{Faculty of Management and Economics}{\ifthenelse{\equal{\fakulta}{FHS}}{Faculty of Humanities}{\ifthenelse{\equal{\fakulta}{FLKR}}{Faculty of Logistics and Crisis Management}{\ifthenelse{\equal{\fakulta}{FMK}}{Faculty of Multimedia Communications}{\ifthenelse{\equal{\fakulta}{FT}}{Faculty of Technology}{\ifthenelse{\equal{\fakulta}{UNI}}{University Institute}{}}}}}}}}}
-	\fi \fi
+			\lhead{\b{TBU in Zlín, \ifthenelse{\equal{\fakulta}{FAI}}{Faculty of Applied Informatics}{\ifthenelse{\equal{\fakulta}{FAME}}{Faculty of Management and Economics}{\ifthenelse{\equal{\fakulta}{FHS}}{Faculty of Humanities}{\ifthenelse{\equal{\fakulta}{FLKR}}{Faculty of Logistics and Crisis Management}{\ifthenelse{\equal{\fakulta}{FMK}}{Faculty of Multimedia Communications}{\ifthenelse{\equal{\fakulta}{FT}}{Faculty of Technology}{\ifthenelse{\equal{\fakulta}{UNI}}{University Institute}{}}}}}}}}}
+		\fi \fi
 }
 
 % Příkaz \logopracerok vloží na dané místo logo fakulty, typ práce a rok
@@ -432,22 +433,22 @@
 		\ifft	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/ft_logo_cz.png}}} \fi
 		\ifuni	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/uni_logo_cz.png}}} \fi
 	\else \ifenglish
-		\iffai	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fai_logo_en.png}}} \fi
-		\iffame	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fame_logo_en.png}}} \fi
-		\iffhs	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fhs_logo_en.png}}} \fi
-		\ifflkr	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/flkr_logo_en.png}}} \fi
-		\iffmk	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fmk_logo_en.png}}} \fi
-		\ifft	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/ft_logo_en.png}}} \fi
-		\ifuni	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/uni_logo_en.png}}} \fi
-	\fi \fi
+			\iffai	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fai_logo_en.png}}} \fi
+			\iffame	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fame_logo_en.png}}} \fi
+			\iffhs	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fhs_logo_en.png}}} \fi
+			\ifflkr	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/flkr_logo_en.png}}} \fi
+			\iffmk	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fmk_logo_en.png}}} \fi
+			\ifft	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/ft_logo_en.png}}} \fi
+			\ifuni	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/uni_logo_en.png}}} \fi
+		\fi \fi
 	\put(0,-205){\linethickness{1pt}\line(1,0){170}}
 	\ifczech
 		\ifbp \put(4,-215){\makebox(69.5,4.5)[l]{\noindent\fontsize{16}{1}\usefont{OT1}{phv}{m}{n}Bakalářská práce}} \fi
 		\ifdp \put(4,-215){\makebox(69.5,4.5)[l]{\noindent\fontsize{16}{1}\usefont{OT1}{phv}{m}{n}Diplomová práce}} \fi
 	\else \ifenglish
-		\ifbp \put(4,-215){\makebox(69.5,4.5)[l]{\noindent\fontsize{16}{1}\usefont{OT1}{phv}{m}{n}Bachelor's thesis}} \fi
-		\ifdp \put(4,-215){\makebox(69.5,4.5)[l]{\noindent\fontsize{16}{1}\usefont{OT1}{phv}{m}{n}Master's thesis}} \fi
-	\fi \fi
+			\ifbp \put(4,-215){\makebox(69.5,4.5)[l]{\noindent\fontsize{16}{1}\usefont{OT1}{phv}{m}{n}Bachelor's thesis}} \fi
+			\ifdp \put(4,-215){\makebox(69.5,4.5)[l]{\noindent\fontsize{16}{1}\usefont{OT1}{phv}{m}{n}Master's thesis}} \fi
+		\fi \fi
 	\put(4,-220){\makebox(69.5,4.5)[l]{\noindent\fontsize{16}{1}\usefont{OT1}{phv}{m}{n}\rok}}
 	\put(0,-225){\linethickness{1pt}\line(1,0){170}}
 	\put(75,-223.3){\linethickness{1pt}\line(0,1){16.4}}
@@ -458,33 +459,33 @@
 	\thispagestyle{empty}
 	\voffset=-2.01cm\evensidemargin=0pt\oddsidemargin=0cm\parindent=0pt\headsep=0pt\headheight=0pt\parskip=0pt\textheight=272mm\textwidth=200mm
 	\renewcommand{\baselinestretch}{0}
-	
+
 	\setlength{\unitlength}{1mm}
 	\begin{picture}(-10,8)
 		\ifczech
 			% Nazev prace
 			%\put(0,-100){\makebox(170,50){\fontsize{24}{1}\usefont{OT1}{phv}{b}{n}#1}}
 			%		\put(0,-100){\makebox(170,50){\protect\parbox{0.8\textwidth}{\protect\centering\fontsize{24}{1}\usefont{OT1}{phv}{b}{n}#1}}}
-			
+
 			% Vyreseno odradkovani
 			\put(0,-100){\makebox(170,50){\protect\parbox{0.8\textwidth}{\protect\centering\setstretch{2.0}\usefont{OT1}{phv}{b}{n}{\Huge\nazevcz}}}}
-			
+
 			% Jmeno autora
 			\put(0,-135){\makebox(170,25){\fontsize{20}{1}\usefont{OT1}{phv}{m}{n}\autor}}
 		\else \ifenglish
-			% Nazev prace
-			%\put(0,-100){\makebox(170,50){\fontsize{24}{1}\usefont{OT1}{phv}{b}{n}#1}}
-			%\put(0,-95){\makebox(170,50){\protect\parbox{0.8\textwidth}{\protect\centering\fontsize{24}{1}\usefont{OT1}{phv}{b}{n}#1}}}
-			%\put(0,-88)%toto bylo pouzito v pripade zobrazeni nazvu ve dvou jazycich
-			\put(0,-100){\makebox(170,50){\protect\parbox{0.8\textwidth}{\protect\centering\setstretch{2.0}\usefont{OT1}{phv}{b}{n}{\Huge\nazeven}}}}
-	
-			%\put(0,-111){\makebox(170,50){\fontsize{20}{1}\usefont{OT1}{phv}{m}{n}#1}}
-			%\put(0,-116){\makebox(170,50){\protect\parbox{0.8\textwidth}{\protect\centering\fontsize{20}{1}\usefont{OT1}{phv}{m}{n}#2}}}
-			%\put(0,-115){\makebox(170,50){\protect\parbox{0.8\textwidth}{\protect\centering\setstretch{1.5}\usefont{OT1}{phv}{m}{n}{\Large\nazevcz}}}}
-			
-			% Jmeno autora
-			\put(0,-135){\makebox(170,25){\fontsize{20}{1}\usefont{OT1}{phv}{m}{n}\autor}}
-		\fi \fi
+				% Nazev prace
+				%\put(0,-100){\makebox(170,50){\fontsize{24}{1}\usefont{OT1}{phv}{b}{n}#1}}
+				%\put(0,-95){\makebox(170,50){\protect\parbox{0.8\textwidth}{\protect\centering\fontsize{24}{1}\usefont{OT1}{phv}{b}{n}#1}}}
+				%\put(0,-88)%toto bylo pouzito v pripade zobrazeni nazvu ve dvou jazycich
+				\put(0,-100){\makebox(170,50){\protect\parbox{0.8\textwidth}{\protect\centering\setstretch{2.0}\usefont{OT1}{phv}{b}{n}{\Huge\nazeven}}}}
+
+				%\put(0,-111){\makebox(170,50){\fontsize{20}{1}\usefont{OT1}{phv}{m}{n}#1}}
+				%\put(0,-116){\makebox(170,50){\protect\parbox{0.8\textwidth}{\protect\centering\fontsize{20}{1}\usefont{OT1}{phv}{m}{n}#2}}}
+				%\put(0,-115){\makebox(170,50){\protect\parbox{0.8\textwidth}{\protect\centering\setstretch{1.5}\usefont{OT1}{phv}{m}{n}{\Large\nazevcz}}}}
+
+				% Jmeno autora
+				\put(0,-135){\makebox(170,25){\fontsize{20}{1}\usefont{OT1}{phv}{m}{n}\autor}}
+			\fi \fi
 		\logopracerok
 	\end{picture}
 }
@@ -496,15 +497,15 @@
 	\thispagestyle{empty}
 	\nm{Abstrakt}
 	\abstraktcz
-	
+
 	\vspace{1cm}
 	Klíčová slova: \klicovaslovacz
-	
+
 	\vspace{3cm}
-	
+
 	\nns{Abstract}
 	\abstrakten
-	
+
 	\vspace{1cm}
 	Keywords: \klicovaslovaen
 }
@@ -525,10 +526,10 @@
 		\@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn\fi
 		\section*{SEZNAM PŘÍLOH}
 	\else \ifenglish
-		\addcontentsline{toc}{section}{List of Appendices}
-		\@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn\fi
-		\section*{LIST OF APPENDICES}
-	\fi \fi
+			\addcontentsline{toc}{section}{List of Appendices}
+			\@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn\fi
+			\section*{LIST OF APPENDICES}
+		\fi \fi
 	\@mkboth{LIST OF APPENDICES}{LIST OF APPENDICES}
 	\@starttoc{loa}\if@restonecol\twocolumn\fi
 	\pagestyle{empty}
@@ -547,8 +548,8 @@
 	\ifczech
 		{\bf PŘÍLOHA \ifczech P\else \ifenglish A\fi\fi\ \@Roman\c@section. \MakeTextUppercase{#1}}
 	\else \ifenglish
-		{\bf APPENDIX \ifczech P\else \ifenglish A\fi\fi\ \@Roman\c@section. \MakeTextUppercase{#1}}
-	\fi \fi
+			{\bf APPENDIX \ifczech P\else \ifenglish A\fi\fi\ \@Roman\c@section. \MakeTextUppercase{#1}}
+		\fi \fi
 	\par
 }
 
@@ -557,39 +558,39 @@
 
 \let\oldcontentsline\contentsline
 \def\contentsline#1#2{%
-	\expandafter\ifx\csname l@#1\endcsname\l@section
-		\expandafter\@firstoftwo
-	\else
-		\expandafter\@secondoftwo
-	\fi
-	{%
-		\oldcontentsline{#1}{\MakeTextUppercase{#2}}%
-	}{%
-		\oldcontentsline{#1}{#2}%
-	}%
+\expandafter\ifx\csname l@#1\endcsname\l@section
+	\expandafter\@firstoftwo
+\else
+	\expandafter\@secondoftwo
+\fi
+{%
+\oldcontentsline{#1}{\MakeTextUppercase{#2}}%
+}{%
+\oldcontentsline{#1}{#2}%
+}%
 }
 
 \def\@part[#1]#2{
-	\ifnum \c@secnumdepth >\m@ne
-		\refstepcounter{part}
-		\addcontentsline{toc}{section}{\protect\texorpdfstring{\makebox[0.85cm]{\thepart\hfill} #1}{\thepart\ #1}}
-	\else
-		\addcontentsline{toc}{section}{#1}
-	\fi
-	{\parindent \z@ \raggedright
-	\interlinepenalty \@M
-	\clearpage
-	\normalfont
-	\ifnum \c@secnumdepth >\m@ne
-		\Large\bfseries
-		\nobreak
-	\fi
-	\vspace*{9cm}
-	\center\huge \bfseries\thepart. \MakeTextUppercase{#2}
-	\markboth{}{}\par}
+\ifnum \c@secnumdepth >\m@ne
+	\refstepcounter{part}
+	\addcontentsline{toc}{section}{\protect\texorpdfstring{\makebox[0.85cm]{\thepart\hfill} #1}{\thepart\ #1}}
+\else
+	\addcontentsline{toc}{section}{#1}
+\fi
+{\parindent \z@ \raggedright
+\interlinepenalty \@M
+\clearpage
+\normalfont
+\ifnum \c@secnumdepth >\m@ne
+	\Large\bfseries
 	\nobreak
-	\clearpage
-	\@afterheading
+\fi
+\vspace*{9cm}
+\center\huge \bfseries\thepart. \MakeTextUppercase{#2}
+\markboth{}{}\par}
+\nobreak
+\clearpage
+\@afterheading
 }
 
 
@@ -694,7 +695,7 @@
 	\newif\iffmk	\let\iffmk\iffalse
 	\newif\ifft		\let\ifft\iffalse
 	\newif\ifuni	\let\ifuni\iffalse
-	
+
 	\ifthenelse{\equal{#1}{FAI}}{\let\iffai\iftrue}{}
 	\ifthenelse{\equal{#1}{FAME}}{\let\iffame\iftrue}{}
 	\ifthenelse{\equal{#1}{FHS}}{\let\iffhs\iftrue}{}
@@ -702,25 +703,25 @@
 	\ifthenelse{\equal{#1}{FMK}}{\let\iffmk\iftrue}{}
 	\ifthenelse{\equal{#1}{FT}}{\let\ifft\iftrue}{}
 	\ifthenelse{\equal{#1}{UNI}}{\let\ifuni\iftrue}{}
-	
+
 	\iffai \else \iffame \else \iffhs \else \ifflkr \else \iffmk \else \ifft \else \ifuni \else
-		\errmessage{Chyba nastaveni fakulty}
-	\fi \fi \fi \fi \fi \fi \fi
+								\errmessage{Chyba nastaveni fakulty}
+							\fi \fi \fi \fi \fi \fi \fi
 }
 
 % Nastaveni a kontrola typu prace
 \newcommand{\nastavtyp}[1]{
 	\newcommand{\typ}{#1}
-	
+
 	\newif\ifbp \let\ifbp\iffalse
 	\newif\ifdp \let\ifdp\iffalse
-	
+
 	\ifthenelse{\equal{#1}{BP}}{\let\ifbp\iftrue}{}
 	\ifthenelse{\equal{#1}{DP}}{\let\ifdp\iftrue}{}
-	
+
 	\ifbp \else \ifdp \else
-		\errmessage{Chyba nastaveni typu prace}
-	\fi \fi
+			\errmessage{Chyba nastaveni typu prace}
+		\fi \fi
 }
 
 % Nastaveni roku
@@ -760,17 +761,17 @@
 % Nastaveni a kontrola jazyka
 \newcommand{\nastavjazyk}[1]{
 	\newcommand{\jazyk}{#1}
-	
+
 	\newif\ifczech		\let\ifczech\iffalse
 	\newif\ifenglish	\let\ifenglish\iffalse
-	
+
 	\ifthenelse{\equal{#1}{CZ}}{\let\ifczech\iftrue}{}
 	\ifthenelse{\equal{#1}{EN}}{\let\ifenglish\iftrue}{}
-	
+
 	\ifczech \else \ifenglish \else
-		\errmessage{Chyba nastaveni jazyka}
-	\fi \fi
-	
+			\errmessage{Chyba nastaveni jazyka}
+		\fi \fi
+
 	\ifczech
 		\usepackage[czech]{babel}
 		% Vlastni definice nazvu
@@ -782,16 +783,16 @@
 		%\addto\captionsczech{\renewcommand{\tablename}{Tab.}}
 		\renewcommand{\cftfigpresnum}{Obr. }
 	\else \ifenglish
-		\usepackage[english]{babel}	
-		% Vlastni definice nazvu
-		\addto\captionsenglish{\renewcommand{\contentsname}{\MakeTextUppercase{Table of Contents}}}
-		\addto\captionsenglish{\renewcommand{\refname}{\MakeTextUppercase{References}}}
-		\addto\captionsenglish{\renewcommand{\listfigurename}{\MakeTextUppercase{List of Figures}}}
-		\addto\captionsenglish{\renewcommand{\listtablename}{\MakeTextUppercase{List of Tables}}}
-		%\addto\captionsenglish{\renewcommand{\figurename}{Fig.}}
-		%\addto\captionsenglish{\renewcommand{\tablename}{Tab.}}
-		\renewcommand{\cftfigpresnum}{Fig. }
-	\fi \fi
+			\usepackage[english]{babel}
+			% Vlastni definice nazvu
+			\addto\captionsenglish{\renewcommand{\contentsname}{\MakeTextUppercase{Table of Contents}}}
+			\addto\captionsenglish{\renewcommand{\refname}{\MakeTextUppercase{References}}}
+			\addto\captionsenglish{\renewcommand{\listfigurename}{\MakeTextUppercase{List of Figures}}}
+			\addto\captionsenglish{\renewcommand{\listtablename}{\MakeTextUppercase{List of Tables}}}
+			%\addto\captionsenglish{\renewcommand{\figurename}{Fig.}}
+			%\addto\captionsenglish{\renewcommand{\tablename}{Tab.}}
+			\renewcommand{\cftfigpresnum}{Fig. }
+		\fi \fi
 }
 
 
@@ -801,7 +802,7 @@
 	\let\oldequation=\equation
 	\let\endoldequation=\endequation
 	\renewenvironment{equation}{\vspace{#1}\begin{oldequation}}{\end{oldequation}\vspace{#2}}
-	
+
 	\let\oldeqnarray=\eqnarray
 	\let\endoldeqnarray=\endeqnarray
 	\renewenvironment{eqnarray}{\vspace{#1}\begin{oldeqnarray}}{\end{oldeqnarray}\vspace{#2}}
@@ -828,72 +829,72 @@
 % STRANA S PROHLASENIM
 
 \newcommand{\prohlaseni}{{
-	\clearpage
-	\thispagestyle{empty}
+			\clearpage
+			\thispagestyle{empty}
 
-	\ifczech
-	\textbf{Prohlašuji, že}
-	\begin{itemize}
-		\setlength{\parskip}{0pt}
-		\setlength{\itemsep}{0pt}
-		\setstretch{1.05}
-		\item{beru na vědomí, že odevzdáním \ifbp bakalářské \else \ifdp diplomové \fi \fi práce souhlasím se zveřejněním své práce podle zákona č. 111/1998 Sb. o vysokých školách a o změně a doplnění dalších zákonů (zákon o vysokých školách), ve znění pozdějších právních předpisů, bez ohledu na výsledek obhajoby;}
-		\item{beru na vědomí, že \ifbp bakalářské \else \ifdp diplomové \fi \fi práce bude uložena v elektronické podobě v univerzitním informačním systému dostupná k prezenčnímu nahlédnutí, že jeden výtisk \ifbp bakalářské \else \ifdp diplomové \fi \fi práce bude uložen v příruční knihovně \iffai Fakulty aplikované informatiky. \else \iffame Fakulty managementu a ekonomiky. \else \iffhs Fakulty humanitních studií. \else \ifflkr Fakulty logistiky a krizového řízení. \else \iffmk Fakutly mutimediálních komunikací. \else \ifft Fakulty technologické. \else \ifuni Univerzitního institutu. \if \fi \fi \fi \fi \fi \fi \fi \fi Univerzity Tomáše Bati ve Zlíně; }
-		\item{byl/a jsem seznámen/a s tím, že na moji \ifbp bakalářskou \else \ifdp diplomovou \fi \fi práci se plně vztahuje zákon č. 121/2000 Sb. o právu autorském, o právech souvisejících s právem autorským a o změně některých zákonů (autorský zákon) ve znění pozdějších právních předpisů, zejm. § 35 odst. 3;}
-		\item{beru na vědomí, že podle § 60 odst. 1 autorského zákona má Univerzita Tomáše Bati ve Zlíně právo na uzavření licenční smlouvy o užití školního díla v rozsahu § 12 odst. 4 autorského zákona;}
-		\item{beru na vědomí, že podle § 60 odst. 2 a 3 autorského zákona mohu užít své dílo –\ \ifbp bakalářskou \else \ifdp diplomovou \fi \fi práci nebo poskytnout licenci k~jejímu využití jen připouští-li tak licenční smlouva uzavřená mezi mnou a Univerzitou Tomáše Bati ve Zlíně s~tím, že vyrovnání případného přiměřeného příspěvku na úhradu nákladů, které byly Univerzitou Tomáše Bati ve Zlíně na vytvoření díla vynaloženy (až do jejich skutečné výše) bude rovněž předmětem této licenční smlouvy;}
-		\item{beru na vědomí, že pokud bylo k vypracování \ifbp bakalářské \else \ifdp diplomové \fi \fi práce využito softwaru poskytnutého Univerzitou Tomáše Bati ve Zlíně nebo jinými subjekty pouze ke~studijním a výzkumným účelům (tedy pouze k~nekomerčnímu využití), nelze výsledky \ifbp bakalářské \else \ifdp diplomové \fi \fi práce využít ke komerčním účelům;}
-		\item{beru na vědomí, že pokud je výstupem \ifbp bakalářské \else \ifdp diplomové \fi \fi práce jakýkoliv softwarový produkt, považují se za součást práce rovněž i zdrojové kódy, popř. soubory, ze kterých se projekt skládá. Neodevzdání této součásti může být důvodem k~neobhájení práce.}
-	\end{itemize}
-	\medskip
-	%\clearpage
-	%\thispagestyle{empty}
-	\textbf{Prohlašuji,}
-	\begin{itemize}
-		\setlength{\parskip}{0pt}
-		\setlength{\itemsep}{0pt}
-		\setstretch{1.05}
-		\item{že jsem na \ifbp bakalářské \else \ifdp diplomové \fi \fi práci pracoval samostatně a použitou literaturu jsem citoval. V případě publikace výsledků budu uveden jako spoluautor.}
-		\item{že odevzdaná verze \ifbp bakalářské \else \ifdp diplomové \fi \fi práce a verze elektronická nahraná do IS/STAG jsou totožné.}
-	\end{itemize}
-	\medskip
-	Ve Zlíně, dne \hspace{6.5cm}\dots\dots\dots\dots\dots\dots\dots\dots\dots\dots
-	
-	\hspace{10.3cm}podpis studenta
-	
-	\else \ifenglish
-	%\nm{THESIS AUTHOR STATEMENT}
-	\textbf{I hereby declare that:}
-	\begin{itemize}
-		\setlength{\parskip}{0pt}
-		\setlength{\itemsep}{0pt}
-		\setstretch{1.05}
-		\item{I understand that by submitting my \ifbp Bachelor's \else\ifdp Master's \fi\fi thesis, I agree to the publication of my work according to Law No. 111/1998, Coll., On Universities and on changes and amendments to other acts (e.g. the Universities Act), as amended by subsequent legislation, without regard to the results of the defence of the thesis.}		
-		\item{I understand that my \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis will be stored electronically in the university information system and be made available for on-site inspection, and that a copy of the \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis will be stored in the Reference Library of the 
-		\iffai Faculty of Applied Informatics, \else\iffame Faculty of Management and Economics, \else \iffhs Faculty of Humanities, \else\ifflkr Faculty of Logistics and Crisis Management, \else\iffmk Faculty of Multimedia Communications, \else\ifft Faculty of Technology, \else\ifuni University Institute, \if \fi \fi \fi \fi \fi \fi \fi \fi Tomas Bata University in Zlín.}
-		\item{I am aware of the fact that my \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis is fully covered by Act No. 121/2000 Coll. On Copyright, and Rights Related to Copyright, as amended by some other laws (e.g. the Copyright Act), as amended by subsequent legislation; and especially, by §35, Para. 3.}
-		\item{I understand that, according to §60, Para. 1 of the Copyright Act, Tomas Bata University in Zlín has the right to conclude licensing agreements relating to the use of scholastic work within the full extent of §12, Para. 4, of the Copyright Act.}
-		\item{I understand that, according to §60, Para. 2, and Para. 3, of the Copyright Act, I may use my work – \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis, or grant a license for its use, only if permitted by the licensing agreement concluded between myself and Tomas Bata University in Zlín with a view to the fact that Tomas Bata University in Zlín must be compensated for any reasonable contribution to covering such expenses/costs as invested by them in the creation of the thesis (up until the full actual amount) shall also be a subject of this licensing agreement.}
-		\item{I understand that, should the elaboration of the \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis include the use of software provided by Tomas Bata University in Zlín or other such entities strictly for study and research purposes (i.e. only for non-commercial use), the results of my \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis cannot be used for commercial purposes.}
-		\item{I understand that, if the output of my \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis is any software product(s), this/these shall equally be considered as part of the thesis, as well as any source codes, or files from which the project is composed. Not submitting any part of this/these component(s) may be a reason for the non-defence of my thesis.}
-	\end{itemize}
-	\medskip
-	%\clearpage
-	%\thispagestyle{empty}
-	\textbf{I herewith declare that:}
-	\begin{itemize}
-		\setlength{\parskip}{0pt}
-		\setlength{\itemsep}{0pt}
-		\setstretch{1.05}
-		\item{I have worked on my thesis alone and duly cited any literature I have used. In the case of the publication of the results of my thesis, I shall be listed as co-author.}
-		\item{The submitted version of the thesis and its electronic version uploaded to IS/STAG are both identical.}
-	\end{itemize}
-	\medskip
-	In Zlín; dated: \hspace{6.5cm}\dots\dots\dots\dots\dots\dots\dots\dots\dots\dots
+			\ifczech
+				\textbf{Prohlašuji, že}
+				\begin{itemize}
+					\setlength{\parskip}{0pt}
+					\setlength{\itemsep}{0pt}
+					\setstretch{1.05}
+					\item{beru na vědomí, že odevzdáním \ifbp bakalářské \else \ifdp diplomové \fi \fi práce souhlasím se zveřejněním své práce podle zákona č. 111/1998 Sb. o vysokých školách a o změně a doplnění dalších zákonů (zákon o vysokých školách), ve znění pozdějších právních předpisů, bez ohledu na výsledek obhajoby;}
+					\item{beru na vědomí, že \ifbp bakalářské \else \ifdp diplomové \fi \fi práce bude uložena v elektronické podobě v univerzitním informačním systému dostupná k prezenčnímu nahlédnutí, že jeden výtisk \ifbp bakalářské \else \ifdp diplomové \fi \fi práce bude uložen v příruční knihovně \iffai Fakulty aplikované informatiky. \else \iffame Fakulty managementu a ekonomiky. \else \iffhs Fakulty humanitních studií. \else \ifflkr Fakulty logistiky a krizového řízení. \else \iffmk Fakutly mutimediálních komunikací. \else \ifft Fakulty technologické. \else \ifuni Univerzitního institutu. \if \fi \fi \fi \fi \fi \fi \fi \fi Univerzity Tomáše Bati ve Zlíně; }
+					\item{byl/a jsem seznámen/a s tím, že na moji \ifbp bakalářskou \else \ifdp diplomovou \fi \fi práci se plně vztahuje zákon č. 121/2000 Sb. o právu autorském, o právech souvisejících s právem autorským a o změně některých zákonů (autorský zákon) ve znění pozdějších právních předpisů, zejm. § 35 odst. 3;}
+					\item{beru na vědomí, že podle § 60 odst. 1 autorského zákona má Univerzita Tomáše Bati ve Zlíně právo na uzavření licenční smlouvy o užití školního díla v rozsahu § 12 odst. 4 autorského zákona;}
+					\item{beru na vědomí, že podle § 60 odst. 2 a 3 autorského zákona mohu užít své dílo –\ \ifbp bakalářskou \else \ifdp diplomovou \fi \fi práci nebo poskytnout licenci k~jejímu využití jen připouští-li tak licenční smlouva uzavřená mezi mnou a Univerzitou Tomáše Bati ve Zlíně s~tím, že vyrovnání případného přiměřeného příspěvku na úhradu nákladů, které byly Univerzitou Tomáše Bati ve Zlíně na vytvoření díla vynaloženy (až do jejich skutečné výše) bude rovněž předmětem této licenční smlouvy;}
+					\item{beru na vědomí, že pokud bylo k vypracování \ifbp bakalářské \else \ifdp diplomové \fi \fi práce využito softwaru poskytnutého Univerzitou Tomáše Bati ve Zlíně nebo jinými subjekty pouze ke~studijním a výzkumným účelům (tedy pouze k~nekomerčnímu využití), nelze výsledky \ifbp bakalářské \else \ifdp diplomové \fi \fi práce využít ke komerčním účelům;}
+					\item{beru na vědomí, že pokud je výstupem \ifbp bakalářské \else \ifdp diplomové \fi \fi práce jakýkoliv softwarový produkt, považují se za součást práce rovněž i zdrojové kódy, popř. soubory, ze kterých se projekt skládá. Neodevzdání této součásti může být důvodem k~neobhájení práce.}
+				\end{itemize}
+				\medskip
+				%\clearpage
+				%\thispagestyle{empty}
+				\textbf{Prohlašuji,}
+				\begin{itemize}
+					\setlength{\parskip}{0pt}
+					\setlength{\itemsep}{0pt}
+					\setstretch{1.05}
+					\item{že jsem na \ifbp bakalářské \else \ifdp diplomové \fi \fi práci pracoval samostatně a použitou literaturu jsem citoval. V případě publikace výsledků budu uveden jako spoluautor.}
+					\item{že odevzdaná verze \ifbp bakalářské \else \ifdp diplomové \fi \fi práce a verze elektronická nahraná do IS/STAG jsou totožné.}
+				\end{itemize}
+				\medskip
+				Ve Zlíně, dne \hspace{6.5cm}\dots\dots\dots\dots\dots\dots\dots\dots\dots\dots
 
-	\hspace{10.3cm}Student's Signature
-	
-	\fi \fi
-}}
+				\hspace{10.3cm}podpis studenta
+
+			\else \ifenglish
+					%\nm{THESIS AUTHOR STATEMENT}
+					\textbf{I hereby declare that:}
+					\begin{itemize}
+						\setlength{\parskip}{0pt}
+						\setlength{\itemsep}{0pt}
+						\setstretch{1.05}
+						\item{I understand that by submitting my \ifbp Bachelor's \else\ifdp Master's \fi\fi thesis, I agree to the publication of my work according to Law No. 111/1998, Coll., On Universities and on changes and amendments to other acts (e.g. the Universities Act), as amended by subsequent legislation, without regard to the results of the defence of the thesis.}
+						\item{I understand that my \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis will be stored electronically in the university information system and be made available for on-site inspection, and that a copy of the \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis will be stored in the Reference Library of the
+						            \iffai Faculty of Applied Informatics, \else\iffame Faculty of Management and Economics, \else \iffhs Faculty of Humanities, \else\ifflkr Faculty of Logistics and Crisis Management, \else\iffmk Faculty of Multimedia Communications, \else\ifft Faculty of Technology, \else\ifuni University Institute, \if \fi \fi \fi \fi \fi \fi \fi \fi Tomas Bata University in Zlín.}
+						\item{I am aware of the fact that my \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis is fully covered by Act No. 121/2000 Coll. On Copyright, and Rights Related to Copyright, as amended by some other laws (e.g. the Copyright Act), as amended by subsequent legislation; and especially, by §35, Para. 3.}
+						\item{I understand that, according to §60, Para. 1 of the Copyright Act, Tomas Bata University in Zlín has the right to conclude licensing agreements relating to the use of scholastic work within the full extent of §12, Para. 4, of the Copyright Act.}
+						\item{I understand that, according to §60, Para. 2, and Para. 3, of the Copyright Act, I may use my work – \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis, or grant a license for its use, only if permitted by the licensing agreement concluded between myself and Tomas Bata University in Zlín with a view to the fact that Tomas Bata University in Zlín must be compensated for any reasonable contribution to covering such expenses/costs as invested by them in the creation of the thesis (up until the full actual amount) shall also be a subject of this licensing agreement.}
+						\item{I understand that, should the elaboration of the \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis include the use of software provided by Tomas Bata University in Zlín or other such entities strictly for study and research purposes (i.e. only for non-commercial use), the results of my \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis cannot be used for commercial purposes.}
+						\item{I understand that, if the output of my \ifbp Bachelor's \else\ifdp Master's \fi\fi Thesis is any software product(s), this/these shall equally be considered as part of the thesis, as well as any source codes, or files from which the project is composed. Not submitting any part of this/these component(s) may be a reason for the non-defence of my thesis.}
+					\end{itemize}
+					\medskip
+					%\clearpage
+					%\thispagestyle{empty}
+					\textbf{I herewith declare that:}
+					\begin{itemize}
+						\setlength{\parskip}{0pt}
+						\setlength{\itemsep}{0pt}
+						\setstretch{1.05}
+						\item{I have worked on my thesis alone and duly cited any literature I have used. In the case of the publication of the results of my thesis, I shall be listed as co-author.}
+						\item{The submitted version of the thesis and its electronic version uploaded to IS/STAG are both identical.}
+					\end{itemize}
+					\medskip
+					In Zlín; dated: \hspace{6.5cm}\dots\dots\dots\dots\dots\dots\dots\dots\dots\dots
+
+					\hspace{10.3cm}Student's Signature
+
+				\fi \fi
+		}}
 
 % ============================================================================ %

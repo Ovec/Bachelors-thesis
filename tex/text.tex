@@ -31,6 +31,8 @@ Write-ahead Logging (WAL) used by Postgres is a standard technique to ensure dat
 
 Although WAL is primarily designed for recovery after a database server crash, its design also allows any changes to the database server state to be replayed backward. A copy of the log is also a form of backup. Thus, for recovery to a point in time, only logs that have been saved to that point in time can be restored. This technique is called Point-In-Time Recovery (PITR). \cite{DocuPgPITR} These log files can also be streamed to other nodes to serve as a replica or remote backup. \cite{pg14replication}
 
+TBD: describe synchronous and asynchronus replication
+
 \n{3}{Backup and restore}
 A full set of backup commands is included in Postgres. Among the simple backup commands are pg\_dump and pg\_dumpall, which enable one or more databases to be saved in SQL format. A wide range of configuration options are available for these commands, including compression for large databases or exporting only the database schema. To restore a database from a file at a later time, the psql command can be used, which is capable of restoring a database from its dump. \cite{DocuPgDump} These commands are also helpful with migration from one major Postges version to another because the dumped files are plain SQL commands.
 
@@ -123,20 +125,29 @@ The easiest way to run Postgres in Kubernetes is through the StatefulSet just me
 
 This basic setup may be sufficient for running a single node, but it is no longer sufficient fro managing the whole Postgres lifecycle. For managing whole Postgres lifecycle it is necessary to install other applications in the Kubernetes cluster and then configure the entire Postgres cluster to work with them. This represents a large amount of work and subsequent maintenance that Kubernetes Operators can facilitate.
 
-\n{1}{Database System Lifecycle}
+\n{2}{Database System Lifecycle}
 The database system itself is a software like any other. It is therefore also subject to the same life cycle as software.
 As depicted in figure \ref{fig:applifecycle} application lifecycle consists of three main parts. It is the governance part, development, and operations. For this thesis, only the operations part is relevant because it is the only part we are able to control.
 \obr{Application Life Cycle \cite{ALM}}{fig:applifecycle}{1}{graphics/aplication-lifecycle.png}
 
 Operation is the process of running and managing the application, which starts with deployment and continues until the application is taken out of service. This aspect of the application lifecycle management covers the release of the application into production, ongoing monitoring, and other related tasks. \cite{ALM}
 
+Based on this knowledge, the complete database life cycle is defined as follows.
+\begin{itemize}
+  \item System installation
+  \item System upgrade to a newer version
+  \item System backup
+  \item System restore
+  \item System monitoring
+  \item System scaling
+  \item System configuration update
+  \item System uninstall
+\end{itemize}
+
 TBD: connect to capability levels of Operator (define related tasks, chose the capability that would suit them all)
 
 \pagebreak
 \n{2}{Operators}
-TBD - define Operator hub
-
-
 As described in the previous chapters, Kubernetes can run stateless applications very well. But its general purpose makes running complex stateful applications on top of it quite challenging.
 
 
@@ -162,10 +173,23 @@ Like human operators, Kubernetes Operators can have a level of manual skill rang
 
 \obr{Operator maturity levels described by Operator Framework \cite{OFrameworkMaturity}}{fig:operatorCapabilities}{1}{graphics/operator_capabilities.png}
 
+As stated in the Operator white paper, \cite{OperatorWhitepaper} the Operator should be able to cover the complete life cycle of the managed resource as defined in the previous chapter without the need for external installation or upgrade intervention. Specifically as follows:
+\begin{itemize}
+  \item Install or take ownership of the controlled application.
+  \item Upgrade the managed application, including the monitoring of the upgrade process. It should also be able to roll back in case of failure. He should record the status of the upgrade.
+  \item Back up the managed application and log when the application was last backed up and the status of that backup.
+  \item Restore the application from the backup.
+  \item Provide monitoring of the managed application.
+  \item Scale the application.
+  \item Automatically adapt the configuration of the application.
+  \item Uninstall or disconnect from the application.
+\end{itemize}
+
+These are all capabilities that an Operator should have at the highest level No. 5 - Autopilot. For lifecycle management described in previous chapter, the minimum level of Operator capabilities must be at least level No. 4 - Deep Insights with an option to scale.
 
 The Kubernetes cluster is divided into individual namespaces that separate the objects and names in the cluster and can have constraints applied to them. This partitioning makes it easier to share the cluster between users or entire teams. The object name must be unique within a namespace, but not between namespaces.  An operator usually operates in its own namespace so it has a Namespace Scope, but it can also operate in the whole cluster in which case it will be a Cluster Scope Operator. Namespace Scope Operators are more flexible and easier to upgrade due to their independence from the rest of the cluster. Operator rights are further restricted by the so-called Role-Based Acceess Control (RBAC), which grants the rights assigned to the Operator. \cite{ OperatorsAtK8sIface}
 
-The following options are advised by the Operator white paper \cite{OperatorsOframework} in case the Operator is to be used for controlling the resource:
+The following options are advised by the Operator white paper \cite{OperatorWhitepaper} in case the Operator is to be used for controlling the resource:
 \begin{itemize}
   \item	Consultation with the creator of the resource to be controlled about the possibilities of using the Operator.
   \item	The search for public Operator registries that provide a platform for publishing Operators and the underlying documentation.
@@ -174,15 +198,7 @@ The following options are advised by the Operator white paper \cite{OperatorsOfr
 
 
 \n{1}{Search for Postgres Operators}
-TBD: connect Operators (where to find operators)
-
-TBD: describe CloudNativePG and Patroni
-
-TBD: describe EDB licence
-
 TBD: each operator security Artifact hub https://artifacthub.io/packages/olm/community-operators/postgresql
-
-TBD: What does Percona different to Crunchy to EDB?
 
 TBD: Postgres update every three months https://access.crunchydata.com/documentation/postgres-operator/5.3.0/tutorial/update-cluster/
 
@@ -204,16 +220,19 @@ Crunchy Data is a company that specializes in providing open-source software sol
 PGO’s capabilities are the following:
 \begin{itemize}
   \item \textbf{Postgres Cluster Provisioning:} PGO is able to create \cite{CrunchyDocCreate}, update \cite{CrunchyDocUpdate} or delete Postgres cluster \cite{CrunchyDocDelete}
-  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique. \cite{CrunchyDocHA}
+  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique with Primary and Standby architecture. \cite{CrunchyDocHA}
   \item \textbf{Postgres updates:} PGO is able to apply minor patches \cite{CrunchyDocMinorUpdates}, and major upgrades since version 5.1. \cite{CrunchyBlogUpdates}
   \item \textbf{Backups:} PGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), ad hoc backups, and backup encryption. \cite{CrunchyDocBackups}
   \item \textbf{Disaster Recovery:} PGO is capable of Point In Time recovery, in place Point in Time Recovery, restore of an individual database. \cite{CrunchyDocDisasterRecovery}
   \item \textbf{Cloning:} PGO is able to clone cluster. \cite{CrunchyDocDisasterRecovery}
   \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager. \cite{CrunchyDocMonitoring}
   \item \textbf{Connection Pooling:} PgBouncer connection pooler from Postgres is part of PGO. \cite{CrunchyDocConnectionPooling}
+  \item   \item \textbf{Customization:} PGO provides a wide area of Postgres customization. \cite{CrunchyDocCustomisation}
 \end{itemize}
 
-The current stable version of PGO is 5.3.0 was released on 13th January 2023 and has one critical vulnerability, 7 highly critical vulnerabilities, 31 medium, and 31 low. \cite{ArtifactHubCrunchy}
+TBD: Add customization capabilities of PGO
+
+The current stable version of PGO is 5.3.0 was released on 13th January 2023. \cite{ArtifactHubCrunchy}
 PGO is compatible with following platforms: Kubernetes 1.22-1.25, OpenShift 4.8-4.11, Rancher, Google Kubernetes Engine (GKE), including Anthos, Amazon EKS, Microsoft AKS, VMware Tanzu. \cite{CrunchyDoc}
 
 PGO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PGO is considered to have the highest capability level, labeled as Autopilot. \cite{OperatorHubCrunchy}
@@ -234,9 +253,9 @@ The EDB Postgres for Kubernetes (EDBO) is a fully supported operator that has be
 
 EnterpriseDB (EDB) is a software company that provides enterprise-class PostgreSQL software and services. EDB is a leading provider of PostgreSQL technology, offering a range of products and services designed to help organizations adopt, deploy, and manage PostgreSQL databases. \cite{EDB}
 
-As stated previously EDBO is based on open-source CloudNativePG operator. The operator that is not listed on Operator Hub. EDBO provides additional features on top of CloudNativePG operator such as support for Oracle compatibility using EDB Postgres Advanced Server, support for additional platforms such as IBM Power, and additional enterprise-grade security features. \cite{EDBdocu}
+As stated previously EDBO is based on open-source CloudNativePG operator. EDBO provides additional features on top of CloudNativePG operator such as support for Oracle compatibility using EDB Postgres Advanced Server, support for additional platforms such as IBM Power, and additional enterprise-grade security features. \cite{EDBdocu}
 
-EDBO is distributed under the EDB Limited Usage License Agreement, a proprietary license that is specific to software provided by EnterpriseDB Corporation. A license key is always required for the operator to work longer than 30 days. \cite{EDBdocuLicence} Due to the restrictive nature of the license EDBO will no longer be subject to testing and evaluation but CloudNativePG will.
+EDBO is distributed under the EDB Limited Usage License Agreement, a proprietary license that is specific to software provided by EnterpriseDB Corporation. A license key is always required for the operator to work longer than 30 days. \cite{EDBdocuLicence} Due to the restrictive nature of the license EDBO will no longer be subject to testing and evaluation but its key component CloudNativePG will.
 
 \pagebreak
 
@@ -248,11 +267,11 @@ Initially developed by EDB, CNPGO was later made available to the public as an o
 CNPGO’s capabilities are the following:
 \begin{itemize}
   \item \textbf{Postgres Cluster Provisioning:} CNPGO is able to create, update or delete Postgres cluster. \cite{CNPGdocuCapabilityLevels}
-  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique. \cite{CNPGdocuReplication}
+  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique with Primary and Standby architecture. \cite{CNPGdocuReplication}
   \item \textbf{Direct database imports:} CNPGO provides direct database import from remote Postgres server by using pg\_dump and pg\_restore even on different Postgres versions. \cite{CNPGdocuDatabaseImports}
   \item \textbf{Postgres updates:} CNPGO is able to apply minor patches. \cite{CNPGdocuUpdates} Major updates are possible by previously mentioned Direct database imports.
   \item \textbf{Backups:} CNPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), on-demand backups, and backup encryption \cite{CNPGdocuBackup}\cite{CNPGdocuTDE}. Due to EDB’s backup software Barman backup compression is available also. \cite{CNPGdocuBackup}
-  \item \textbf{Disaster Recovery:} CNPGO is capable of Point In Time recovery. Database recovery was not mentioned in the documentation. \cite{CNPGdocuBackup}
+  \item \textbf{Disaster Recovery:} CNPGO is capable of Point In Time recovery. Single database recovery was not mentioned in the documentation. \cite{CNPGdocuBackup}
   \item \textbf{Cloning:} CNPGO is able to create cluster replicas. \cite{CNPGdocuReplication}
   \item \textbf{Monitoring:} Monitoring can be provided by the additional installation of Prometheus, and Grafana, and Alertmanager. \cite{CNPGdocuQuickstart}
   \item \textbf{Connection Pooling:} Is provided by native Postgres pooler PgBouncer. \cite{CNPGdocuConnectionPooling}
@@ -280,7 +299,7 @@ SPGO is developed by OnGres that was established as a result of years of experie
 SPGO’s capabilities are the following \cite{OnGres}:
 \begin{itemize}
   \item \textbf{Postgres Cluster Provisioning:} SPGO is able to create, update or delete Postgres cluster.
-  \item \textbf{High Availability:} High availability is achieved by adding additional nodes.
+  \item \textbf{High Availability:} High availability is achieved by adding additional nodes with Primary and Standby architecture.
   \item \textbf{Postgres updates:} SPGO is able to apply minor patches. Major updates are possible by SGDbOps \cite{SPGODocuMajorUpdates}.
   \item \textbf{Backups:} SPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob)
   \item \textbf{Disaster Recovery:} SPGO is capable of Point In Time recovery. Database recovery was not mentioned in the documentation.
@@ -292,7 +311,8 @@ SPGO’s capabilities are the following \cite{OnGres}:
 
 \end{itemize}
 
-The current stable version of SPGO is 1.4.2 was released on 24th January 2022. \cite{ SPGOgitlabChangelog} SPGO is distributed under the AGPL3 open-source license. \cite{SPGODocuLicence} SPGO capability level hasn’t been mentioned in the documentation or its web pages.
+The current stable version of SPGO is 1.4.2 was released on 24th January 2022. \cite{SPGOgitlabChangelog} SPGO is distributed under the AGPL3 open-source license. \cite{SPGODocuLicence}
+With regards to capability, SPGO is considered to have the second highest capability level, labeled as Deep Insights. \cite{OperatorHubStackgres}
 
 SPGO consists of the following key components \cite{PostgresOnKubernetes}:
 \begin{itemize}
@@ -314,7 +334,7 @@ Percona Operator for PostgreSQL (PPO) is based on Crunchy Postgres for Kubernete
 Differences between PGO and PPO are the following:
 \begin{itemize}
   \item \textbf{Postgres updates:} PPO provides automatic Postgres updates for minor and major versions of Postgres.  \cite{PerconaDocuUpdate}
-  \item \textbf{Backups:} PPO is not able to back up to Azure. \cite{PerconaDocuCompare}
+  \item \textbf{Backups:} PPO is not able to back up to Azure. \cite{PerconaDocuCompare} Although it uses Patroni, which has this ability.
   \item \textbf{Disaster Recovery:} PPO documentation does not mention the possibility of restoring a single database from a backup. \cite{PerconaDocuBackups}
   \item \textbf{Monitoring:} PPO is not using the usual monitoring stack consisting of Prometheus and Grafana but their own Percona Monitoring and Management. \cite{PerconaDocuMonitoring}
 \end{itemize}
@@ -328,22 +348,23 @@ PPO consists of the following key components \cite{PostgresOnKubernetes}:
   \item Connection Pooler: PgBouncer
   \item Monitoring: Percona Monitoring and Management
 \end{itemize}
+
 \obr{PPO’s architecture \cite{CrunchyDocArchitecture}}{}{1}{graphics/PPO_architecture.png}
 
+\n{2}{Key Differences between selected Operators}
 
-
-
-\tab{Comparison of selected Operators}{tab:priklad2}{1}{|l|l|l|l|l|}{
+\tab{Table of key differences between selected Operators}{tab:keyDifferences}{1}{|l|l|l|l|l|}{
   \hline
   & PGO 5.3.0 & CNPGO 1.18.1 & SPGO 1.4.2 & PPO 1.3.0\\ \hline
-  Programing language & GO & GO & JAVA & GO\\ \hline
-  Supported Postgres versions & 12, 13, 14, 15 & 11, 12, 13, 14, 15 & 12, 13, 14, 15 & 12, 13, 14\\ \hline
-  Major version update & Manual & Manual & Manual & Automatic\\ \hline
+  \vtop{\hbox{\strut Programming}\hbox{\strut language}} & GO & GO & JAVA & GO\\ \hline
+  \vtop{\hbox{\strut Supported}\hbox{\strut Postgres}}  & 12, 13, 14, 15 & 11, 12, 13, 14, 15 & 12, 13, 14, 15 & 12, 13, 14\\ \hline
+  \vtop{\hbox{\strut Major version}\hbox{\strut updates}} & Manual & Manual & Manual & Automatic\\ \hline
+  \vtop{\hbox{\strut Single database}\hbox{\strut restore}} & Yes & No & No & No\\ \hline
   Licence & Apache 2.0 & Apache 2.0 & Apache 2.0 & AGPL 3\\ \hline
   User interface &  No & No & Yes & No\\ \hline
+  Capability Level & Autopilot & Autopilot & Deep Insight & Deep Insights\\ \hline
 }
 
-% \emph{F} & (jedna) & (dva) & (tři) & (čtyři) & (pět) & 300 \\ \hline
 
 
 
