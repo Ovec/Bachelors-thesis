@@ -188,13 +188,13 @@ TBD: Postgres update every three months https://access.crunchydata.com/documenta
 
 TBD: Container types CloudNativePG is built on immutable application containers. What does it mean? https://cloudnative-pg.io/documentation/1.19/faq/
 
-As previously stated in the section on Operators, the most suitable operators for a software are those developed by the software developers themselves, as they possess an in-depth understanding of the software. Regrettably, no such operator has been created for Postgres.
+As recommended in the previous section. The choice of Operator should first be consulted with the manufacturer of the controlled source. Postgres offers the following Kubernetes Operators in its software catalog \cite{docuPgSwCatalogue}: CloudNativePG, EDB Postgres for Kubernetes a Kubegres.
 
-Operator Hub presents eight operators with varying levels of capabilities, including Crunchy Postgres for Kubernetes by Crunchy Data, EDB Postgres for Kubernetes by EnterpriseDB Corporation, Ext Postgres Operator by movetokube.com, Percona Operator for PostgreSQL by Percona, Postgres-Operator by Zalando SE, Postgresql Operator by Openlabs, and PostgreSQL Operator by Dev4Ddevs.com.
+The next step involved a search of the Operators' registers. In particular the Operator Hub. \cite{OperatorHubPGSearch} Operator Hub presents nine operators with varying levels of capabilities, including Crunchy Postgres for Kubernetes by Crunchy Data, EDB Postgres for Kubernetes by EnterpriseDB Corporation, Ext Postgres Operator by movetokube.com, Percona Operator for PostgreSQL by Percona, Postgres-Operator by Zalando SE, Postgresql Operator by Openlabs, PostgreSQL Operator by Dev4Ddevs.com and StackGres by OnGres.
 
-Deeper internet research revealed three more operators: CloudNativePG, StackGres, and Stolon. \cite{PostgresOnKubernetes} \cite{PalarkComparingKubernetes}
+A deeper internet search revealed Stolon Operator. \cite{PalarkComparingKubernetes}
 
-Of the eleven operators available, only five meet our minimum capability requirement of Deep Insight, namely: Crunchy Postgres for Kubernetes, EDB Postgres for Kubernetes, Percona Operator for PostgreSQL, CloudNativePG Operator, and StackGres Operator. As a result, only these five will be subjected to deeper research, testing, and evaluation.
+Of the thirteen operators available, only five meet our minimum capability requirement of Deep Insight, namely: Crunchy Postgres for Kubernetes, EDB Postgres for Kubernetes, Percona Operator for PostgreSQL, CloudNativePG Operator, and StackGres Operator. As a result, only these five will be subjected to deeper research, testing, and evaluation.
 
 \pagebreak
 \n{2}{Crunchy Postgres for Kubernetes}
