@@ -18,6 +18,8 @@ TBD - remove end
 \n{1}{Background}
 This chapter introduces the key technologies used in this thesis including Postgres, Kubernetes, and Kubernetes Operators.
 \n{2}{Postgres}
+TBD: Connect image with text
+
 PostgreSQL is a powerful object-relational database management system (ORDBMS) derived from the POSTGRES package written at the University of California at Berkeley. \cite{docuPgwhatIsPg} \cite{pg14introduction} The first version of POSTGRES was released in June 1989. POSTGRES has been used in many applications, including financial data analysis systems, asteroid tracking databases, medical information database, and several geographic information systems. The size of external community users has nearly doubled by 1993. \cite{docuPgBriefHistory}
 
 POSTGRES was using its POSTQUEL query language from version, until Andrew Yu and Jolly Chen introduced SQL to POSTGRES in 1995. The name has changed to Postgres95. Postgres95 was completely ANSI C code reduced by 25 \% and was 30 – 50 \% faster than Postgres 4.2.  \cite{docuPgBriefHistory}
@@ -25,6 +27,9 @@ POSTGRES was using its POSTQUEL query language from version, until Andrew Yu and
 It was clear by 1996 that the name would not stand the test of time therefore it has been renamed to PostgreSQL. As stated by PostgreSQL documentation \cite{docuPgBriefHistory}: “Many people continue to refer to PostgreSQL as “Postgres” (now rarely in all capital letters) because of tradition or because it is easier to pronounce. This usage is widely accepted as a nickname or alias.“ This thesis will use Postgres as an alias for PostgreSQL as well.
 
 More than 30 years after the first version Postgres has been considered the most used ORDBMS for professional developers by Stack Overflow survey \cite{so2022survey}. According to Riggs and Ciolli \cite{pg14introduction}: “The PostgreSQL feature set attracts serious users who have serious applications. Financial services companies may be PostgreSQL's largest user group, although governments, telecommunication companies, and many other segments are strong users as well.“ It is fully ACID compliant \cite{juba2015learningTransactionIsolation} and supports many kinds of data models such as relational, document, and key/value. \cite{pg14introduction}
+
+\obr{Postgres Architecture \cite{HusseinMediumPostgres} }{fig:Postgres_architecture}{1}{graphics/Postgres_architecture.png}
+
 
 \n{3}{Write Ahead Log}
 Write-ahead Logging (WAL) used by Postgres is a standard technique to ensure data integrity. Its main concept is that changes in data files (where tables and indexes are stored) must only be written after they are logged (saved to a log file). That means the database is updated after the changes are written to disk. In the event of a system crash, all transactions will be recovered from the disk. \cite{docuPgWal}
@@ -365,10 +370,92 @@ PPO consists of the following key components \cite{PostgresOnKubernetes}:
   Capability Level & Autopilot & Autopilot & Deep Insight & Deep Insights\\ \hline
 }
 
+\n{1}{Testing methodology}
+As mentioned in the previous chapters, Operators will be subjected to tests to manage the complete application lifecycle.
+
+Subsequently:
+\begin{itemize}
+  \item Cluster installation
+  \item Cluster update to a newer version
+  \item Recovery of the Primary node after a crash
+  \item Cluster backup
+  \item Cluster restore from backup
+  \item Cluster vertical scaling
+  \item Cluster configuration update
+  \item Cluster monitoring
+  \item Cluster uninstall
+\end{itemize}
+
+The cluster installation will consist of the following steps:
+\begin{itemize}
+  \item Installation of the cluster with an older version of Postgres and two nodes, one as Primary, the other as Standby
+  \item Creation of a database on the Primary node
+  \item Synchronization between nodes check
+\end{itemize}
+
+Cluster update to a newer version
+\begin{itemize}
+  \item Update the cluster to a newer version
+  \item Update result check
+\end{itemize}
+
+Recovery of the Primary node after a crash
+\begin{itemize}
+  \item Delete of the primary node
+  \item Failover check
+  \item New Standby creation check
+\end{itemize}
+
+Cluster backup
+\begin{itemize}
+  \item Creation of backup volume
+  \item Postgres cluster backup to backup volume
+  \item Backup result check
+\end{itemize}
+
+Cluster restore from backup
+\begin{itemize}
+  \item Restoration of the cluster from the backup created in the previous step
+  \item Restored cluster check
+\end{itemize}
+
+Vertical scaling of the cluster
+\begin{itemize}
+  \item Addition of a node to the cluster
+  \item Number of nodes check
+  \item Removal of the added node
+  \item Number of nodes check
+\end{itemize}
+
+Cluster configuration update
+\begin{itemize}
+  \item Change the cluster configuration
+  \item TBD - figure out what we are going to change and justify it
+  \item Implementation of change check
+\end{itemize}
+
+Cluster monitoring
+\begin{itemize}
+  \item Installation monitoring
+  \item Visual monitoring check
+\end{itemize}
+
+Cluster uninstall
+\begin{itemize}
+  \item Removal of the backup volume
+  \item Removal of the cluster
+  \item Removal result check
+\end{itemize}
+
+TBD: study what the methodology is, figure out how to rate each point
 
 
 
-\n{1}{Architecture}
+
+
+
+
+
 %\obr{2022 Developer Survey \cite{so2022survey}}{}{1}{graphics/postgres_stack_overflow_survey.png}
 
 
