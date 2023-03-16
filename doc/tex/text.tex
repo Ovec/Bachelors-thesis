@@ -375,7 +375,8 @@ As mentioned in the previous chapters, Operators will be subjected to tests to m
 
 Subsequently:
 \begin{itemize}
-  \item Cluster installation
+  \item Operator install
+  \item Cluster install
   \item Cluster update to a newer version
   \item Recovery of the Primary node after a crash
   \item Cluster backup
@@ -384,6 +385,13 @@ Subsequently:
   \item Cluster configuration update
   \item Cluster monitoring
   \item Cluster uninstall
+  \item Operator uninstall
+\end{itemize}
+
+Operator install:
+\begin{itemize}
+  \item Installation of the Operator in Kubernetes cluster
+  \item Check if Operator was installed
 \end{itemize}
 
 The cluster installation will consist of the following steps:
@@ -393,33 +401,33 @@ The cluster installation will consist of the following steps:
   \item Synchronization between nodes check
 \end{itemize}
 
-Cluster update to a newer version
+Cluster update to a newer version:
 \begin{itemize}
   \item Update the cluster to a newer version
   \item Update result check
 \end{itemize}
 
-Recovery of the Primary node after a crash
+Recovery of the Primary node after a crash:
 \begin{itemize}
   \item Delete of the primary node
   \item Failover check
   \item New Standby creation check
 \end{itemize}
 
-Cluster backup
+Cluster backup:
 \begin{itemize}
   \item Creation of backup volume
   \item Postgres cluster backup to backup volume
   \item Backup result check
 \end{itemize}
 
-Cluster restore from backup
+Cluster restore from backup:
 \begin{itemize}
   \item Restoration of the cluster from the backup created in the previous step
   \item Restored cluster check
 \end{itemize}
 
-Vertical scaling of the cluster
+Vertical scaling of the cluster:
 \begin{itemize}
   \item Addition of a node to the cluster
   \item Number of nodes check
@@ -427,24 +435,30 @@ Vertical scaling of the cluster
   \item Number of nodes check
 \end{itemize}
 
-Cluster configuration update
+Cluster configuration update:
 \begin{itemize}
   \item Change the cluster configuration
   \item TBD - figure out what we are going to change and justify it
   \item Implementation of change check
 \end{itemize}
 
-Cluster monitoring
+Cluster monitoring:
 \begin{itemize}
-  \item Installation monitoring
+  \item Installation of monitoring
   \item Visual monitoring check
 \end{itemize}
 
-Cluster uninstall
+Cluster uninstall:
 \begin{itemize}
   \item Removal of the backup volume
   \item Removal of the cluster
   \item Removal result check
+\end{itemize}
+
+Operator uninstall:
+\begin{itemize}
+  \item Operator uninstall
+  \item Check if Operator was removed with all its dependencies
 \end{itemize}
 
 TBD: study what the methodology is, figure out how to rate each point
