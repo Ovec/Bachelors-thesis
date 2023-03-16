@@ -37,3 +37,6 @@ pgoMonitoringPortForwarding:
 
 pgoPostgresPortForwarding:
 	kubectl port-forward service/hippo-replicas 5432:5432 -n postgres-operator
+
+
+# GO
