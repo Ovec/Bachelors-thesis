@@ -5,7 +5,6 @@ import (
 )
 
 func GetClient() (*kubernetes.Clientset, error) {
-
 	// use the current context in kubeconfig
 	config, err := getConfig()
 	if err != nil {
