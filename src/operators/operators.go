@@ -9,11 +9,17 @@ import (
 )
 
 type Operators struct {
+	Logger    *log.Logger
 	Operators []fs.FileInfo
 }
 
 func (o *Operators) GetOperators() *Operators {
-	files := filesystem.GetDirectoryContents("./templates")
+	files, err := filesystem.GetDirectoryContents("./templates")
+
+	if err != nil {
+		o.Logger.Error("Unable to get Operateror templates due to:")
+		panic(err.Error())
+	}
 
 	o.Operators = filesystem.FilterDirectories(files)
 	return o
@@ -26,16 +32,26 @@ func (o *Operators) PrintOperatorsSum() *Operators {
 		panic("No Operator found")
 
 	} else {
-		log.Succes("Found " + strconv.Itoa(sum))
+		o.Logger.Succes("Found " + strconv.Itoa(sum))
 		if sum == 1 {
-			log.Succes(" Operator")
+			o.Logger.Succes(" Operator")
 		} else {
-			log.Succes(" Operators")
+			o.Logger.Succes(" Operators")
 		}
-
-		log.Succes("\n")
-
+		o.Logger.NewLine()
 	}
 
+	return o
+}
+
+func (o *Operators) TestAll() *Operators {
+
+	o.Logger.Succes("Testing Operators").NewLine()
+	return o
+}
+
+func (o *Operators) PrintResults() *Operators {
+
+	o.Logger.Succes("Printing results").NewLine()
 	return o
 }

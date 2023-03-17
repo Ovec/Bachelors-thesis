@@ -3,16 +3,13 @@ package filesystem
 import (
 	"io/fs"
 	"os"
-
-	"operators/log"
 )
 
-func GetDirectoryContents(dir string) []fs.FileInfo {
+func GetDirectoryContents(dir string) ([]fs.FileInfo, error) {
 
 	d, err := os.Open(dir)
 	if err != nil {
-		log.Error("Unable to open folder " + dir + "\n")
-		panic(err.Error())
+		return nil, err
 	}
 
 	defer d.Close()
@@ -20,11 +17,10 @@ func GetDirectoryContents(dir string) []fs.FileInfo {
 	// Read the directory contents
 	files, err := d.Readdir(-1)
 	if err != nil {
-		log.Error("Unable to read folder " + dir + "\n")
-		panic(err.Error())
+		return nil, err
 	}
 
-	return files
+	return files, nil
 }
 
 func FilterDirectories(files []fs.FileInfo) []fs.FileInfo {
