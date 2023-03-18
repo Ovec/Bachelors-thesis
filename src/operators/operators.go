@@ -6,11 +6,19 @@ import (
 
 	"operators/filesystem"
 	"operators/log"
+	"operators/operators/tests"
 )
+
+type Result struct {
+	install bool
+	update  bool
+	errors  []string
+}
 
 type Operators struct {
 	Logger    *log.Logger
 	Operators []fs.FileInfo
+	Results   []*Result
 }
 
 func (o *Operators) GetOperators() *Operators {
@@ -45,13 +53,27 @@ func (o *Operators) PrintOperatorsSum() *Operators {
 }
 
 func (o *Operators) TestAll() *Operators {
+	for i, operator := range o.Operators {
+		result := &Result{}
+		o.Results = append(o.Results, result)
+		o.testInstall(i, operator.Name())
+	}
 
 	o.Logger.Succes("Testing Operators").NewLine()
 	return o
 }
 
 func (o *Operators) PrintResults() *Operators {
-
 	o.Logger.Succes("Printing results").NewLine()
 	return o
+}
+
+func (o *Operators) testInstall(i int, name string) {
+	result, err := tests.Install(name, o.Logger)
+
+	if err != nil {
+		o.Results[i].errors = append(o.Results[i].errors, err.Error())
+	}
+
+	o.Results[i].install = result
 }
