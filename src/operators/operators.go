@@ -34,9 +34,9 @@ func (o *Operators) PrintOperatorsSum() *Operators {
 	} else {
 		o.Logger.Succes("Found " + strconv.Itoa(sum))
 		if sum == 1 {
-			o.Logger.Succes(" Operator")
+			o.Logger.Info(" Operator")
 		} else {
-			o.Logger.Succes(" Operators")
+			o.Logger.Info(" Operators")
 		}
 		o.Logger.NewLine()
 	}

@@ -17,17 +17,17 @@ func (l Logger) Info(message string) Logger {
 }
 
 func (l Logger) Succes(message string) Logger {
-	fmt.Printf("%s%s%s", green, message, reset)
+	fmt.Printf("%s%s %s%s", green, "✓", reset, message)
 	return l
 }
 
 func (l Logger) Error(message string) Logger {
-	fmt.Printf("%s%s%s", red, message, reset)
+	fmt.Printf("%s%s %s%s", red, "x", reset, message)
 	return l
 }
 
 func (l Logger) Warn(message string) Logger {
-	fmt.Printf("%s%s%s", yellow, message, reset)
+	fmt.Printf("%s%s %s%s", yellow, "o", reset, message)
 	return l
 }
 

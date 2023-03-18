@@ -38,7 +38,7 @@ func (c *Cluster) GetPods() *Cluster {
 	pods, err := k8s.GetPods(c.Client, c.Ctx)
 
 	if err != nil {
-		c.Logger.Error("Unable to get pods due to following error")
+		c.Logger.Error("Unable to get pods due to following error:").NewLine()
 		panic(err.Error())
 	}
 	c.Pods = pods
@@ -51,7 +51,7 @@ func (c *Cluster) GetServices() *Cluster {
 	services, err := k8s.GetServices(c.Client, c.Ctx)
 
 	if err != nil {
-		c.Logger.Error("Unable to get services due to following error")
+		c.Logger.Error("Unable to get services due to following error:").NewLine()
 		panic(err.Error())
 	}
 	c.Services = services
@@ -64,7 +64,7 @@ func (c *Cluster) GetSecrets() *Cluster {
 	secrets, err := k8s.GetSecrets(c.Client, c.Ctx)
 
 	if err != nil {
-		c.Logger.Error("Unable to get secrets due to following error")
+		c.Logger.Error("Unable to get secrets due to following error:").NewLine()
 		panic(err.Error())
 	}
 	c.Secrets = secrets
@@ -77,7 +77,7 @@ func (c *Cluster) GetConfigMaps() *Cluster {
 	cm, err := k8s.GetConfigMaps(c.Client, c.Ctx)
 
 	if err != nil {
-		c.Logger.Error("Unable to get config maps due to following error")
+		c.Logger.Error("Unable to get config maps due to following error:").NewLine()
 		panic(err.Error())
 	}
 	c.ConfigMaps = cm
