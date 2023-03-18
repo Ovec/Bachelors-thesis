@@ -1,6 +1,11 @@
 package log
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+
+	"github.com/briandowns/spinner"
+)
 
 const (
 	green  = "\033[32m"
@@ -9,7 +14,9 @@ const (
 	reset  = "\033[0m"
 )
 
-type Logger struct{}
+type Logger struct {
+	spinner *spinner.Spinner
+}
 
 func (l Logger) Info(message string) Logger {
 	fmt.Printf("%s", message)
@@ -22,15 +29,14 @@ func (l Logger) Succes(message string) Logger {
 }
 
 func (l Logger) Error(message string) Logger {
-	fmt.Printf("%s%s %s%s", red, "x", reset, message)
+	fmt.Printf("%s%s %s%s", red, "×", reset, message)
 	return l
 }
 
 func (l Logger) Warn(message string) Logger {
-	fmt.Printf("%s%s %s%s", yellow, "o", reset, message)
+	fmt.Printf("%s%s %s%s", yellow, "!", reset, message)
 	return l
 }
-
 func (l Logger) NewLine() Logger {
 	fmt.Printf("\n")
 	return l
@@ -38,5 +44,17 @@ func (l Logger) NewLine() Logger {
 
 func (l Logger) RemoveLine() Logger {
 	fmt.Print("\n\033[1A\033[K")
+	return l
+}
+
+func (l Logger) WithSpinner(message string) Logger {
+	if l.spinner == nil {
+		l.spinner = spinner.New(spinner.CharSets[21], 100*time.Millisecond)
+	}
+	l.spinner.Color("yellow")
+	l.spinner.Suffix = " " + message
+	l.spinner.Start()
+	time.Sleep(4 * time.Second)
+	l.spinner.Stop()
 	return l
 }

@@ -64,7 +64,8 @@ func (o *Operators) TestAll() *Operators {
 }
 
 func (o *Operators) PrintResults() *Operators {
-	o.Logger.Succes("Printing results").NewLine()
+	o.Logger.WithSpinner("Printing results").Succes("Good results").NewLine()
+	o.Logger.WithSpinner("Printing results").Warn("Bad results").NewLine()
 	return o
 }
 
