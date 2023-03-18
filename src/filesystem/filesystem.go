@@ -6,7 +6,6 @@ import (
 )
 
 func GetDirectoryContents(dir string) ([]fs.FileInfo, error) {
-
 	d, err := os.Open(dir)
 	if err != nil {
 		return nil, err
