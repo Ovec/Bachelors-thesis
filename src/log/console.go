@@ -18,43 +18,48 @@ type Logger struct {
 	spinner *spinner.Spinner
 }
 
-func (l Logger) Info(message string) Logger {
+func (l *Logger) Info(message string) *Logger {
 	fmt.Printf("%s", message)
 	return l
 }
 
-func (l Logger) Succes(message string) Logger {
+func (l *Logger) Succes(message string) *Logger {
 	fmt.Printf("%s%s %s%s", green, "✓", reset, message)
 	return l
 }
 
-func (l Logger) Error(message string) Logger {
+func (l *Logger) Error(message string) *Logger {
 	fmt.Printf("%s%s %s%s", red, "×", reset, message)
 	return l
 }
 
-func (l Logger) Warn(message string) Logger {
+func (l *Logger) Warn(message string) *Logger {
 	fmt.Printf("%s%s %s%s", yellow, "!", reset, message)
 	return l
 }
-func (l Logger) NewLine() Logger {
+func (l *Logger) NewLine() *Logger {
 	fmt.Printf("\n")
 	return l
 }
 
-func (l Logger) RemoveLine() Logger {
+func (l *Logger) RemoveLine() *Logger {
 	fmt.Print("\n\033[1A\033[K")
 	return l
 }
 
-func (l Logger) WithSpinner(message string) Logger {
+func (l *Logger) WithSpinnerStart(message string) {
 	if l.spinner == nil {
 		l.spinner = spinner.New(spinner.CharSets[21], 100*time.Millisecond)
 	}
+
 	l.spinner.Color("yellow")
 	l.spinner.Suffix = " " + message
 	l.spinner.Start()
-	time.Sleep(4 * time.Second)
-	l.spinner.Stop()
+}
+
+func (l *Logger) WithSpinnerStop() *Logger {
+	if l.spinner != nil {
+		l.spinner.Stop()
+	}
 	return l
 }
