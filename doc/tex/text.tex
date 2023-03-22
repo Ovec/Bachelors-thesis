@@ -376,90 +376,69 @@ As mentioned in the previous chapters, Operators will be subjected to tests to m
 Subsequently:
 \begin{itemize}
   \item Operator install
+        \begin{itemize}
+          \item Installation of the Operator in Kubernetes cluster
+          \item Check if Operator was installed
+        \end{itemize}
   \item Cluster install
+        \begin{itemize}
+          \item Installation of the cluster with an older version of Postgres and two nodes, one as Primary, the other as Standby
+          \item Creation of a database on the Primary node
+          \item Synchronization between nodes check
+        \end{itemize}
   \item Cluster update to a newer version
+        \begin{itemize}
+          \item Update the cluster to a newer version
+          \item Update result check
+        \end{itemize}
   \item Recovery of the Primary node after a crash
+        \begin{itemize}
+          \item Delete of the primary node
+          \item Failover check
+          \item New Standby creation check
+        \end{itemize}
   \item Cluster backup
+        \begin{itemize}
+          \item Creation of backup volume
+          \item Postgres cluster backup to backup volume
+          \item Backup result check
+        \end{itemize}
   \item Cluster restore from backup
+        \begin{itemize}
+          \item Restoration of the cluster from the backup created in the previous step
+          \item Restored cluster check
+        \end{itemize}
   \item Cluster vertical scaling
+        \begin{itemize}
+          \item Addition of a node to the cluster
+          \item Number of nodes check
+          \item Removal of the added node
+          \item Number of nodes check
+        \end{itemize}
   \item Cluster configuration update
+        \begin{itemize}
+          \item Change the cluster configuration
+          \item TBD - figure out what we are going to change and justify it
+          \item Implementation of change check
+        \end{itemize}
   \item Cluster monitoring
+        \begin{itemize}
+          \item Installation of monitoring
+          \item Visual monitoring check
+        \end{itemize}
   \item Cluster uninstall
+        \begin{itemize}
+          \item Removal of the backup volume
+          \item Removal of the cluster
+          \item Removal result check
+        \end{itemize}
   \item Operator uninstall
+        \begin{itemize}
+          \item Operator uninstall
+          \item Check if Operator was removed with all its dependencies
+        \end{itemize}
 \end{itemize}
 
-Operator install:
-\begin{itemize}
-  \item Installation of the Operator in Kubernetes cluster
-  \item Check if Operator was installed
-\end{itemize}
-
-The cluster installation will consist of the following steps:
-\begin{itemize}
-  \item Installation of the cluster with an older version of Postgres and two nodes, one as Primary, the other as Standby
-  \item Creation of a database on the Primary node
-  \item Synchronization between nodes check
-\end{itemize}
-
-Cluster update to a newer version:
-\begin{itemize}
-  \item Update the cluster to a newer version
-  \item Update result check
-\end{itemize}
-
-Recovery of the Primary node after a crash:
-\begin{itemize}
-  \item Delete of the primary node
-  \item Failover check
-  \item New Standby creation check
-\end{itemize}
-
-Cluster backup:
-\begin{itemize}
-  \item Creation of backup volume
-  \item Postgres cluster backup to backup volume
-  \item Backup result check
-\end{itemize}
-
-Cluster restore from backup:
-\begin{itemize}
-  \item Restoration of the cluster from the backup created in the previous step
-  \item Restored cluster check
-\end{itemize}
-
-Vertical scaling of the cluster:
-\begin{itemize}
-  \item Addition of a node to the cluster
-  \item Number of nodes check
-  \item Removal of the added node
-  \item Number of nodes check
-\end{itemize}
-
-Cluster configuration update:
-\begin{itemize}
-  \item Change the cluster configuration
-  \item TBD - figure out what we are going to change and justify it
-  \item Implementation of change check
-\end{itemize}
-
-Cluster monitoring:
-\begin{itemize}
-  \item Installation of monitoring
-  \item Visual monitoring check
-\end{itemize}
-
-Cluster uninstall:
-\begin{itemize}
-  \item Removal of the backup volume
-  \item Removal of the cluster
-  \item Removal result check
-\end{itemize}
-
-Operator uninstall:
-\begin{itemize}
-  \item Operator uninstall
-  \item Check if Operator was removed with all its dependencies
-\end{itemize}
 
 TBD: study what the methodology is, figure out how to rate each point
 
@@ -532,14 +511,67 @@ Tabulka \ref{tab:priklad} obsahuje dva řádky a celkem 7 sloupců.
 
 % ============================================================================ %
 \cast{Praktická část}
-\n{1}{Nadpis první kAPItoly praktické části}
+\n{1}{Nadpis první kapitoly praktické části}
 TBD: Describe architecture
 
 TBD: Describe kind cluster (maybe all in theory)
 
 TBD: Describe kubectl
 
-\n{2}{Crunchy Postgres for Kubernetes (PGO)}
+TBD: First create manual testing and describe it, then automate these test with Kubernetes E2E tests in GO
+
+The repository of this thesis contains a folder of tests in which the individual test suites are located. Each operator has a folder (test suite) that contains individual test cases numbered according to the order of execution, followed by a Makefile file that lists the specific commands that are executed to test the Operator.
+
+\n{2}{Crunchy Postgres for Kubernetes (PGO) tests}
+
+
+\n{3}{Operator install}
+The Crunchy documentation contains a Quickstart chapter, according to which the Operator will be installed. To install, it is necessary to have kubectl installed and set up for the cluster in where the PGO is to be installed.
+
+The installation of the operator is done with the following commands in the \break /tests/PGO/1\_operator\_install directory, that contains yaml manifests that were extracted from the PGO examples repository \footnote{https://github.com/CrunchyData/postgres-operator-examples}.
+
+\begin{verbatim}
+kubectl apply -k ./namespace
+kubectl apply --server-side -k ./default
+\end{verbatim}
+
+These commands create the following kubernetes objects:
+\begin{itemize}
+  \item Operator's Custom resource definition named \\postgresclusters.postgres-operator.crunchydata.com
+  \item Operators service accounts named pgo and postgres-operator-upgrade
+  \item Cluster roles postgres-operator
+  \item Cluster role postgres-operator-update
+  \item A cluster role binding named postgres-operator that links service account pgo to the cluster role postgres-operator
+  \item Cluster role binding named postgres-operator-upgrade which links service account postgres-operator-upgrade to cluster role postgres-operator-upgrade
+  \item Deployment pgo
+  \item Deployment pgo-upgrade
+\end{itemize}
+
+
+To check that the Operator is created correctly, the following command is used:
+\begin{verbatim}
+kubectl -n postgres-operator get pods
+\end{verbatim}
+
+This command displays all pods from the postgres-operator namespace. If the Operator has been installed correctly the command will display the pod operator with the status Running.
+
+The result of this command is the following:
+\begin{verbatim}
+NAME                           READY   STATUS    RESTARTS   AGE
+pgo-864ddbd4cf-4pcd6           1/1     Running   0          4m6s
+pgo-upgrade-78fc8d8f94-jbnrl   1/1     Running   0          4m6s
+\end{verbatim}
+
+
+Therefore, it can be stated that the Operator has been installed and has successfully passed this test case.
+\n{3}{Cluster install}
+\n{3}{Cluster update to a newer version}
+\n{3}{Recovery of the Primary node after a crash}
+\n{3}{Cluster backup}
+\n{3}{Cluster restore from backup}
+\n{3}{Cluster vertical scaling}
+\n{3}{Cluster configuration update}
+\n{3}{Cluster monitoring}
 - monitoring pgo provides monitoring but you have to install it
 
 - you must also add PGO exporter in order to export metrics to Prometheus
@@ -557,6 +589,10 @@ and Query statistics \ref{fig:PGO_monitoring_QueryStatistics} (verry helpfull st
 \obr{PGO monitoring PgBackRest}{fig:PGO_monitoring_pgBackRest}{1}{graphics/PGO_monitoring_pgBackRest.png}
 \obr{PGO monitoring PostgreSQL details}{fig:PGO_monitoring_postgresSQLdetails}{1}{graphics/PGO_monitoring_postgresSQLdetails.png}
 \obr{PGO monitoring Query Statistics}{fig:PGO_monitoring_QueryStatistics}{1}{graphics/PGO_monitoring_QueryStatistics.png}
+
+
+\n{3}{Cluster uninstall}
+\n{3}{Operator uninstall}
 
 
 % ============================================================================ %

@@ -58,8 +58,6 @@ func (l *Logger) WithSpinnerStart(message string) {
 }
 
 func (l *Logger) WithSpinnerStop() *Logger {
-	if l.spinner != nil {
-		l.spinner.Stop()
-	}
+	l.spinner.Stop()
 	return l
 }

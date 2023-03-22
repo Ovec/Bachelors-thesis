@@ -3,6 +3,7 @@ package operators
 import (
 	"io/fs"
 	"strconv"
+	"time"
 
 	"operators/filesystem"
 	"operators/log"
@@ -64,8 +65,16 @@ func (o *Operators) TestAll() *Operators {
 }
 
 func (o *Operators) PrintResults() *Operators {
-	o.Logger.WithSpinner("Printing results").Succes("Good results").NewLine()
-	o.Logger.WithSpinner("Printing results").Warn("Bad results").NewLine()
+	o.Logger.WithSpinnerStart("Printing results")
+	time.Sleep(4 * time.Second)
+	o.Logger.WithSpinnerStop().Succes("Good results").NewLine()
+
+	o.Logger.WithSpinnerStart("Printing results")
+	time.Sleep(4 * time.Second)
+	o.Logger.WithSpinnerStop().Warn("Bad Results").NewLine()
+
+	// o.Logger.Succes("Good results").NewLine()
+	// o.Logger.WithSpinner("Printing results").Warn("Bad results").NewLine()
 	return o
 }
 
@@ -73,7 +82,14 @@ func (o *Operators) testInstall(i int, name string) {
 	result, err := tests.Install(name, o.Logger)
 
 	if err != nil {
+		o.Logger.Info(err.Error()).NewLine()
 		o.Results[i].errors = append(o.Results[i].errors, err.Error())
+	}
+
+	if result {
+		o.Logger.Succes("Install success").NewLine()
+	} else {
+		o.Logger.Error("Install failed").NewLine()
 	}
 
 	o.Results[i].install = result

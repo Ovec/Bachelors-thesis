@@ -11,7 +11,7 @@ kind: kindCreate kindSetKubectl
 
 # PGO
 pgoInstall:
-	kubectl apply -k ./pgo/postgres-operator-examples-main/kustomize/install/namespace
+	kubectl apply --server-side -k ./pgo/postgres-operator-examples-main/kustomize/install/namespace
 	kubectl apply --server-side -k ./pgo/postgres-operator-examples-main/kustomize/install/default
 
 pgoInstallCheck:
