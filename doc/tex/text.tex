@@ -383,8 +383,17 @@ Subsequently:
   \item Cluster install
         \begin{itemize}
           \item Installation of the cluster with an older version of Postgres and two nodes, one as Primary, the other as Standby
-          \item Creation of a database on the Primary node
-          \item Synchronization between nodes check
+          \item Check if all components were installed successfully
+        \end{itemize}
+  \item Cluster accepts connections
+        \begin{itemize}
+          \item Connection to cluster
+          \item Check if connection was successful
+        \end{itemize}
+  \item Cluster synchronization
+        \begin{itemize}
+          \item Creation of database on primary node
+          \item Check if database created in previous step was also created on Standby node
         \end{itemize}
   \item Cluster update to a newer version
         \begin{itemize}
@@ -464,14 +473,16 @@ TBD: First create manual testing and describe it, then automate these test with 
 
 The repository of this thesis contains a folder of tests in which the individual test suites are located. Each operator has a folder (test suite) that contains individual test cases numbered according to the order of execution, followed by a Makefile file that lists the specific commands that are executed to test the Operator.
 
+TBD: describe isntalled dependencies: kubectl, psql, jq, busybox
+
 \pagebreak
 \n{2}{Crunchy Postgres for Kubernetes (PGO) functional tests}
-The Crunchy documentation includes a Quickstart chapter \footnote{https://access.crunchydata.com/documentation/postgres-operator/v5/quickstart} that describes examples of Operator installation and usage. This chapter also contains a link to a repository with yaml manifests \footnote{https://github.com/CrunchyData/postgres-operator-examples} that allow kubectl to install, modify or delete Operator and managed resources in a kubernetes cluster. The manifests are distributed under the Apache 2.0 license and are also part of the repository of this thesis \footnote{https://github.com/Ovec/Bachelors-thesis}. In case of a any modification of these manifests, the reason for the modification and the modification itself is described.
+The Crunchy documentation includes a Quickstart chapter\footnote{https://access.crunchydata.com/documentation/postgres-operator/v5/quickstart} that describes examples of Operator installation and usage. This chapter also contains a link to a repository with yaml manifests\footnote{https://github.com/CrunchyData/postgres-operator-examples} that allow kubectl to install, modify or delete Operator and managed resources in a kubernetes cluster. The manifests are distributed under the Apache 2.0 license and are also part of the repository of this thesis\footnote{https://github.com/Ovec/Bachelors-thesis}. In case of a any modification of these manifests, the reason for the modification and the modification itself is described.
 
 
 
 \n{3}{Operator install}
-The installation of the operator was done with the following commands in the \break /tests/PGO/1\_operator\_install directory, that contains yaml manifests extracted from the PGO examples repository without any change.
+The installation of the operator was done with the following commands in install directory\footnote{/tests/PGO/1\_operator\_install}, that contains yaml manifests extracted from the PGO examples repository without any change.
 
 \textcolor{cyan}{this will install pgo version 5.3.1}
 
@@ -509,6 +520,7 @@ pgo-upgrade-78fc8d8f94-jbnrl   1/1     Running   0
 
 Therefore, it can be stated that the Operator has been installed and has successfully passed this test case.
 \n{3}{Cluster install with older major Postgres version}
+\label{chap:pgoclusterinstall}
 By using the kubectl describe command on the operator pod, the supported Postgres docker image, pgAdmin, pgBackRest, pgBouncer and pgExporter can be displayed. The result for the deployed Operator is the following\footnote{'registry.developers.crunchydata.com/crunchydata/' is being replaced with '<registry>'}:
 
 \begin{verbatim}
@@ -546,12 +558,12 @@ RELATED_IMAGE_PGEXPORTER:
 
 Since the yaml manifest provided contains Postgres version 14, but the list of supported versions includes version 15, the manifests will be used as is and Postgres will be updated from version 14 to version 15 in the Postgres version update test case.
 
-To install the Postgres cluster, the following command must be executed in the install directory (/tests/PGO/1\_cluster\_install).
+To install the Postgres cluster, the following command must be executed in the install directory\footnote{/tests/PGO/1\_cluster\_install}.
 \begin{verbatim}
 kubectl apply -k ./high-availability
 \end{verbatim}
 
-This command has installed the following pods and services in postgres-operator namespace
+This command has installed the following pods and their services in postgres-operator namespace
 
 \begin{verbatim}
 NAME                                  READY   STATUS      RESTARTS
@@ -575,10 +587,112 @@ hippo-ha-replicas    ClusterIP   10.96.74.192   <none>        5432/TCP
 
 Using kubectl describe, it was found that the hippo-ha-pgha pods contain four containers including a Postgres server, a pgBackrest server for backups, Patroni for replica synchronization, and replication-cert. Hippo-ha-pgbouncer pods contain pgBouncer and pgBouncer-config containers taking care of connection pooling for hippo-ha-pgha pods. Hippo-ha-repo-host-0 contains the pgBackrest server and pgBackrest-config containers from the yaml manifest it was found that it created a volume and backed up the database server when it was created.
 
+Using kubectl describe, it was found that the service hippo-ha-ha is connected to the pod hippo-ha-pgha1-pmsk-0, the service hippo-ha-pgbouncer is connected to the pod pgBouncer, the service hippo-ha-primary is connected to the service hippo-ha-ha, and hippo-ha-replicas is connected to the pod hippo-ha-pgha1-nmq4-0. It can thus be concluded that there should be a primary replica under hippo-ha-pgha1-pmsk-0 and a standby replica under hippo-ha-pgha1-nmq4-0. This finding will be verified in Chapter ~\ref{chap:pgosync}
 
+All components were successfully installed and Kubernetes did not report any errors so it can be said that Operator passed this test successfully.
+\n{3}{Cluster accepts connections}
+Since the Postgres cluster is not exposed outside the cluster, it was necessary to install some utility in the cluster that will have telnet which can connect to port 5432 of the cluster, like BusyBox.
+
+Yaml manifest of the installed BusyBox.
+\begin{verbatim}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+spec:
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["/bin/sh", "-c", "while true; do sleep 3600; done"]
+\end{verbatim}
+
+Busybox was installed with the following command executed in test directory\footnote{/tests/PGO/3\_cluster\_accepts\_connections}.
+\begin{verbatim}
+kubectl apply -f ./busybox.yaml
+\end{verbatim}
+
+The connection to the cluster was successfully established with the following command:
+
+\begin{verbatim}
+kubectl exec busybox -- telnet \
+$(kubectl get service hippo-ha-pgbouncer -n postgres-operator \
+-o jsonpath='{.spec.clusterIP}') 5432
+\end{verbatim}
+
+Therefore, it can be said that the cluster is receiving the connection and has passed this test successfully.
+
+\n{3}{Cluster synchronization}
+\label{chap:pgosync}
+In order to find out if the nodes are synchronized, a test database will be created on the Primary node and then the name of this database will be selected from the list of databases on Standby node.
+
+This was achieved by the following commands. The first command created the database on the primary node and the second checked for its existence on the standy. The commands contain subcommands that return the name of the primary or standby node depending on the set selector.
+
+\begin{verbatim}
+kubectl exec $$(kubectl -n postgres-operator get pods \
+--selector=postgres-operator.crunchydata.com/role=master \
+-o jsonpath='{.items[*].metadata.name}') \
+-n postgres-operator \
+-- psql -U postgres -c "create database test"
+\end{verbatim}
+\begin{verbatim}
+kubectl exec $$(kubectl -n postgres-operator get pods \
+--selector=postgres-operator.crunchydata.com/role=replica \
+-o jsonpath='{.items[*].metadata.name}') \
+-n postgres-operator \
+-- psql -U postgres -c "SELECT 1 as success FROM 
+pg_database WHERE datname = 'test'"
+\end{verbatim}
 
 \n{3}{Cluster update to a newer version}
+Updating a major version of the Postgres database server using the PGO Operator consists of the following steps. The first step must be installed using kubectl pgUpgrade which manifest is depicted below.
+\begin{verbatim}
+kubectl apply -k ./pg-upgrade
+\end{verbatim}
+
+Additionally, the allow update annotation must be added to the hippo-ha cluster using the following command.
+\begin{verbatim}
+kubectl -n postgres-operator annotate postgrescluster hippo-ha \
+postgres-operator.crunchydata.com/allow-upgrade="hippo-upgrade"
+\end{verbatim}
+
+
+Then the cluster must be shut down by adding the spec parameter shutdown set to true in the same yaml manifest under which the cluster was created and then applied using the same command as the cluster was created.
+
+Using the command that lists the status of pgUpgrade\footnote{kubectl describe pgupgrade hippo-upgrade -n postgres-operator}, upgrade status can be monitored. The condition section lists the status of the upgrade, it looks similar to the one below.
+
+\begin{verbatim}
+Last Transition Time:  2023-03-24T16:40:13Z
+Message:               Upgrade progressing for cluster hippo-ha
+Observed Generation:   1
+Reason:                PGUpgradeProgressing
+Status:                True
+Type:                  Progressing
+\end{verbatim}
+\begin{verbatim}
+Last Transition Time:  2023-03-24T16:46:39Z
+Message:               PostgresCluster hippo-ha is running version 15
+Observed Generation:   1
+Reason:                PGUpgradeCompleted
+Status:                False
+Type:                  Progressing
+\end{verbatim}
+\begin{verbatim}
+Last Transition Time:  2023-03-24T16:46:39Z
+Message:               PostgresCluster hippo-ha is ready 
+                       to complete upgrade to version 15
+Observed Generation:   1
+Reason:                PGUpgradeSucceeded
+Status:                True
+Type:                  Succeeded
+\end{verbatim}
+
+Once the conditions status is Succeeded, the upgrade is complete. Then the manifest still needs to be changed again, setting the spec shutdown parameter to false, the postgresVersion parameter to 15 and the container image to the supported version shown above in Chapter~\ref{chap:pgoclusterinstall}.
+
+The cluster was successfully upgraded from version 14.7 to version 15.2 by this process and contained a test database. Therefore, Operator passed this test successfully.
+
 \n{3}{Recovery of the Primary node after a crash}
+
+
 \n{3}{Cluster backup}
 \n{3}{Cluster restore from backup}
 \n{3}{Cluster vertical scaling}
