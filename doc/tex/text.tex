@@ -452,6 +452,165 @@ TBD: study what the methodology is, figure out how to rate each point
 %\obr{2022 Developer Survey \cite{so2022survey}}{}{1}{graphics/postgres_stack_overflow_survey.png}
 
 
+\cast{Praktická část}
+\n{1}{Nadpis první kapitoly praktické části}
+TBD: Describe architecture
+
+TBD: Describe kind cluster (maybe all in theory)
+
+TBD: Describe kubectl
+
+TBD: First create manual testing and describe it, then automate these test with Kubernetes E2E tests in GO
+
+The repository of this thesis contains a folder of tests in which the individual test suites are located. Each operator has a folder (test suite) that contains individual test cases numbered according to the order of execution, followed by a Makefile file that lists the specific commands that are executed to test the Operator.
+
+\pagebreak
+\n{2}{Crunchy Postgres for Kubernetes (PGO) functional tests}
+The Crunchy documentation includes a Quickstart chapter \footnote{https://access.crunchydata.com/documentation/postgres-operator/v5/quickstart} that describes examples of Operator installation and usage. This chapter also contains a link to a repository with yaml manifests \footnote{https://github.com/CrunchyData/postgres-operator-examples} that allow kubectl to install, modify or delete Operator and managed resources in a kubernetes cluster. The manifests are distributed under the Apache 2.0 license and are also part of the repository of this thesis \footnote{https://github.com/Ovec/Bachelors-thesis}. In case of a any modification of these manifests, the reason for the modification and the modification itself is described.
+
+
+
+\n{3}{Operator install}
+The installation of the operator was done with the following commands in the \break /tests/PGO/1\_operator\_install directory, that contains yaml manifests extracted from the PGO examples repository without any change.
+
+\textcolor{cyan}{this will install pgo version 5.3.1}
+
+\begin{verbatim}
+kubectl apply -k ./namespace
+kubectl apply --server-side -k ./default
+\end{verbatim}
+
+These commands created the following kubernetes objects:
+\begin{itemize}
+  \item Operator's Custom resource definition named \\postgresclusters.postgres-operator.crunchydata.com
+  \item Operators service accounts named pgo and postgres-operator-upgrade
+  \item Cluster roles postgres-operator
+  \item Cluster role postgres-operator-update
+  \item A cluster role binding named postgres-operator that links service account pgo to the cluster role postgres-operator
+  \item Cluster role binding named postgres-operator-upgrade which links service account postgres-operator-upgrade to cluster role postgres-operator-upgrade
+  \item Deployment pgo
+  \item Deployment pgo-upgrade
+\end{itemize}
+
+
+To check that the Operator is created correctly, the following command was used:
+\begin{verbatim}
+kubectl -n postgres-operator get pods
+\end{verbatim}
+
+This command displays all pods from the postgres-operator namespace. If the Operator was installed correctly the command will display the pod operator with the status Running.
+
+The result of this command was the following:
+\begin{verbatim}
+NAME                           READY   STATUS    RESTARTS
+pgo-864ddbd4cf-4pcd6           1/1     Running   0
+pgo-upgrade-78fc8d8f94-jbnrl   1/1     Running   0 
+\end{verbatim}
+
+Therefore, it can be stated that the Operator has been installed and has successfully passed this test case.
+\n{3}{Cluster install with older major Postgres version}
+By using the kubectl describe command on the operator pod, the supported Postgres docker image, pgAdmin, pgBackRest, pgBouncer and pgExporter can be displayed. The result for the deployed Operator is the following\footnote{'registry.developers.crunchydata.com/crunchydata/' is being replaced with '<registry>'}:
+
+\begin{verbatim}
+PGO_NAMESPACE:                      
+postgres-operator (v1:metadata.namespace)                                    
+CRUNCHY_DEBUG:                      
+true                                  
+RELATED_IMAGE_POSTGRES_13:          
+<registry>crunchy-postgres:ubi8-13.10-0
+RELATED_IMAGE_POSTGRES_13_GIS_3.0:  
+<registry>crunchy-postgres-gis:ubi8-13.10-3.0-0                               
+RELATED_IMAGE_POSTGRES_13_GIS_3.1:  
+<registry>crunchy-postgres-gis:ubi8-13.10-3.1-0                               
+RELATED_IMAGE_POSTGRES_14:          
+<registry>crunchy-postgres:ubi8-14.7-0 
+RELATED_IMAGE_POSTGRES_14_GIS_3.1:  
+<registry>crunchy-postgres-gis:ubi8-14.7-3.1-0                                
+RELATED_IMAGE_POSTGRES_14_GIS_3.2:  
+<registry>crunchy-postgres-gis:ubi8-14.7-3.2-0                                
+RELATED_IMAGE_POSTGRES_14_GIS_3.3:  
+<registry>crunchy-postgres-gis:ubi8-14.7-3.3-0                                
+RELATED_IMAGE_POSTGRES_15:          
+<registry>crunchy-postgres:ubi8-15.2-0 
+RELATED_IMAGE_POSTGRES_15_GIS_3.3:  
+<registry>crunchy-postgres-gis:ubi8-15.2-3.3-0                                
+RELATED_IMAGE_PGADMIN:              
+<registry>crunchy-pgadmin4:ubi8-4.30-10
+RELATED_IMAGE_PGBACKREST:           
+<registry>crunchy-pgbackrest:ubi8-2.41-4                                      
+RELATED_IMAGE_PGBOUNCER:            
+<registry>crunchy-pgbouncer:ubi8-1.18-0
+RELATED_IMAGE_PGEXPORTER:           
+<registry>crunchy-postgres-exporter:ubi8-5.3.1-0
+\end{verbatim}
+
+Since the yaml manifest provided contains Postgres version 14, but the list of supported versions includes version 15, the manifests will be used as is and Postgres will be updated from version 14 to version 15 in the Postgres version update test case.
+
+To install the Postgres cluster, the following command must be executed in the install directory (/tests/PGO/1\_cluster\_install).
+\begin{verbatim}
+kubectl apply -k ./high-availability
+\end{verbatim}
+
+This command has installed the following pods and services in postgres-operator namespace
+
+\begin{verbatim}
+NAME                                  READY   STATUS      RESTARTS
+hippo-ha-backup-2bc7-rv8s9            0/1     Completed   0
+hippo-ha-pgbouncer-7c6fcd4668-9fn7v   2/2     Running     0
+hippo-ha-pgbouncer-7c6fcd4668-jsvmj   2/2     Running     0
+hippo-ha-pgha1-nmq4-0                 4/4     Running     0
+hippo-ha-pgha1-pmsk-0                 4/4     Running     0
+hippo-ha-repo-host-0                  2/2     Running     0
+\end{verbatim}
+
+\begin{verbatim}
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)
+hippo-ha-ha          ClusterIP   10.96.225.2    <none>        5432/TCP
+hippo-ha-ha-config   ClusterIP   None           <none>        <none>
+hippo-ha-pgbouncer   ClusterIP   10.96.49.246   <none>        5432/TCP
+hippo-ha-pods        ClusterIP   None           <none>        <none>
+hippo-ha-primary     ClusterIP   None           <none>        5432/TCP
+hippo-ha-replicas    ClusterIP   10.96.74.192   <none>        5432/TCP
+\end{verbatim}
+
+Using kubectl describe, it was found that the hippo-ha-pgha pods contain four containers including a Postgres server, a pgBackrest server for backups, Patroni for replica synchronization, and replication-cert. Hippo-ha-pgbouncer pods contain pgBouncer and pgBouncer-config containers taking care of connection pooling for hippo-ha-pgha pods. Hippo-ha-repo-host-0 contains the pgBackrest server and pgBackrest-config containers from the yaml manifest it was found that it created a volume and backed up the database server when it was created.
+
+
+
+\n{3}{Cluster update to a newer version}
+\n{3}{Recovery of the Primary node after a crash}
+\n{3}{Cluster backup}
+\n{3}{Cluster restore from backup}
+\n{3}{Cluster vertical scaling}
+\n{3}{Cluster configuration update}
+\n{3}{Cluster monitoring}
+- monitoring pgo provides monitoring but you have to install it
+
+- you must also add PGO exporter in order to export metrics to Prometheus
+
+- Pgo provides five Grafana dashboards. POD details fig. \ref{fig:PGO_monitoring_POD_details} (various pod statistics for each pod, CPU, memory, network and disk usage for each POD),
+PostgreSQL service health fig. \ref{fig:PGO_monitoring_postgresSQL_health} (Saturation, Traffic, Errors, Query durration),
+PgBackRest dashboard fig. \ref{fig:PGO_monitoring_pgBackRest} (Information about backups),
+PostgreSQL details \ref{fig:PGO_monitoring_postgresSQLdetails} (complete cluster overview including active conncetions, cache hit ratio, database size, etc.),
+and Query statistics \ref{fig:PGO_monitoring_QueryStatistics} (verry helpfull statistic for each Postgres operator, shows query mean time, query run time, and highlites slow queries)
+
+- After installing Prometheus exporter everything worked flawlessly, cluster was discovered by Prometheus and appeared in Grafana
+
+\obr{PGO monitoring POD details}{fig:PGO_monitoring_POD_details}{1}{graphics/PGO_monitoring_POD_details.png}
+\obr{PGO monitoring PostgreSQL health}{fig:PGO_monitoring_postgresSQL_health}{1}{graphics/PGO_monitoring_postgresSQL_health.png}
+\obr{PGO monitoring PgBackRest}{fig:PGO_monitoring_pgBackRest}{1}{graphics/PGO_monitoring_pgBackRest.png}
+\obr{PGO monitoring PostgreSQL details}{fig:PGO_monitoring_postgresSQLdetails}{1}{graphics/PGO_monitoring_postgresSQLdetails.png}
+\obr{PGO monitoring Query Statistics}{fig:PGO_monitoring_QueryStatistics}{1}{graphics/PGO_monitoring_QueryStatistics.png}
+
+
+\n{3}{Cluster uninstall}
+
+
+
+\n{3}{Operator uninstall}
+
+
+
 
 
 
@@ -510,94 +669,12 @@ Tabulka \ref{tab:priklad} obsahuje dva řádky a celkem 7 sloupců.
 
 
 % ============================================================================ %
-\cast{Praktická část}
-\n{1}{Nadpis první kapitoly praktické části}
-TBD: Describe architecture
-
-TBD: Describe kind cluster (maybe all in theory)
-
-TBD: Describe kubectl
-
-TBD: First create manual testing and describe it, then automate these test with Kubernetes E2E tests in GO
-
-The repository of this thesis contains a folder of tests in which the individual test suites are located. Each operator has a folder (test suite) that contains individual test cases numbered according to the order of execution, followed by a Makefile file that lists the specific commands that are executed to test the Operator.
-
-\n{2}{Crunchy Postgres for Kubernetes (PGO) tests}
-
-
-\n{3}{Operator install}
-The Crunchy documentation contains a Quickstart chapter, according to which the Operator will be installed. To install, it is necessary to have kubectl installed and set up for the cluster in where the PGO is to be installed.
-
-The installation of the operator is done with the following commands in the \break /tests/PGO/1\_operator\_install directory, that contains yaml manifests that were extracted from the PGO examples repository \footnote{https://github.com/CrunchyData/postgres-operator-examples}.
-
-\begin{verbatim}
-kubectl apply -k ./namespace
-kubectl apply --server-side -k ./default
-\end{verbatim}
-
-These commands create the following kubernetes objects:
-\begin{itemize}
-  \item Operator's Custom resource definition named \\postgresclusters.postgres-operator.crunchydata.com
-  \item Operators service accounts named pgo and postgres-operator-upgrade
-  \item Cluster roles postgres-operator
-  \item Cluster role postgres-operator-update
-  \item A cluster role binding named postgres-operator that links service account pgo to the cluster role postgres-operator
-  \item Cluster role binding named postgres-operator-upgrade which links service account postgres-operator-upgrade to cluster role postgres-operator-upgrade
-  \item Deployment pgo
-  \item Deployment pgo-upgrade
-\end{itemize}
-
-
-To check that the Operator is created correctly, the following command is used:
-\begin{verbatim}
-kubectl -n postgres-operator get pods
-\end{verbatim}
-
-This command displays all pods from the postgres-operator namespace. If the Operator has been installed correctly the command will display the pod operator with the status Running.
-
-The result of this command is the following:
-\begin{verbatim}
-NAME                           READY   STATUS    RESTARTS   AGE
-pgo-864ddbd4cf-4pcd6           1/1     Running   0          4m6s
-pgo-upgrade-78fc8d8f94-jbnrl   1/1     Running   0          4m6s
-\end{verbatim}
-
-
-Therefore, it can be stated that the Operator has been installed and has successfully passed this test case.
-\n{3}{Cluster install}
-\n{3}{Cluster update to a newer version}
-\n{3}{Recovery of the Primary node after a crash}
-\n{3}{Cluster backup}
-\n{3}{Cluster restore from backup}
-\n{3}{Cluster vertical scaling}
-\n{3}{Cluster configuration update}
-\n{3}{Cluster monitoring}
-- monitoring pgo provides monitoring but you have to install it
-
-- you must also add PGO exporter in order to export metrics to Prometheus
-
-- Pgo provides five Grafana dashboards. POD details fig. \ref{fig:PGO_monitoring_POD_details} (various pod statistics for each pod, CPU, memory, network and disk usage for each POD),
-PostgreSQL service health fig. \ref{fig:PGO_monitoring_postgresSQL_health} (Saturation, Traffic, Errors, Query durration),
-PgBackRest dashboard fig. \ref{fig:PGO_monitoring_pgBackRest} (Information about backups),
-PostgreSQL details \ref{fig:PGO_monitoring_postgresSQLdetails} (complete cluster overview including active conncetions, cache hit ratio, database size, etc.),
-and Query statistics \ref{fig:PGO_monitoring_QueryStatistics} (verry helpfull statistic for each Postgres operator, shows query mean time, query run time, and highlites slow queries)
-
-- After installing Prometheus exporter everything worked flawlessly, cluster was discovered by Prometheus and appeared in Grafana
-
-\obr{PGO monitoring POD details}{fig:PGO_monitoring_POD_details}{1}{graphics/PGO_monitoring_POD_details.png}
-\obr{PGO monitoring PostgreSQL health}{fig:PGO_monitoring_postgresSQL_health}{1}{graphics/PGO_monitoring_postgresSQL_health.png}
-\obr{PGO monitoring PgBackRest}{fig:PGO_monitoring_pgBackRest}{1}{graphics/PGO_monitoring_pgBackRest.png}
-\obr{PGO monitoring PostgreSQL details}{fig:PGO_monitoring_postgresSQLdetails}{1}{graphics/PGO_monitoring_postgresSQLdetails.png}
-\obr{PGO monitoring Query Statistics}{fig:PGO_monitoring_QueryStatistics}{1}{graphics/PGO_monitoring_QueryStatistics.png}
-
-
-\n{3}{Cluster uninstall}
-\n{3}{Operator uninstall}
-
 
 % ============================================================================ %
 \nn{Závěr}
 Text závěru.
+
+
 
 
 % ============================================================================ %
