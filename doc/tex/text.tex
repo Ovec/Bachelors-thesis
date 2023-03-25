@@ -378,73 +378,73 @@ Subsequently:
   \item Operator install
         \begin{itemize}
           \item Installation of the Operator in Kubernetes cluster
-          \item Check if Operator was installed
+          \item Verify that the Operator was installed
         \end{itemize}
   \item Cluster install
         \begin{itemize}
           \item Installation of the cluster with an older version of Postgres and two nodes, one as Primary, the other as Standby
-          \item Check if all components were installed successfully
+          \item Verify that all components were installed successfully
         \end{itemize}
   \item Cluster accepts connections
         \begin{itemize}
           \item Connection to cluster
-          \item Check if connection was successful
+          \item Verify that connection was successful
         \end{itemize}
   \item Cluster synchronization
         \begin{itemize}
           \item Creation of database on primary node
-          \item Check if database created in previous step was also created on Standby node
+          \item Verify that database created in previous step was also created on Standby node
         \end{itemize}
   \item Cluster update to a newer version
         \begin{itemize}
           \item Update the cluster to a newer version
-          \item Update result check
+          \item Verify update result
         \end{itemize}
   \item Recovery of the Primary node after a crash
         \begin{itemize}
           \item Delete of the primary node
-          \item Failover check
-          \item New Standby creation check
+          \item Failover verification
+          \item New Standby creation verification
         \end{itemize}
   \item Cluster backup
         \begin{itemize}
           \item Creation of backup volume
           \item Postgres cluster backup to backup volume
-          \item Backup result check
+          \item Backup result verification
         \end{itemize}
   \item Cluster restore from backup
         \begin{itemize}
           \item Restoration of the cluster from the backup created in the previous step
-          \item Restored cluster check
+          \item Restored cluster verification
         \end{itemize}
   \item Cluster vertical scaling
         \begin{itemize}
           \item Addition of a node to the cluster
-          \item Number of nodes check
+          \item Number of nodes verification
           \item Removal of the added node
-          \item Number of nodes check
+          \item Number of nodes verification
         \end{itemize}
   \item Cluster configuration update
         \begin{itemize}
           \item Change the cluster configuration
           \item TBD - figure out what we are going to change and justify it
-          \item Implementation of change check
+          \item Verifify configuration changes
         \end{itemize}
   \item Cluster monitoring
         \begin{itemize}
           \item Installation of monitoring
-          \item Visual monitoring check
+          \item Visual monitoring verification
         \end{itemize}
   \item Cluster uninstall
         \begin{itemize}
           \item Removal of the backup volume
           \item Removal of the cluster
-          \item Removal result check
+          \item Verify cluster removal
         \end{itemize}
   \item Operator uninstall
         \begin{itemize}
           \item Operator uninstall
-          \item Check if Operator was removed with all its dependencies
+          \item Verify that Operator was removed with all its dependencies
         \end{itemize}
 \end{itemize}
 
@@ -504,7 +504,7 @@ These commands created the following kubernetes objects:
 \end{itemize}
 
 
-To check that the Operator is created correctly, the following command was used:
+To verify that the Operator is created correctly, the following command was used:
 \begin{verbatim}
 kubectl -n postgres-operator get pods
 \end{verbatim}
@@ -628,14 +628,14 @@ In order to find out if the nodes are synchronized, a test database will be crea
 This was achieved by the following commands. The first command created the database on the primary node and the second checked for its existence on the standy. The commands contain subcommands that return the name of the primary or standby node depending on the set selector.
 
 \begin{verbatim}
-kubectl exec $$(kubectl -n postgres-operator get pods \
+kubectl exec $(kubectl -n postgres-operator get pods \
 --selector=postgres-operator.crunchydata.com/role=master \
 -o jsonpath='{.items[*].metadata.name}') \
 -n postgres-operator \
 -- psql -U postgres -c "create database test"
 \end{verbatim}
 \begin{verbatim}
-kubectl exec $$(kubectl -n postgres-operator get pods \
+kubectl exec $(kubectl -n postgres-operator get pods \
 --selector=postgres-operator.crunchydata.com/role=replica \
 -o jsonpath='{.items[*].metadata.name}') \
 -n postgres-operator \
@@ -691,9 +691,73 @@ Once the conditions status is Succeeded, the upgrade is complete. Then the manif
 The cluster was successfully upgraded from version 14.7 to version 15.2 by this process and contained a test database. Therefore, Operator passed this test successfully.
 
 \n{3}{Recovery of the Primary node after a crash}
+The failover was verified as follows. The names of the primary and standby nodes were stored in variables. Then the primary node was deleted. A check was made to see if the name of the primary node was the same as the name of the node stored in the variable, followed by a check to see if the name of the new standby node was the same as the name of the original primary node. The following script was used for the verfiy it.
+
+\begin{verbatim}
+#!/bin/bash
+source ../../utilities/pods/get_podname_by_selector.sh
+
+primary=$(get_pod_name_by_selector \
+    postgres-operator.crunchydata.com/role master)
+standby=$(
+    get_pod_name_by_selector \
+        postgres-operator.crunchydata.com/role replica
+)
+kubectl delete pod "$primary" -n \
+    postgres-operator
+new_primary=$(
+    get_pod_name_by_selector \
+        postgres-operator.crunchydata.com/role master
+)
+
+counter=0
+new_standby=""
+
+while [[ "$counter" -lt 30 ]]; do
+    new_standby=$(
+        get_pod_name_by_selector \
+            postgres-operator.crunchydata.com/role replica
+    )
+    if test "$new_standby" = ""; then
+        sleep 1
+    else
+        break
+    fi
+done
+
+if test "$standby" = "$new_primary" &&
+    test "$primary" = "$new_standby"; then
+    exit 0
+else
+    echo "Error: failover failed"
+    exit 1
+fi
+\end{verbatim}
+
+The shell script was executed without error and therefore the Operator passed the test.
 
 
 \n{3}{Cluster backup}
+PGO enables automatic backup. The cluster installation manifest has this backup set up. Therefore the cluster was backed up when it was created and after it was upgraded to a newer version, to check if it was backed up just check the existence of backups in the /pgbackrest/repo1/archive/db/15-2/ pgBackRest pod directory. The verification was done with the following script.
+
+\begin{verbatim}
+#!/bin/bash
+source ../../utilities/pods/get_podname_by_selector.sh
+
+cmd="kubectl exec $(get_pod_name_by_selector \
+    postgres-operator.crunchydata.com/data pgbackrest) \
+    -n postgres-operator \
+    -- ls /pgbackrest/repo1/archive/db/15-2/"
+
+if $cmd && [ -n "$cmd" ]; then
+    exit 0
+else
+    echo "Backup directory doesn't exist or its empty"
+    exit 1
+fi
+\end{verbatim}
+The shell script was executed without error and therefore the Operator passed the test.
+
 \n{3}{Cluster restore from backup}
 \n{3}{Cluster vertical scaling}
 \n{3}{Cluster configuration update}

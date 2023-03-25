@@ -22,6 +22,10 @@ describePGupgrade:
 annotateUpgrade:
 	kubectl -n postgres-operator annotate postgrescluster hippo-ha postgres-operator.crunchydata.com/allow-upgrade="hippo-upgrade"
 
+
+uc:
+	kubectl get pgupgrade hippo-upgrade -n postgres-operator -o jsonpath='{.status.conditions[-1:].type}'
+
 clusterShutdown:
 	kubectl apply -k ./high-availability-shutdown
 
