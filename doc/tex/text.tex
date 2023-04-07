@@ -137,19 +137,17 @@ As depicted in figure \ref{fig:applifecycle} application lifecycle consists of t
 
 Operation is the process of running and managing the application, which starts with deployment and continues until the application is taken out of service. This aspect of the application lifecycle management covers the release of the application into production, ongoing monitoring, and other related tasks. \cite{ALM}
 
-Based on this knowledge, the complete database life cycle is defined as follows.
+Therefore the complete database life cycle can be outlined by following events:
 \begin{itemize}
   \item System installation
-  \item System upgrade to a newer version
+  \item System upgrade to a newer version (major and minor)
   \item System backup
   \item System restore
   \item System monitoring
-  \item System scaling
-  \item System configuration update
+  \item System scaling (vertical and horizontal)
+  \item System configuration
   \item System uninstall
 \end{itemize}
-
-TBD: connect to capability levels of Operator (define related tasks, chose the capability that would suit them all)
 
 \pagebreak
 \n{2}{Operators}
@@ -232,10 +230,8 @@ PGO’s capabilities are the following:
   \item \textbf{Cloning:} PGO is able to clone cluster. \cite{CrunchyDocDisasterRecovery}
   \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager. \cite{CrunchyDocMonitoring}
   \item \textbf{Connection Pooling:} PgBouncer connection pooler from Postgres is part of PGO. \cite{CrunchyDocConnectionPooling}
-  \item   \item \textbf{Customization:} PGO provides a wide area of Postgres customization. \cite{CrunchyDocCustomisation}
+  \item  \textbf{Customization:} PGO provides a wide area of Postgres customization. \cite{CrunchyDocCustomisation}
 \end{itemize}
-
-TBD: Add customization capabilities of PGO
 
 The current stable version of PGO is 5.3.0 was released on 13th January 2023. \cite{ArtifactHubCrunchy}
 PGO is compatible with following platforms: Kubernetes 1.22-1.25, OpenShift 4.8-4.11, Rancher, Google Kubernetes Engine (GKE), including Anthos, Amazon EKS, Microsoft AKS, VMware Tanzu. \cite{CrunchyDoc}
@@ -371,6 +367,163 @@ PPO consists of the following key components \cite{PostgresOnKubernetes}:
 }
 
 \n{1}{Testing methodology}
+To create a methodology for testing it is important to define many important parameters of the testing such as what should the result of testing be, what testing techniques should be used, when to test, what to test, and so on. Some parts of these parameters were already discovered in the previous chapter, the rest of the parameters and important processes will be revealed in this chapter.
+
+It is important to notice at the beginning of this chapter that testing as described in \cite{FoundationOfSoftwareTesting} has following seven testing princliples:
+\begin{enumerate}
+  \item Testing shows the presence of defects, not their absence
+  \item Exhausting testing is impossible
+  \item Early testing saves time and money
+  \item Defects clusters together
+  \item Beware of pesticide paradox
+  \item Testing is context dependent
+  \item Absence of errors is fallacy
+\end{enumerate}
+
+Therefore, the test process derived from this methodology as every test process will not exhaustively test the Operators and will be depended on thesis context and author bias. Because the goal of this thesis is the comparison of the selected Postgres Operators for lifecycle management the main scope of this methodology is to deliver test process that will produce test reports that will form the base for this comparison. The methodology for test process will describe this test process from high level to lower levels.
+
+\n{2}{Requirements gathering}
+To comprehensively manage the entire Postgres lifecycle using Kubernetes Operators and ensure successful utilization of the Operator, the following requirements must be met:
+
+RQ1: Operator must be able to install Postgres cluster
+
+RQ2: Operator must be able to backup Postgres cluster
+
+RQ3: Operator must be able to restore Postgres cluster
+
+RQ4: Operator must be able to change crucial cluster config
+
+RQ5: Operator must be able to scale Postgres cluster
+
+RQ6: Operator must be able to install minor Postgres update
+
+RQ7: Operator must be able to install major Postgres update
+
+RQ8: Operator must provide Postgres cluster monitoring
+
+RQ9: Operator must be able do uninstall Postgres cluster
+
+RQ10: Operator must be safe
+
+RQ11: Operator must upgradable
+
+RQ12: Operator must address reported issues
+
+\n{2}{Test strategy}
+\begin{itemize}
+  \item Test purpose: the purpose of this testing is to gather information about the test item and create confidence in taking a decision by providing evidence that the test item performs correctly under specific circumstances. \cite{SoftwareTestingStandard3} That means that the testing is to declare best reachable state and compare each operator to this state.
+  \item Test item test item for the test process will be Operators, their documentation, and repositories.
+        \begin{itemize}
+          \item PGO
+                \begin{itemize}
+                  \item	Operator - Crunchy Postgres for Kubernetes Operator version 5.3.1
+                  \item	Repository -  https://github.com/CrunchyData/postgres-operator
+                  \item	Documentation - https://access.crunchydata.com/documentation/postgres-operator/v5/
+                \end{itemize}
+          \item CNPGO
+                \begin{itemize}
+                  \item Operator – CloudNativePG Operator version 1.19.1
+                  \item Repository -  https://github.com/cloudnative-pg/cloudnative-pg
+                  \item Documentation - https://cloudnative-pg.io/documentation/1.19/
+                \end{itemize}
+
+          \item SGO
+                \begin{itemize}
+                  \item Operator – StackGres Operator version 1.4
+                  \item Repository -  https://gitlab.com/ongresinc/stackgres
+                  \item Documentation - https://stackgres.io/doc/1.4/
+                \end{itemize}
+
+          \item PPO
+                \begin{itemize}
+                  \item Operator – Percona Operator for PostgreSQL version 1.4
+                  \item Repository -  https://github.com/percona/percona-postgresql-operator
+                  \item Documentation - https://docs.percona.com/percona-operator-for-postgresql/index.html
+                \end{itemize}
+        \end{itemize}
+
+
+
+  \item Test levels: The test item and the purpose of this testing will be covered by system testing and acceptance testing test levels. System testing to verify that the system fulfills the defined requirements, and acceptance tests to assess the degree to which the system meets expectations and to establish confidence in the whole system as is.
+
+  \item Types of tests: Testing processes will utilize functional testing, non-functional testing, and black box testing.
+
+  \item Forms of tests
+        \begin{itemize}
+          \item Static: checklist review, defect analysis, vulnerability analysis
+          \item Dynamic: use case black box testing (partly automated)
+        \end{itemize}
+
+  \item Test environments
+        \begin{itemize}
+          \item Kind Kubernetes cluster for all dynamic test except performance tests, installed on Unix/Linux compatible machine.
+        \end{itemize}
+
+  \item Test tools
+        \begin{itemize}
+          \item Kubectl Kubernetes cluster management
+          \item	KUTTL Kubernetes test tool
+          \item	Bash shell scripts
+          \item	Trivy security scanner
+          \item	Psql terminal based frontend to Postgres
+          \item	Excel
+        \end{itemize}
+
+  \item Skills required
+        \begin{itemize}
+          \item Kubernetes cluster management with kubectl skills.
+          \item	KUTTL skills
+          \item	Ability to write shell scripts.
+          \item	Trivy skills and skills to interpret results.
+          \item	Psql skills
+          \item	Excel skills
+        \end{itemize}
+
+  \item Roles
+        \begin{itemize}
+          \item Test architect, test manager, test designer, test automator, tester and test analyst
+        \end{itemize}
+
+  \item Staff
+        \begin{itemize}
+          \item Miroslav Šiřina
+        \end{itemize}
+
+  \item Training needed
+        \begin{itemize}
+          \item	Test management
+          \item	Test design
+          \item	Test analyst
+          \item	KUTTL
+          \item	Trivy and results interpretation skills
+        \end{itemize}
+
+  \item Test complete criteria
+        \begin{itemize}
+          \item 100\% coverage of all requirements
+        \end{itemize}
+
+  \item Test priorities
+        \begin{itemize}
+          \item Static tests have higher priority to dynamic
+        \end{itemize}
+
+  \item Collected metrics
+        \begin{itemize}
+          \item Achievable maximum. Percentation score of life cycle tests achieved.
+          \item Achievable maximum. Percentation score of security tests achieved.
+          \item Achievable maximum. Percentation score of issue tracking analysis achieved.
+        \end{itemize}
+\end{itemize}
+
+
+
+
+
+
+
+
+\n{1}{Testing methodology - before I knew what testing is}
 As mentioned in the previous chapters, Operators will be subjected to tests to manage the complete application lifecycle.
 
 Subsequently:
@@ -519,9 +672,28 @@ pgo-upgrade-78fc8d8f94-jbnrl   1/1     Running   0
 \end{verbatim}
 
 Therefore, it can be stated that the Operator has been installed and has successfully passed this test case.
+
+In order to run this test case again following basch script was created and stored in Operator installation folder. If the script exits with 0 the test was passed successfully.
+
+\begin{verbatim}
+#!/bin/bash
+source ../../utilities/pods/wait_for_all_pods_in_namespace_running.sh
+
+kubectl apply -k ./namespace
+
+kubectl apply --server-side -k ./default
+
+sleep 5
+wait_for_all_pods_in_namespace_running "postgres-operator"
+
+echo "Success"
+exit 0
+\end{verbatim}
+
+
 \n{3}{Cluster install with older major Postgres version}
 \label{chap:pgoclusterinstall}
-By using the kubectl describe command on the operator pod, the supported Postgres docker image, pgAdmin, pgBackRest, pgBouncer and pgExporter can be displayed. The result for the deployed Operator is the following\footnote{'registry.developers.crunchydata.com/crunchydata/' is being replaced with '<registry>'}:
+By using the kubectl describe command on the operator pod, the supported Postgres docker image, pgAdmin, pgBackRest, pgBouncer and pgExporter can be displayed. The result for the deployed Operator was the following\footnote{'registry.developers.crunchydata.com/crunchydata/' is being replaced with '<registry>'}:
 
 \begin{verbatim}
 PGO_NAMESPACE:                      
@@ -556,7 +728,7 @@ RELATED_IMAGE_PGEXPORTER:
 <registry>crunchy-postgres-exporter:ubi8-5.3.1-0
 \end{verbatim}
 
-Since the yaml manifest provided contains Postgres version 14, but the list of supported versions includes version 15, the manifests will be used as is and Postgres will be updated from version 14 to version 15 in the Postgres version update test case.
+Since the yaml manifest provided contains Postgres version 14, but the list of supported versions includes version 15, the manifests will be used as is and Postgres will be updated from version 14 to version 15 in the Postgres version update test case (Chapter ~\ref{chap:pgosync}).
 
 To install the Postgres cluster, the following command must be executed in the install directory\footnote{/tests/PGO/1\_cluster\_install}.
 \begin{verbatim}
@@ -590,6 +762,12 @@ Using kubectl describe, it was found that the hippo-ha-pgha pods contain four co
 Using kubectl describe, it was found that the service hippo-ha-ha is connected to the pod hippo-ha-pgha1-pmsk-0, the service hippo-ha-pgbouncer is connected to the pod pgBouncer, the service hippo-ha-primary is connected to the service hippo-ha-ha, and hippo-ha-replicas is connected to the pod hippo-ha-pgha1-nmq4-0. It can thus be concluded that there should be a primary replica under hippo-ha-pgha1-pmsk-0 and a standby replica under hippo-ha-pgha1-nmq4-0. This finding will be verified in Chapter ~\ref{chap:pgosync}
 
 All components were successfully installed and Kubernetes did not report any errors so it can be said that Operator passed this test successfully.
+
+In order to run this test case again check.sh script can be used in cluster installation folder. If the script exits with 0 the test was passed successfully. The content of the script is as follows:
+\begin{verbatim}
+
+\end{verbatim}
+
 \n{3}{Cluster accepts connections}
 Since the Postgres cluster is not exposed outside the cluster, it was necessary to install some utility in the cluster that will have telnet which can connect to port 5432 of the cluster, like BusyBox.
 
@@ -644,6 +822,7 @@ pg_database WHERE datname = 'test'"
 \end{verbatim}
 
 \n{3}{Cluster update to a newer version}
+\label{chap:pgoupdate}
 Updating a major version of the Postgres database server using the PGO Operator consists of the following steps. The first step must be installed using kubectl pgUpgrade which manifest is depicted below.
 \begin{verbatim}
 kubectl apply -k ./pg-upgrade
