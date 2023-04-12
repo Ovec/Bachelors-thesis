@@ -38,6 +38,14 @@
 \usepackage[labelsep=space,tableposition=bottom,justification=centering]{caption} % Přenastavení popisků u figur a tabulek
 \usepackage{xmpincl}	% Pro aplikaci standardu PDF/A
 \usepackage{hyperxmp}	% Pro aplikaci standardu PDF/A
+\usepackage{enumitem}   % Pro requirements
+\usepackage{makecell}
+
+
+
+
+
+
 
 %\pdfminorversion=4
 %\pdfobjcompresslevel=0
@@ -199,6 +207,14 @@
 % ============================================================================ %
 % UŽIVATELSKÉ STYLY
 
+% tabulky
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+\renewcommand{\cellalign}{cl}
+\renewcommand{\theadalign}{cl}
+
 % Styl nn = nečíslovaný nadpis (je vysázený v obsahu)
 \def\nn#1{\clearpage\phantomsection\addcontentsline{toc}{section}{#1}\section*{\MakeTextUppercase{#1}}}
 
@@ -237,6 +253,7 @@
 % Styl pro tabulky
 % \tab{popisek}{label}{rozměr (0.0 - 1.0)}{definice sloupců}{obsah} 
 \def\tab#1#2#3#4#5{
+
 	\begin{table}[h]
 		%\captionwidth{#3\linewidth}
 		%\changecaptionwidth
@@ -245,10 +262,13 @@
 		\label{#2}
 		\centering
 		\def\arraystretch{1.5}% 
-		\begin{tabular}{#4}
-			#5
-		\end{tabular}
+		\resizebox{\textwidth}{!}{
+			\begin{tabular}{#4}
+				#5
+			\end{tabular}
+		}
 	\end{table}
+
 }
 
 % Styl pro tabulky v příloze
@@ -823,6 +843,10 @@
 	\let\endoldfigure=\endfigure
 	\renewenvironment{figure}{\vspace{#1}\begin{oldfigure}}{\end{oldfigure}\vspace{#2}}
 }
+
+% Requirements seznam
+\newlist{requirements}{enumerate}{1}
+\setlist[requirements]{label=RQ\arabic*:}
 
 
 % ============================================================================ %
