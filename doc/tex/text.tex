@@ -131,6 +131,7 @@ The easiest way to run Postgres in Kubernetes is through the StatefulSet just me
 This basic setup may be sufficient for running a single node, but it is no longer sufficient fro managing the whole Postgres lifecycle. For managing whole Postgres lifecycle it is necessary to install other applications in the Kubernetes cluster and then configure the entire Postgres cluster to work with them. This represents a large amount of work and subsequent maintenance that Kubernetes Operators can facilitate.
 
 \n{2}{Database System Lifecycle}
+\label{chap:lifecycle}
 The database system itself is a software like any other. It is therefore also subject to the same life cycle as software.
 As depicted in figure \ref{fig:applifecycle} application lifecycle consists of three main parts. It is the governance part, development, and operations. For this thesis, only the operations part is relevant because it is the only part we are able to control.
 \obr{Application Life Cycle \cite{ALM}}{fig:applifecycle}{1}{graphics/aplication-lifecycle.png}
@@ -367,8 +368,9 @@ PPO consists of the following key components \cite{PostgresOnKubernetes}:
 }
 
 \n{1}{Testing methodology}
-To create a methodology for testing it is important to define many important parameters of the testing such as what should the result of testing be, what testing techniques should be used, when to test, what to test, and so on. Some parts of these parameters were already discovered in the previous chapter, the rest of the parameters and important processes will be revealed in this chapter.
+This chapter presents a high-level overview of the testing methodology, which will be used to compare selected Postgres Operators for lifecycle management. The goal of the methodology is to deliver a test process that produces test reports forming the basis of this comparison.
 
+\n{2}{Notice}
 It is important to notice at the beginning of this chapter that testing as described in \cite{FoundationOfSoftwareTesting} has following seven testing princliples:
 \begin{enumerate}
   \item Testing shows the presence of defects, not their absence
@@ -380,39 +382,140 @@ It is important to notice at the beginning of this chapter that testing as descr
   \item Absence of errors is fallacy
 \end{enumerate}
 
+Therefore, the test process derived from this methodology as every test process will not exhaustively test the Operators and will be depended on thesis context, author bias, and author skills. Because the goal of this thesis is the comparison of the selected Postgres Operators for lifecycle management the main scope of this methodology is to deliver test process that will produce test reports that will form the base for this comparison.
+
+\n{2}{Requirements}
+Before initiating the testing process, it is essential to collect the system requirements. These requirements should align with the concepts discussed in the earlier chapters, specifically the chapter on the software development life cycle~\ref{chap:lifecycle}.
+
+
+\n{2}{Test management process}
+According to the IEEE Standard for Software Test Documentation \cite{ieeeTestProcess}, test management processes have three main test processes: test strategy and planning, test monitoring and control, and test completion.
+As depicted below testing has more than one management test process. The main process is the Organizational process which is further divided into Test management processes that are then devided into Dynamic test processes.
+
+\obr{Test management process relationships \cite{ieeeTestProcess}}{fig:ieeeTestProcess}{1}{graphics/test_management_process.png}
+
+Thesis test process will consist of one management process that will create two managed subprocesses, one for static testing and one for dynamic testing. This test management process will monitor and control subprocesses. Subprocesses will deliver all their deliverables to this main process.
+
+The main management consist of following tasks:
+\begin{itemize}
+  \item High-level test strategy
+  \item High-level test planning
+\end{itemize}
+
+Subprocess consist of following tasks:
+\begin{itemize}
+  \item Test strategy
+  \item Test test planning
+\end{itemize}
+
+\n{2}{Test strategy and planning}
+The output of the test strategy and planing will be the test plan, as the basis for its creation will be the requirements created earlier. Details about activities are described by ISO/IEC/IEE 29119-3.
+
+As depicted on \ref{fig:ieeeTestProcess} test plan is not static but it changes according to monitoring.
+
+
+\n{2}{Test plan}
+\obr{Test plan creation activities \cite{ieeeTestProcess}}{fig:ieeeTestPlan}{1}{graphics/test_plan_process.png}
+In order to create a test plan, IEEE proposes the following procedure shown in the figure \ref{fig:ieeeTestPlan} with the idea that some activities can be repeated.
+
+The result of a properly designed test plan should be:
+\begin{itemize}
+  \item Scope of testing
+  \item The risks of which testing
+  \item Testing strategy
+  \item Test environment
+  \item Test tools
+  \item Test data
+  \item Staffing
+  \item Scheduling
+  \item Required training
+  \item Estimates of time and resources
+  \item Compliance with all stakeholders
+\end{itemize}
+
+\n{2}{Test monitoring and control process}
+The role of the test monitoring and control process is to observe the test process and detect deviations from the plan. This process controls the test process throughout its duration. The findings are then used to modify the test plan.
+
+Testing progress will be reported on a daily basis with the status report.
+
+\n{2}{Test completion process}
+The test completion process as depicted in the figure \ref{fig:ieeeTestProcess} will be used in testing after each test the test competition report will be created and delivered to a higher level.
+\obr{Test completion process \cite{ieeeTestProcess}}{fig:ieeeTestCompletition}{1}{graphics/test_completation_report.png}
+
+
+\n{2}{Dynamic and static Test processes}
+According to ISTQB \cite{FoundationOfSoftwareTesting} there are two types of tests. Static and dynamic. The main difference is that the static technique does not execute the tested software, but the dynamic does. The testing process will utilize both techniques using the dynamic testing process depicted in figure \ref{fig:ieeeTestDynamicTestProcess}.
+
+\obr{Dynamic test processes \cite{ieeeTestProcess}}{fig:ieeeTestDynamicTestProcess}{1}{graphics/test_dynamic_test_processes.png}
+
+\n{2}{Test design and implementation processes}
+Test design and implementation process must follow the process depicted in the figure \ref{fig:ieeeTestDesignAndImplementation}. Test design techniques should be used to derive test cases. Test cases must be traceable to requirements and must meet the ISO/IEC/IEE 29119-3 requirements. This process can be reentered multiple times and must meet the completion criteria specified in the test plan.
+\obr{Test design and implementation \cite{ieeeTestProcess}}{fig:ieeeTestDesignAndImplementation}{1}{graphics/test_design_and_implementation.png}
+
+
+\n{2}{Test environment and data management processes}
+Based on the test plan all the environments must be established and well mainteained.
+
+\n{2}{Test execution process}
+Test execution process depicted in \ref{fig:ieeeTestExecutionProcess} must be followed. After the test execution, the execution log must be delivered. Details about activities are described by ISO/IEC/IEE 29119-3.
+
+\obr{Test execution process \cite{ieeeTestProcess}}{fig:ieeeTestExecutionProcess}{1}{graphics/test_execution_process.png}
+
+\n{2}{Test incident report process}
+The process for reporting test incidents, as depicted in Figure \ref{fig:ieeeTestExecutionProcess}, must be followed. It is important to note that the purpose of testing is not to simply find incidents, but rather to test the capabilities of the system. As such, the term "finding" will be used in cases where it is more appropriate.
+\obr{Test execution process \cite{ieeeTestProcess}}{fig:ieeeTestIncidentReportProcess}{1}{graphics/test_incident_report_process.png}
+
+\n{2}{Documents}
+All documents must meet the requirements of ISO/IEC/IEE 29119-3\footnote[1]{https://standards.ieee.org/ieee/29119-3/5310/}
+
+\n{2}{Level of detail}
+Please note that this chapter provides only a high-level overview of the testing methodology. More detailed information can be found in ISO/IEC/IEEE 29119-2\footnote[2]{https://standards.ieee.org/ieee/29119-2/7498/}. If there are any doubts regarding the testing process, this standard should be used as a guide to ensure that all necessary aspects of testing are properly addressed.
+
+
+SMAZAT TO CO JE POD TIMTO
+
+
+
 Therefore, the test process derived from this methodology as every test process will not exhaustively test the Operators and will be depended on thesis context and author bias. Because the goal of this thesis is the comparison of the selected Postgres Operators for lifecycle management the main scope of this methodology is to deliver test process that will produce test reports that will form the base for this comparison. The methodology for test process will describe this test process from high level to lower levels.
 
-\n{2}{Requirements gathering}
-To comprehensively manage the entire Postgres lifecycle using Kubernetes Operators and ensure successful utilization of the Operator, the following requirements must be met:
+\n{2}{Requirements}
+As our the thesis subject is the management of lifecycle events by the Operator, testing will be focusing on testing of all the lifecycle events described in chapter~\ref{chap:lifecycle}, with an emphasis on automation.
 
-RQ1: Operator must be able to install Postgres cluster
+These life cycle events can be break down into the following requirements:
 
-RQ2: Operator must be able to backup Postgres cluster
+\begin{requirements}
+  \item The Operator must be able to create Postgres cluster.
+  \item The Operator must be able to upgrade Postgres cluster to new major version.
+  \item The Operator must be able to upgrade Postgres cluster to new minor version.
+  \item The Operator must be able to backup cluster.
+  \item The Operator must be able to perform failover.
+  \item The Operator must be able to perform switchover.
+  \item The Operator must be able to restore cluster from backup.
+  \item The Operator must be able to scale cluster vertically.
+  \item The Operator must be able to scale cluster horizontally.
+  \item The Operator must be able to update cluster configuration.
+  \item The Operator must be able to uninstall cluster.
+  \item The Operator must provide real time performance monitoring.
+  \item The Operator must provide real time resource usage monitoring.
+  \item The Operator must provide real time health monitoring.
+  \item The Operator should be secure.
+  \item The Operator should provide comprehensive documentation.
+  \item The Operator should be well-maintained.
+  \item The Operator should have a robust community.
+\end{requirements}
 
-RQ3: Operator must be able to restore Postgres cluster
+\n{2}{Test management}
 
-RQ4: Operator must be able to change crucial cluster config
+\n{2}{Test management process}
 
-RQ5: Operator must be able to scale Postgres cluster
 
-RQ6: Operator must be able to install minor Postgres update
 
-RQ7: Operator must be able to install major Postgres update
 
-RQ8: Operator must provide Postgres cluster monitoring
 
-RQ9: Operator must be able do uninstall Postgres cluster
-
-RQ10: Operator must be safe
-
-RQ11: Operator must upgradable
-
-RQ12: Operator must address reported issues
-
-\n{2}{Test strategy}
+\n{3}{Test strategy}
 \begin{itemize}
-  \item Test purpose: the purpose of this testing is to gather information about the test item and create confidence in taking a decision by providing evidence that the test item performs correctly under specific circumstances. \cite{SoftwareTestingStandard3} That means that the testing is to declare best reachable state and compare each operator to this state.
-  \item Test item test item for the test process will be Operators, their documentation, and repositories.
+  \item Test purpose: The purpose of testing is to evaluate the ability of Operators to fulfill the desired requirements, and to provide information for making informed decisions on which Operator to select in last chapter.
+  \item Test item: test item for the test process will be Operators, their documentation, and repositories.
         \begin{itemize}
           \item PGO
                 \begin{itemize}
@@ -442,44 +545,17 @@ RQ12: Operator must address reported issues
                 \end{itemize}
         \end{itemize}
 
-
-
-  \item Test levels: The test item and the purpose of this testing will be covered by system testing and acceptance testing test levels. System testing to verify that the system fulfills the defined requirements, and acceptance tests to assess the degree to which the system meets expectations and to establish confidence in the whole system as is.
-
-  \item Types of tests: Testing processes will utilize functional testing, non-functional testing, and black box testing.
-
-  \item Forms of tests
+  \item Test types
         \begin{itemize}
-          \item Static: checklist review, defect analysis, vulnerability analysis
-          \item Dynamic: use case black box testing (partly automated)
+          \item Testing processes will utilize functional testing and non-functional testing.
         \end{itemize}
 
   \item Test environments
         \begin{itemize}
-          \item Kind Kubernetes cluster for all dynamic test except performance tests, installed on Unix/Linux compatible machine.
+          \item Kind Kubernetes cluster with two worker nodes for all dynamic test except performance tests, installed on Unix/Linux compatible machine.
         \end{itemize}
 
-  \item Test tools
-        \begin{itemize}
-          \item Kubectl Kubernetes cluster management
-          \item	KUTTL Kubernetes test tool
-          \item	Bash shell scripts
-          \item	Trivy security scanner
-          \item	Psql terminal based frontend to Postgres
-          \item	Excel
-        \end{itemize}
-
-  \item Skills required
-        \begin{itemize}
-          \item Kubernetes cluster management with kubectl skills.
-          \item	KUTTL skills
-          \item	Ability to write shell scripts.
-          \item	Trivy skills and skills to interpret results.
-          \item	Psql skills
-          \item	Excel skills
-        \end{itemize}
-
-  \item Roles
+  \item Roles required
         \begin{itemize}
           \item Test architect, test manager, test designer, test automator, tester and test analyst
         \end{itemize}
@@ -498,23 +574,145 @@ RQ12: Operator must address reported issues
           \item	Trivy and results interpretation skills
         \end{itemize}
 
+  \item Test risks
+        \begin{itemize}
+          \item Limited staff and time might prevent thorough testing of all features and functionalities of the software during acceptance testing.
+          \item	Inadequately trained staff might struggle to design effective test cases, which could result in missed defects and lower overall testing effectiveness.
+          \item	Due to the lack of expertise among staff members, the software's readiness for production might be inaccurately assessed, leading to incorrect conclusions about its quality and suitability for release.
+        \end{itemize}
+  \item Test priorities
+        \begin{itemize}
+          \item Static tests have higher priority to dynamic
+          \item Critical features have higher priority
+        \end{itemize}
+
   \item Test complete criteria
         \begin{itemize}
           \item 100\% coverage of all requirements
         \end{itemize}
 
-  \item Test priorities
-        \begin{itemize}
-          \item Static tests have higher priority to dynamic
-        \end{itemize}
-
   \item Collected metrics
         \begin{itemize}
-          \item Achievable maximum. Percentation score of life cycle tests achieved.
-          \item Achievable maximum. Percentation score of security tests achieved.
-          \item Achievable maximum. Percentation score of issue tracking analysis achieved.
+          \item TBD
         \end{itemize}
 \end{itemize}
+
+
+
+
+\n{2}{Static Tests Management Process}
+
+\n{2}{Dynamic Tests Management Process}
+
+
+Fist the overal test plan must be created together with strategies
+
+
+
+\n{2}{Test plans}
+In order to completely cover all requirements, testing will be carried out according to the following test plans. First, a static review of the documentation will be performed to check if the operators cover the proposed requirements at all, then dynamic black box tests will be performed using use cases to check if the documentation does not differ from the actual state.
+
+
+\tab{Test plan No 1}{tab:testplan1}{1}{|l|l|}{
+  \hline
+  Test plan ID & 1 \\ \hline
+  Revision & 1 \\ \hline
+  Introducton &  \makecell{The initial test plan to recognize if the Operator \\ can handle the basic requirements and to determine \\ the level of automation on these requirements. } \\ \hline
+  Test items & 	Operator documentation \\ \hline
+  Requirements to be covered & \makecell{ RQ1, RQ2, RQ3, RQ4, RQ5, RQ6, RQ7, \\ RQ8, RQ9, RQ10, RQ11, RQ12, RQ13, RQ14 } \\ \hline
+  Test type &	Static \\ \hline
+  Test approach &	Checlist based documentation review \\ \hline
+  Entry criteria & Created checklist \\ \hline
+  Exit criteria & 100\% checklist coverage \\ \hline
+  Delivarables & Completed checklist for each Operator \\ \hline
+  Duration & 2 h for each Operator \\ \hline
+  Reviewer & Miroslav Šiřina \\ \hline
+  Start & TBD \\ \hline
+}
+
+\tab{Test plan No 2}{tab:testplan2}{1}{|l|l|}{
+  \hline
+  Test plan ID & 2 \\ \hline
+  Revision & 1 \\ \hline
+  Introducton & \makecell{ This test plan is to plan the dynamic test \\ on gathered requirements and to test that \\ the Operator can deliver what was promised \\ in the documentation. } \\ \hline
+  Test items & 	Operator \\ \hline
+  Requirements to be covered & \makecell{ RQ1, RQ2, RQ3, RQ4, RQ5, RQ6, RQ7, \\ RQ8, RQ9, RQ10, RQ11, RQ12, RQ13, RQ14 } \\ \hline
+  Test type &	Dynamic \\ \hline
+  Test approach &	Black box - use cases\\ \hline
+  Test envrioment & Kind kubernetes cluster \\ \hline
+  Test tools & Kubectl, KUTTL \\ \hline
+  Entry criteria & \makecell{  Checklist from previous static testing. \\ Use cases.}\\ \hline
+  Exit criteria & 100\% use case coverage \\ \hline
+  Delivarables &	Test report \\ \hline
+  Duration & 8 h for each Operator \\ \hline
+  Automation & All test except monitoring tests must be automated. \\ \hline
+  Tester & Miroslav Šiřina \\ \hline
+  Start & TBD \\ \hline
+}
+
+
+\tab{Test plan No 3}{tab:testplan3}{1}{|l|l|}{
+  \hline
+  Test plan ID & 3 \\ \hline
+  Revision & 1 \\ \hline
+  Introducton &  \makecell{ Vulnerability analysis test plan  } \\ \hline
+  Test items & 	Operator \\ \hline
+  Requirements to be covered & \makecell{ RQ15 } \\ \hline
+  Test type &	Static \\ \hline
+  Test approach &	Static analysis \\ \hline
+  Test envrioment & Kind kubernetes cluster \\ \hline
+  Test tools & Trivy \\ \hline
+  Entry criteria & \makecell{ Deployed operator }\\ \hline
+  Exit criteria & Vulnerability analysis finished for each Operator\\ \hline
+  Delivarables &	Test report \\ \hline
+  Duration & 2 h for each Operator \\ \hline
+  Tester & Miroslav Šiřina \\ \hline
+  Start & TBD \\ \hline
+}
+
+\tab{Test plan No 4}{tab:testplan4}{1}{|l|l|}{
+  \hline
+  Test plan ID & 4 \\ \hline
+  Revision & 1 \\ \hline
+  Introducton &  \makecell{ Gathering metrics from Operator repositories \\ in order to realise how well maintained \\ the Operator and the size of the \\ Operator community. } \\ \hline
+  Test items & 	Operator documentation \\ \hline
+  Requirements to be covered & RQ17, RQ18 \\ \hline
+  Test type &	Static \\ \hline
+  Test approach &	Repository review \\ \hline
+  Entry criteria & List of metrics to be collected \\ \hline
+  Exit criteria & Metrics collected, ratio between Operators \\ \hline
+  Delivarables & Test report \\ \hline
+  Duration & 2 h for each Operator \\ \hline
+  Reviewer & Miroslav Šiřina \\ \hline
+  Start & TBD \\ \hline
+}
+
+
+\tab{Test plan No 5}{tab:testplan5}{1}{|l|l|}{
+  \hline
+  Test plan ID & 5 \\ \hline
+  Revision & 1 \\ \hline
+  Introducton &  \makecell{ if the Operator \\ can handle the basic requirements and to determine \\ the level of automation on these requirements. } \\ \hline
+  Test items & 	Operator documentation \\ \hline
+  Requirements to be covered & RQ16 \\ \hline
+  Test type &	Static \\ \hline
+  Test approach &	Checlist based documentation review \\ \hline
+  Entry criteria & Created checklist \\ \hline
+  Exit criteria & 100\% checklist coverage \\ \hline
+  Delivarables &	Completed checklist for each Operator \\ \hline
+  Duration & 2 h for each Operator \\ \hline
+  Reviewer & Miroslav Šiřina \\ \hline
+  Start & TBD \\ \hline
+}
+
+
+\n{2}{Test designs}
+\n{3}{Test plan No 1}
+
+
+
+
+
 
 
 
