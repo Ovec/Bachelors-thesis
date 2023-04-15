@@ -382,8 +382,169 @@ Please note that this chapter provides only a high-level overview of the testing
 %\obr{2022 Developer Survey \cite{so2022survey}}{}{1}{graphics/postgres_stack_overflow_survey.png}
 
 
-\cast{Praktická část}
-\n{1}{Nadpis první kapitoly praktické části}
+\cast{Implementation}
+\n{1}{Requirements}
+As our the thesis subject is the management of lifecycle events by the Operator, testing will be focusing on testing of all the lifecycle events described in chapter~\ref{chap:lifecycle}, with an emphasis on automation.
+
+These life cycle events can be break down into the following requirements:
+\begin{requirements}
+  \item The Operator must be able to create Postgres cluster.
+  \item The Operator must be able to upgrade Postgres cluster to new major version.
+  \item The Operator must be able to upgrade Postgres cluster to new minor version.
+  \item The Operator must be able to backup cluster.
+  \item The Operator must be able to perform failover.
+  \item The Operator must be able to perform switchover.
+  \item The Operator must be able to restore cluster from backup.
+  \item The Operator must be able to scale cluster vertically.
+  \item The Operator must be able to scale cluster horizontally.
+  \item The Operator must be able to update cluster configuration.
+  \item The Operator must be able to uninstall cluster.
+  \item The Operator must provide real time performance monitoring.
+  \item The Operator must provide real time resource usage monitoring.
+  \item The Operator must provide real time health monitoring.
+  \item The Operator should be secure.
+  \item The Operator should provide comprehensive documentation.
+  \item The Operator should be well-maintained.
+  \item The Operator should have a robust community.
+\end{requirements}
+
+\n{1}{Test process}
+
+\n{2}{Test plan}
+\begin{itemize}
+  \item Context of testing:
+        \begin{itemize}
+          \item Project: Bachelor’s thesis.
+          \item Test levels: Acceptance testing.
+          \item Test types: Static and dynamic.
+          \item Test items:
+                \begin{itemize}
+                  \item Crunchy Postgres for Kubernetes Operator v5.3.1.
+                  \item CloudNativePG Operator v1.9.1.
+                  \item StackGres Operator v1.4.3.
+                  \item Percona Operator for Postgres 1.4.0.
+                \end{itemize}
+          \item Test scope: Operator, Operator’s documentation, Operator’s repository.
+          \item Test basis: Defined requirements.
+        \end{itemize}
+  \item Risk register:
+        \begin{itemize}
+          \item Limited staff and time might prevent thorough testing of all features and functionalities of the software during acceptance testing.
+          \item Inadequately trained staff might struggle to design effective test cases, which could result in missed defects and lower overall testing effectiveness.
+          \item Due to the lack of expertise among staff members, the software's readiness for production might be inaccurately assessed, leading to incorrect conclusions about its quality and suitability for release
+        \end{itemize}
+  \item	Test strategy:
+        \begin{itemize}
+          \item General: The purpose of testing is to evaluate the ability of Operators to fulfill the desired requirements, and to provide information for making informed decisions on which Operator to select in last chapter. Functional and non-functional requirements will be tested with static and dynamic test techniques.
+          \item Test levels: Acceptance testing
+          \item Test deliverables: Test plan, test model specification, test procedure specification, incident reports, test status reports, test competition reports.
+          \item Test design techniques: Checklists and Use cases.
+          \item Entry criteria: Static testing – test plan, checklists, Dynamic – test plan, use cases, prepared environment, created testing model.
+          \item Exit criteria – decision metrics were collected.
+          \item Test competition criteria: All requirements covered by at least one test.
+          \item Degree of independence: No connection between tested Operators and tester. Tester is fully independent.
+          \item Metrics to be collected:
+                \begin{itemize}
+                  \item Static testing: Vulnerability analysis (number of vulnerabilities and their severity), Checklist Documentation review (contents of documentation), Checklist Documentation review (Operator capabilities), Repository review (sum of issues, sum of repaired issues, sum of Operator users, sum of contributors, sum of users, sum of stars),
+                  \item Dynamic testing:  Sum of passed, ignored and failed tests.
+                \end{itemize}
+          \item Test data requirements:
+                \begin{itemize}
+                  \item Crunchy Postgres for Kubernetes Operator v5.3.1
+                        \begin{itemize}
+                          \item PGO: https://github.com/CrunchyData/postgres-operator-examples
+                          \item PGODOC: https://access.crunchydata.com/documentation/postgres-operator/v5/
+                          \item PGOREPO: https://github.com/CrunchyData/postgres-operator
+                        \end{itemize}
+
+                  \item CloudNativePG Operator version 1.19.1
+                        \begin{itemize}
+                          \item CNPGO: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.19/releases/cnpg-1.19.1.yaml
+                          \item CNPGODOC: https://cloudnative-pg.io/documentation/1.19/
+                          \item CNPGOREPO: https://github.com/cloudnative-pg/cloudnative-pg
+                        \end{itemize}
+
+                  \item StackGres Operator version 1.4.3
+                        \begin{itemize}
+                          \item SPGO: https://stackgres.io/downloads/stackgres-k8s/stackgres/helm/
+                          \item SPGODOC: https://stackgres.io/doc/1.4/
+                          \item SPGOREPO: https://gitlab.com/ongresinc/stackgres
+                        \end{itemize}
+                  \item Percona Operator for PostgreSQL version 1.4.O
+                        \begin{itemize}
+                          \item PPOO: https://raw.githubusercontent.com/percona/percona-postgresql-operator/v1.4.0/deploy/operator.yaml
+                          \item PPODOC: https://docs.percona.com/percona-operator-for-postgresql/index.html
+                          \item PPOREPO: https://github.com/percona/percona-postgresql-operator
+                        \end{itemize}
+                \end{itemize}
+          \item Test environment requirements:
+                \begin{itemize}
+                  \item Kind Kubernetes cluster with two worker nodes for all dynamic test except performance tests, installed on Unix/Linux compatible machine.
+                  \item KUTTL kubernetes testing tool.
+                  \item Trivy security scanner.
+                  \item Kubectl kubernetes controll tool.
+                  \item EXCEL.
+                \end{itemize}
+          \item Retesting: Retesting is not needed.
+          \item Reggresion testing: Reggresion testing is not needed.
+          \item Testing activities and estimates:
+                \begin{itemize}
+                  \item Enviroment setup – 30m.
+                  \item Documentation checklist for Capabilities – 2h.
+                  \item Documentation checklist for Contents – 2h.
+                  \item Repository metrics gathering – 2h.
+                  \item Use cases – 8h.
+                  \item Static testing for Capabilities – 4h/Operator.
+                  \item Static testing for Contents – 1h/Operator.
+                  \item Vulnerability analysis – 1h/Operator.
+                  \item Dynamic test proces – 24h/Operator.
+                  \item Test competiton report – 1h/testing day.
+                \end{itemize}
+
+          \item Staffing (roles and responsibilities)
+                \begin{itemize}
+                  \item Roles: Test architect, test manager, test designer, test automator, tester and test analyst
+                  \item Staff: Miroslav Šiřina.
+                \end{itemize}
+          \item Training needed
+                \begin{itemize}
+                  \item Test management.
+                  \item Test design.
+                  \item Test analyst.
+                  \item KUTTL.
+                  \item Trivy and results interpretation skills.
+                \end{itemize}
+          \item Test priorities
+                \begin{itemize}
+                  \item Static tests have higher priority to dynamic.
+                  \item Critical features have higher priority.
+                \end{itemize}
+          \item Schedule
+                \begin{itemize}
+                  \item April 16th Test management and analyst training.
+                  \item April 17th Documentations checklists should be created.
+                  \item April 18th Repository metrics gathering, static testing for capabilities PGO.
+                  \item April 19th Static testing for capabilities CNPGO, SPGO.
+                  \item April 20th Static testing for capabilities PPO, Static testing for Contents PPO.
+                  \item April 21th Static testing for Contents PGO, SPGO, CNPGO, Static vulnerability analysis for all Operators. Requirements retrospective.
+                  \item April 22th KUTLL training, test analyst training.
+                  \item April 24th Use cases preparation.
+                  \item April 25th – 27th Dynamic testing PGO.
+                  \item April 28th – May 1st Dynamic testing CNPGO.
+                  \item May 2nd – 4th  Dynamic testing SPO.
+                  \item May 6th – 8th  Dynamic testing PPO.
+                  \item May 9th Testing closure.
+                \end{itemize}
+        \end{itemize}
+\end{itemize}
+
+
+
+
+
+\n{3}{General test plan}
+\n{3}{Static test plan}
+\n{3}{Dynamic test plan}
 
 
 
