@@ -283,8 +283,19 @@ It is important to notice at the beginning of this chapter that testing as descr
 
 Therefore, the test process derived from this methodology as every test process will not exhaustively test the Operators and will be depended on thesis context, author bias, and author skills. Because the goal of this thesis is the comparison of the selected Postgres Operators for lifecycle management the main scope of this methodology is to deliver test process that will produce test reports that will form the base for this comparison.
 
-\n{2}{Requirements}
-Before initiating the testing process, it is essential to collect the system requirements. These requirements should align with the concepts discussed in the earlier chapters, specifically the chapter on the software development life cycle~\ref{chap:lifecycle}.
+\n{2}{Criteria}
+The following criteria will be subjected to testing. These criteria should provide a solid basis for the decision-making process.
+\begin{criterias}
+  \item	Features – What are the additional features provided by the Operator, besides its life cycle management capabilities?
+  \item	Deployment and configuration – How easy is the Operator deployment and configuration?
+  \item	Performance – What is the Operator performance?
+  \item	Stability and reability – How stable and reliable is the Operator?
+  \item	Scaling and high availability – How good is the Operator at scaling and achieving high availability?
+  \item	Backup and recovery – What are the backup and recovery capabilities of the Operator?
+  \item	Security – What are the vulnerabilities and poor practices associated with the Operator?
+  \item	Maturity – What is the maturity of the Operator?
+\end{criterias}
+
 
 
 \n{2}{Test management process}
@@ -383,35 +394,14 @@ Please note that this chapter provides only a high-level overview of the testing
 
 
 \cast{Implementation}
-\n{1}{Requirements}
-As our the thesis subject is the management of lifecycle events by the Operator, testing will be focusing on testing of all the lifecycle events described in chapter~\ref{chap:lifecycle}, with an emphasis on automation.
-
-These life cycle events can be break down into the following requirements:
-\begin{requirements}
-  \item The Operator must be able to create Postgres cluster.
-  \item The Operator must be able to upgrade Postgres cluster to new major version.
-  \item The Operator must be able to upgrade Postgres cluster to new minor version.
-  \item The Operator must be able to backup cluster.
-  \item The Operator must be able to perform failover.
-  \item The Operator must be able to perform switchover.
-  \item The Operator must be able to restore cluster from backup.
-  \item The Operator must be able to scale cluster vertically.
-  \item The Operator must be able to scale cluster horizontally.
-  \item The Operator must be able to update cluster configuration.
-  \item The Operator must be able to uninstall cluster.
-  \item The Operator must provide real time performance monitoring.
-  \item The Operator must provide real time resource usage monitoring.
-  \item The Operator must provide real time health monitoring.
-  \item The Operator should be secure.
-  \item The Operator should provide comprehensive documentation.
-  \item The Operator should be well-maintained.
-  \item The Operator should have a robust community.
-\end{requirements}
 
 \n{1}{Test process}
 
-\n{2}{Test plan}
+\n{2}{Test plans}
+\n{3}{General test plan}
+
 \begin{itemize}
+  \item Test plan ID: TP0
   \item Context of testing:
         \begin{itemize}
           \item Project: Bachelor’s thesis.
@@ -425,7 +415,7 @@ These life cycle events can be break down into the following requirements:
                   \item Percona Operator for Postgres 1.4.0.
                 \end{itemize}
           \item Test scope: Operator, Operator’s documentation, Operator’s repository.
-          \item Test basis: Defined requirements.
+          \item Test basis: Defined criteria.
         \end{itemize}
   \item Risk register:
         \begin{itemize}
@@ -433,19 +423,19 @@ These life cycle events can be break down into the following requirements:
           \item Inadequately trained staff might struggle to design effective test cases, which could result in missed defects and lower overall testing effectiveness.
           \item Due to the lack of expertise among staff members, the software's readiness for production might be inaccurately assessed, leading to incorrect conclusions about its quality and suitability for release
         \end{itemize}
-  \item	Test strategy:
+  \item Test strategy:
         \begin{itemize}
           \item General: The purpose of testing is to evaluate the ability of Operators to fulfill the desired requirements, and to provide information for making informed decisions on which Operator to select in last chapter. Functional and non-functional requirements will be tested with static and dynamic test techniques.
           \item Test levels: Acceptance testing
           \item Test deliverables: Test plan, test model specification, test procedure specification, incident reports, test status reports, test competition reports.
-          \item Test design techniques: Checklists and Use cases.
-          \item Entry criteria: Static testing – test plan, checklists, Dynamic – test plan, use cases, prepared environment, created testing model.
+          \item Test design techniques: Exploratory Testing, Use cases, Walkthroughs
+          \item Entry criteria: Created environments.
           \item Exit criteria – decision metrics were collected.
-          \item Test competition criteria: All requirements covered by at least one test.
+          \item Test competition criteria: All criteria covered by at least one test case.
           \item Degree of independence: No connection between tested Operators and tester. Tester is fully independent.
           \item Metrics to be collected:
                 \begin{itemize}
-                  \item Static testing: Vulnerability analysis (number of vulnerabilities and their severity), Checklist Documentation review (contents of documentation), Checklist Documentation review (Operator capabilities), Repository review (sum of issues, sum of repaired issues, sum of Operator users, sum of contributors, sum of users, sum of stars),
+                  \item Static testing: Vulnerability analysis (number of vulnerabilities and their severity), Operators SDK scoreboard (score and findings), Repository review (sum of issues, sum of repaired issues, sum of Operator users, sum of contributors, sum of users, sum of stars),
                   \item Dynamic testing:  Sum of passed, ignored and failed tests.
                 \end{itemize}
           \item Test data requirements:
@@ -480,25 +470,27 @@ These life cycle events can be break down into the following requirements:
           \item Test environment requirements:
                 \begin{itemize}
                   \item Kind Kubernetes cluster with two worker nodes for all dynamic test except performance tests, installed on Unix/Linux compatible machine.
+                  \item Google Kubernetes Engine with two worker nodes.
+                  \item Terraform
                   \item KUTTL kubernetes testing tool.
                   \item Trivy security scanner.
                   \item Kubectl kubernetes controll tool.
+                  \item Operator SDK.
                   \item EXCEL.
                 \end{itemize}
           \item Retesting: Retesting is not needed.
           \item Reggresion testing: Reggresion testing is not needed.
           \item Testing activities and estimates:
                 \begin{itemize}
-                  \item Enviroment setup – 30m.
-                  \item Documentation checklist for Capabilities – 2h.
-                  \item Documentation checklist for Contents – 2h.
-                  \item Repository metrics gathering – 2h.
-                  \item Use cases – 8h.
-                  \item Static testing for Capabilities – 4h/Operator.
-                  \item Static testing for Contents – 1h/Operator.
-                  \item Vulnerability analysis – 1h/Operator.
-                  \item Dynamic test proces – 24h/Operator.
-                  \item Test competiton report – 1h/testing day.
+                  \item Environment setup – 30m.
+                  \item Documentation walkthrough – 2h/Operator.
+                  \item Deployment and configuration – 4h/Operator.
+                  \item Performance – 4h/Operator.
+                  \item Stability and reability – 4h/Operator.
+                  \item Scaling and high availability – 4h/Operator.
+                  \item Backup and recovery – 2h/Operator.
+                  \item Security audit – 2h/Operator.
+                  \item Test completion report – 1h/testing day.
                 \end{itemize}
 
           \item Staffing (roles and responsibilities)
@@ -513,6 +505,7 @@ These life cycle events can be break down into the following requirements:
                   \item Test analyst.
                   \item KUTTL.
                   \item Trivy and results interpretation skills.
+                  \item Operator SDK skills.
                 \end{itemize}
           \item Test priorities
                 \begin{itemize}
@@ -521,19 +514,19 @@ These life cycle events can be break down into the following requirements:
                 \end{itemize}
           \item Schedule
                 \begin{itemize}
-                  \item April 16th Test management and analyst training.
-                  \item April 17th Documentations checklists should be created.
-                  \item April 18th Repository metrics gathering, static testing for capabilities PGO.
-                  \item April 19th Static testing for capabilities CNPGO, SPGO.
-                  \item April 20th Static testing for capabilities PPO, Static testing for Contents PPO.
-                  \item April 21th Static testing for Contents PGO, SPGO, CNPGO, Static vulnerability analysis for all Operators. Requirements retrospective.
-                  \item April 22th KUTLL training, test analyst training.
-                  \item April 24th Use cases preparation.
-                  \item April 25th – 27th Dynamic testing PGO.
-                  \item April 28th – May 1st Dynamic testing CNPGO.
-                  \item May 2nd – 4th  Dynamic testing SPO.
-                  \item May 6th – 8th  Dynamic testing PPO.
-                  \item May 9th Testing closure.
+                  \item April 17th planning and test analyst training.
+                  \item April 18th documentation walkthroughs.
+                  \item April 19th repositories walkthroughs.
+                  \item April 20th planning, Operator SDK scoreboard training, Trivy training.
+                  \item April 21th security audits
+                  \item April 22th PGO deployments and config, backup and recovery. CNPGO deployments and config, backup and recovery.
+                  \item April 23th SPGO deployments and config, backup and recovery. PPO deployments and config, backup and recovery.
+                  \item April 24th planning, GKE environment setup.
+                  \item April 25th - 26th PGO performance, stability and reability, scaling and high availability.
+                  \item April 27th - 28th CNPGO performance, stability and reability, scaling and high availability.
+                  \item April 29th - 30th SPGO performance, stability and reability, scaling and high availability.
+                  \item April 30th - 1st PPO performance, stability and reability, scaling and high availability.
+                  \item May 2nd – 3rd Testing closure.
                 \end{itemize}
         \end{itemize}
 \end{itemize}
@@ -541,10 +534,208 @@ These life cycle events can be break down into the following requirements:
 
 
 
+\n{3}{Static test plans}
+\tab{Test plan No 1}{tab:testplan1}{1}{|l|l|}{
+  \hline
+  Test plan ID & tp1 \\ \hline
+  Revision & 1 \\ \hline
+  Introducton &  \makecell{Documentation walkthrough} \\ \hline
+  Test items & Operator documentation \\ \hline
+  Criteria to be covered & C1 \\ \hline
+  Test type &	Static \\ \hline
+  Test approach &	Documentation walkthrough \\ \hline
+  Exit criteria & All documentation reviewed  \\ \hline
+  Delivarables & List of features \\ \hline
+  Duration & 1 h for each Operator \\ \hline
+  Reviewer & Miroslav Šiřina \\ \hline
+  Start & April 17th \\ \hline
+  Schedule & \makecell{April 17th documentations walkthrough. \\ April 18th summary and test report.} \\ \hline
+}
 
-\n{3}{General test plan}
-\n{3}{Static test plan}
+
+
+\tab{Test plan No 2}{tab:testplan2}{1}{|l|l|}{
+  \hline
+  Test plan ID & tp2 \\ \hline
+  Revision & 1 \\ \hline
+  Introducton &  \makecell{ Vulnerability analysis test plan  } \\ \hline
+  Test items & 	Operator \\ \hline
+  Requirements to be covered & \makecell{ RQ15 } \\ \hline
+  Test type &	Static \\ \hline
+  Test approach &	Static analysis \\ \hline
+  Test envrioment & Kind kubernetes cluster \\ \hline
+  Test tools & Trivy \\ \hline
+  Entry criteria & \makecell{ Deployed operator }\\ \hline
+  Exit criteria & Vulnerability analysis finished for each Operator\\ \hline
+  Delivarables &	Test report \\ \hline
+  Duration & 2 h for each Operator \\ \hline
+  Tester & Miroslav Šiřina \\ \hline
+  Start & April 21th \\ \hline
+}
+
+\tab{Test plan No 3}{tab:testplan3}{1}{|l|l|}{
+  \hline
+  Test plan ID & tp3 \\ \hline
+  Revision & 1 \\ \hline
+  Introducton &  \makecell{ Gathering metrics from Operator repositories \\ in order to realise how well maintained \\ the Operator and the size of the \\ Operator community. } \\ \hline
+  Test items & 	Operator documentation \\ \hline
+  Requirements to be covered & RQ17, RQ18 \\ \hline
+  Test type &	Static \\ \hline
+  Test approach &	Repository review \\ \hline
+  Entry criteria & List of metrics to be collected \\ \hline
+  Exit criteria & Metrics collected, ratio between Operators \\ \hline
+  Delivarables & Test report \\ \hline
+  Duration & 2 h for each Operator \\ \hline
+  Reviewer & Miroslav Šiřina \\ \hline
+  Start & April 18th \\ \hline
+}
+
+
+\tab{Test plan No 4}{tab:testplan4}{1}{|l|l|}{
+  \hline
+  Test plan ID & tp4 \\ \hline
+  Revision & 1 \\ \hline
+  Introducton &  \makecell{ Contents of the documentation} \\ \hline
+  Test items & 	Operator documentation \\ \hline
+  Requirements to be covered & RQ16 \\ \hline
+  Test type &	Static \\ \hline
+  Test approach &	Checlist based documentation review \\ \hline
+  Entry criteria & Created checklist \\ \hline
+  Exit criteria & 100\% checklist coverage \\ \hline
+  Delivarables &	Completed checklist for each Operator \\ \hline
+  Duration & 2 h for each Operator \\ \hline
+  Reviewer & Miroslav Šiřina \\ \hline
+  Start & April 17th \\ \hline
+  Schedule & \makecell{April 17th Checklist creation. \\ April 20th Static testing for Contents PPO. \\ April 21th Static testing for Contents PGO, SPGO, CNPGO.} \\ \hline
+}
+
 \n{3}{Dynamic test plan}
+
+\tab{Test plan No 5}{tab:testplan5}{1}{|l|l|}{
+  \hline
+  Test plan ID & tp5 \\ \hline
+  Revision & 1 \\ \hline
+  Introducton & \makecell{ This test plan is to plan the dynamic test \\ on gathered requirements and to test that \\ the Operator can deliver what was promised \\ in the documentation. } \\ \hline
+  Test items & 	Operator \\ \hline
+  Requirements to be covered & \makecell{ RQ1, RQ2, RQ3, RQ4, RQ5, RQ6, RQ7, \\ RQ8, RQ9, RQ10, RQ11, RQ12, RQ13, RQ14 } \\ \hline
+  Test type &	Dynamic \\ \hline
+  Test approach &	Black box - use cases\\ \hline
+  Test envrioment & Kind kubernetes cluster \\ \hline
+  Test tools & Kubectl, KUTTL \\ \hline
+  Entry criteria & \makecell{  Checklist from previous static testing. \\ Use cases.}\\ \hline
+  Exit criteria & 100\% use case coverage \\ \hline
+  Delivarables &	Test report \\ \hline
+  Duration & 8 h for each Operator \\ \hline
+  Automation & All test except monitoring tests must be automated. \\ \hline
+  Tester & Miroslav Šiřina \\ \hline
+  Start & TBD \\ \hline
+  Schedule & \makecell{April 24th Use cases preparation. \\ April 25th – 27th Dynamic testing PGO. \\ April 28th – May 1st Dynamic testing CNPGO. \\ May 2nd – 4th  Dynamic testing SPO. \\ May 6th – 8th  Dynamic testing PPO.}\\ \hline
+}
+
+Test status report
+\begin{itemize}
+  \item ID: TR1
+  \item Overview: First day of testing
+  \item Test status: Test analyst training and pgbench training
+  \item Reporting period: April 17th
+  \item Progress against plan: Everything according to plan.
+  \item Factors blocking progress: None
+  \item Test measures: None
+  \item New and changed risks: None
+  \item Planned testing: None
+\end{itemize}
+
+\begin{itemize}
+  \item ID: TR2
+  \item Overview: Second day of testing. Documentation walkthrough,
+  \item Test status: Operator properties were collected from the documentation.
+  \item Reporting period: April 18th
+  \item Progress against plan: A day of delay due to the diversity of documentations and the need to compare findings and create a report.
+  \item Factors blocking progress: None
+  \item Test measures: 80\% of TP1 delivered
+  \item New and changed risks: None
+  \item Planned testing: April 19th the summary of test and comparison.
+\end{itemize}
+
+
+\tab{List of operator's features, first part.}{tab:features1}{1}{|l|l|l|l|l|}{
+  \hline
+  & \textbf{PGO}  & \textbf{CNPGO} & \textbf{SPGO}  & \textbf{PPO} \\ \hline
+  \multicolumn{5}{|l|}{\textbf{Postgres}} \\ \hline
+  \multicolumn{5}{|l|}{\textbf{High Availability}} \\ \hline
+  High Availability & yes & yes & yes & yes \\ \hline
+  Synchronous replication & yes & yes & yes & yes \\ \hline
+  \multicolumn{5}{|l|}{\textbf{Scaling}} \\ \hline
+  Vertical scaling  & Manual & Manual & Manual & Manual \\ \hline
+  Horizontal scaling & Manual & Manual & Manual & Manual \\ \hline
+  \multicolumn{5}{|l|}{\textbf{Connection Pooling}} \\ \hline
+  Connection Pooling & yes & yes & yes & yes \\ \hline
+  \multicolumn{5}{|l|}{\textbf{Affinitiy}} \\ \hline
+  Affinitiy & yes & yes & yes & yes \\ \hline
+  Pod Anti-affinity & yes & yes & yes & yes \\ \hline
+  Node Affinity & yes & yes & yes & yes \\ \hline
+  Pod topology spread & yes & yes & yes & yes \\ \hline
+  \multicolumn{5}{|l|}{\textbf{User management by Operator}} \\ \hline
+  Database initialization SQL & yes & yes & yes & no \\ \hline
+  Creating new user & yes & no & no & no \\ \hline
+  Adjusting privileges & yes & no & no & no \\ \hline
+  Managing the Postgres user & yes & no & no & no \\ \hline
+  \multicolumn{5}{|l|}{\textbf{Backups and restore}} \\ \hline
+  Scheduled & yes & yes & yes & yes \\ \hline
+  Locations & \makecell{K8s volume \\ AWS S3 \\ (or S3 compatible) \\ GCS, Azure Blob} & \makecell{K8s volume \\ AWS S3 \\ (or S3 compatible) \\ GCS, Azure Blob} & \makecell{K8s volume \\ AWS S3 \\ (or S3 compatible) \\ GCS, Azure Blob} & \makecell{K8s volume \\ AWS S3 \\ (or S3 compatible) \\ GCS} \\ \hline
+  Ad-hoc & yes & yes & unable to decide & yes \\ \hline
+  Point in time recovery & yes & yes & yes & yes \\ \hline
+  In place Point in time recovery & yes & no & no & no \\ \hline
+  Encrypted backup & yes & yes & no & no \\ \hline
+  Cluster cloning & yes & yes & yes & yes \\ \hline
+  Restore individual database & yes & no & no & no \\ \hline
+  Backup compression & no & yes & no & no \\ \hline
+  Old backups delete & no & yes & no & no \\ \hline
+}
+
+\tab{List of operator's features, first part.}{tab:features1}{1}{|l|l|l|l|l|}{
+  \hline
+  & \textbf{PGO}  & \textbf{CNPGO} & \textbf{SPGO}  & \textbf{PPO} \\ \hline
+  \multicolumn{5}{|l|}{\textbf{Monitoring}} \\ \hline
+  User Interface & no & no & yes & yes \\ \hline
+  Overview & yes & unable to decide & unable to decide & unable to decide \\ \hline
+  Cluster details & yes & unable to decide & unable to decide & unable to decide \\ \hline
+  Pod details & yes & unable to decide & unable to decide & unable to decide \\ \hline
+  Backups  & yes & unable to decide & unable to decide & unable to decide \\ \hline
+  Health & yes & unable to decide & unable to decide & unable to decide \\ \hline
+  Query runtime & yes & unable to decide & unable to decide & unable to decide \\ \hline
+  Alerts & yes & unable to decide & unable to decide & unable to decide \\ \hline
+  API & no & no & yes & no \\ \hline
+  \multicolumn{5}{|l|}{\textbf{Upgrade}} \\ \hline
+  Minor version & Manual & Manual & Manual & Automatic \\ \hline
+  Major version & Manual & no & Manual & Automatic \\ \hline
+  \multicolumn{5}{|l|}{\textbf{Operator}} \\ \hline
+  Instalation & \makecell{Kustomize \\ Helm} & \makecell{ Cnpg \\ Kubectl \\ Helm} & \makecell{Kubectl \\ Helm} & \makecell{Kubectl \\ Helm} \\ \hline
+  Upgrade  & Manual & Seamles & Manual & Manual \\ \hline
+  Postgres versions & 11, 12, 13, 14, 15 & 11, 12, 13, 14, 15 & 12, 13, 14, 15 & 12, 13, 14 \\ \hline
+  Licence & Apache 2.0 & Apache 2.0 & Apache 2.0 & AGPL 3 \\ \hline
+  \multicolumn{5}{|l|}{\textbf{Technical support}} \\ \hline
+  Technical support & \makecell{Mailing list \\ Commercial support} & \makecell{Slack \\  GitHub Discussions \\ Commercial support} & \makecell{Slack \\ Discord \\ Commercial support}  & \makecell{Community forum \\ Jira \\ Commercial support} \\ \hline
+}
+
+
+
+Test report 18.4.
+- 6:39 - PGO start
+- 8:03 - PGO end
+- 8:10 - CNPGO start
+- 9:38 - CNPGO end
+- 9:38 - SPGO start
+- 1O:25 - SPGO end
+- 1O:30 - PPO start
+- 1O:52 - PPO start
+
+Test report 19.4.
+- 6:55 - list creation start
+- 10:33 - list creation end
+
+
+
 
 
 
