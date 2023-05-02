@@ -146,7 +146,7 @@ Therefore the complete database life cycle can be outlined by following events:
   \item System restore
   \item System monitoring
   \item System scaling (vertical and horizontal)
-  \item System configuration
+  \item System configuration update
   \item System uninstall
 \end{itemize}
 
@@ -283,8 +283,12 @@ TBD: Connect to resource questions
 
 TBD: Add gravy
 
+TBD: Why was use qualitative metrics instead of functional metrics. Functions are already tested and lifecycle ensures that functions are ok. Qualities are more important to functions.
+
+THOUGHT: Functional requirements are already covered by the maturitiy level of the Operator.
+
+
 \n{2}{Performance}
-\n{3}{Resource utilization}
 \n{2}{Reliability}
 \n{3}{Maturity}
 \n{2}{Usability}
@@ -295,6 +299,8 @@ TBD: Add gravy
 \n{2}{Security}
 \n{3}{Vulnerabilities}
 \n{3}{Best practice}
+
+\n{1}{Metrics Quantification}
 
 
 
@@ -312,6 +318,8 @@ It is important to notice at the beginning of this chapter that testing as descr
   \item Testing is context dependent
   \item Absence of errors is fallacy
 \end{enumerate}
+
+
 
 Therefore, the test process derived from this methodology as every test process will not exhaustively test the Operators and will be depended on thesis context, author bias, and author skills. Because the goal of this thesis is the comparison of the selected Postgres Operators for lifecycle management the main scope of this methodology is to deliver test process that will produce test reports that will form the base for this comparison.
 
