@@ -1,0 +1,13 @@
+# Example of PostgreSQL cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.7
+
+  primaryUpdateStrategy: unsupervised
+
+  storage:
+    size: 1Gi
