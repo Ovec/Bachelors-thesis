@@ -1,0 +1,42 @@
+# Example of PostgreSQL cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+spec:
+  instances: 1
+
+  backup:
+    barmanObjectStore:
+      destinationPath: gs://operators
+      googleCredentials:
+        applicationCredentials:
+          name: backup-creds
+          key: gcsCredentials
+      wal:
+        compression: gzip
+
+  primaryUpdateStrategy: unsupervised
+
+  # Require 1Gi of space
+  storage:
+    size: 1Gi
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: backup-schedule
+spec:
+  schedule: "0 */5 * * * *"
+  backupOwnerReference: self
+  cluster:
+    name: postgres
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: backup
+spec:
+  cluster:
+    name: postgres

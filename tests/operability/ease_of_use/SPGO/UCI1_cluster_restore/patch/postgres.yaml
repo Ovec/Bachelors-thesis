@@ -1,0 +1,16 @@
+apiVersion: stackgres.io/v1
+kind: SGCluster
+metadata:
+  name: postgres2
+spec:
+  instances: 1
+  sgInstanceProfile: small
+  postgres:
+    version: 'latest'
+  pods:
+    persistentVolume:
+      size: '1Gi'
+  initialData:
+    restore:
+      fromBackup:
+        name: bk2023-05-06-19-05-08
