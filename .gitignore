@@ -15,4 +15,13 @@ prace.toc
 tex/pdfa-1b.xmpi
 .DS_Store
 
-tests/operability/ease_of_use/operators-385815-008a03a2fd73.json
+.terraform
+operators-385815-008a03a2fd73.json
+
+.terraform.lock.hcl
+
+tests/environments/gke/.terraform.tfstate.lock.info
+
+tests/environments/gke/terraform.tfstate
+
+tests/environments/gke/terraform.tfstate.backup

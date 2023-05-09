@@ -1,0 +1,17 @@
+apiVersion: pg.percona.com/v1
+kind: Pgtask
+metadata:
+  labels:
+    pg-cluster: postgres
+    pgouser: admin
+  name: postgres-backrest-restore
+  namespace: pgo
+spec:
+  name: postgres-backrest-restore
+  namespace: pgo
+  parameters:
+    backrest-restore-from-cluster: postgres
+    backrest-storage-type: posix
+  tasktype: restore
+
+

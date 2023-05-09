@@ -1,0 +1,36 @@
+apiVersion: pg.percona.com/v1
+kind: PerconaPGCluster
+metadata:
+  labels:
+    pgo-version: 1.4.0
+  name: postgres
+spec:
+  database: pgdb
+  port: "5432"
+  user: pguser
+  upgradeOptions:
+    apply: latest
+    versionServiceEndpoint: https://check.percona.com
+    schedule: "*/5 * * * *"
+  pgPrimary:
+    image: percona/percona-postgresql-operator:1.4.0-ppg14-postgres-ha
+    volumeSpec:
+      size: 1Gi
+      accessmode: ReadWriteOnce
+      storagetype: dynamic
+  pgReplicas:
+    hotStandby:
+      size: 0
+  pgBouncer:
+    image: percona/percona-postgresql-operator:1.4.0-ppg14-pgbouncer
+    size: 1
+    expose:
+      serviceType: ClusterIP
+  backup:
+    image: percona/percona-postgresql-operator:1.4.0-ppg14-pgbackrest
+    backrestRepoImage: percona/percona-postgresql-operator:1.4.0-ppg14-pgbackrest-repo
+    volumeSpec:
+      size: 1Gi
+      accessmode: ReadWriteOnce
+      storagetype: dynamic
+      storageclass: ""

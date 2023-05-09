@@ -1,0 +1,5 @@
+namespace: pgo
+
+resources:
+- secret.yaml
+- postgres.yaml
