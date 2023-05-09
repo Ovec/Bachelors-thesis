@@ -19,9 +19,6 @@ spec:
       restore:
         enabled: true
         repoName: repo1
-        options:
-        - --type=time
-        - --target="2023-05-05 07:05:00"
       repos:
       - name: repo1
         volume:
