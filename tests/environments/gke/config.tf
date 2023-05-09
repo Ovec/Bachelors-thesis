@@ -17,7 +17,7 @@ variable "region_zone" {
 }
 
 variable "node_count" {
-  default = 2
+  default = 3
 }
 
 variable "node_disk_size" {

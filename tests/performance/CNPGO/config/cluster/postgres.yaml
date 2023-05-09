@@ -1,0 +1,40 @@
+# Example of PostgreSQL cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+spec:
+  instances: 3
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: "1536MB"
+      effective_cache_size: "4608MB"
+      maintenance_work_mem: "384MB"
+      checkpoint_completion_target: "0.9"
+      wal_buffers: "16MB"
+      default_statistics_target: "100"
+      random_page_cost: "4"
+      effective_io_concurrency: "2"
+      work_mem: "3932kB"
+      min_wal_size: "1GB"
+      max_wal_size: "4GB"
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: 1Gi
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: pooler
+spec:
+  cluster:
+    name: postgres
+  instances: 3
+  type: rw
+  pgbouncer:
+    poolMode: session
+    parameters:
+      max_client_conn: "100"
+      default_pool_size: "10"

@@ -9,8 +9,6 @@ spec:
   bootstrap:
     recovery:
       source: postgres
-      recoveryTarget:
-        targetTime: "2023-05-06 07:55:02.206776+00:00"
 
   externalClusters:
   - name: postgres
