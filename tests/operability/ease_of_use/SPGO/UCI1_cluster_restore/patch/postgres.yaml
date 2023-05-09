@@ -13,4 +13,4 @@ spec:
   initialData:
     restore:
       fromBackup:
-        name: bk2023-05-06-19-05-08
+        name: bk2023-05-09-10-24-10
