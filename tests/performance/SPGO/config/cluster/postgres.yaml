@@ -1,0 +1,35 @@
+apiVersion: stackgres.io/v1
+kind: SGInstanceProfile
+metadata:
+  name: size-small
+spec:
+  cpu: "500m"
+  memory: "2Gi"
+---
+apiVersion: stackgres.io/v1
+kind: SGPoolingConfig
+metadata:
+  name: poolconfig
+spec:
+  pgBouncer:
+    pgbouncer.ini:
+      pgbouncer:
+        max_client_conn: '200'
+        default_pool_size: '200'
+        pool_mode: transaction
+---
+apiVersion: stackgres.io/v1
+kind: SGCluster
+metadata:
+  name: postgres
+spec:
+  postgres:
+    version: 'latest'
+  instances: 3
+  sgInstanceProfile: 'size-small'
+  pods:
+    persistentVolume:
+      size: '1Gi'
+  configurations:
+    sgPostgresConfig: 'config'
+    sgPoolingConfig: 'poolconfig'
