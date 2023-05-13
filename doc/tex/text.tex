@@ -11,6 +11,7 @@ TBD - remove
 The cloud has made our work easier. We no longer have to physically connect new machines to the network, configure network connections, add disks, or even plug in virtual ones. Kubernetes, together with the cloud, can automatically allocate new resources for our applications and, thanks to operators, can even create entire database clusters with high availability. Thanks to operators, it can also automatically set up scaling or backups. It can even restore an entire database system from a backup. This paper is focused on Kubernetes operators for the popular Postgres database management system. Its goal is to find Operators for Postgres. To evaluate their pros and cons. To test them and recommend the best one.
 
 TBD - remove end
+TBD - fix footnotes numbering
 
 % ============================================================================ %
 \cast{Theory}
@@ -75,6 +76,7 @@ As described by Kubernetes Documentation \cite{docuKubeComponents} Kubernetes pr
   \item \textbf{Secret and configuration management:} Sensitive information, such as passwords, OAuth tokens, and SSH keys, can be stored and managed by Kubernetes. The deployment and updating of secrets and application configuration can be done without the need to rebuild container images and without the exposure of secrets in the stack configuration.
 \end{itemize}
 \n{3}{Kubernetes Components}
+\label{chap:kubeComponents}
 Kubernetes cluster is composed of a set of worker machines that run containerized applications called nodes. Each cluster must have at least one node. \cite{docuKubeComponents}
 \obr{The components of a Kubernetes cluster \cite{docuKubeComponents}}{}{1}{graphics/Kubernetes_cluster_components.png}
 
@@ -95,6 +97,7 @@ Node components in a Kubernetes cluster run on each node and provide crucial fun
 \end{itemize}
 
 \n{3}{Kubernetes Concepts}
+\label{chap:kubeConcepts}
 \textcolor{cyan}{RepliceSet extension - Operators p. 28 (Replica is general and appllication agnostic) }
 
 Pod is the smallest deployable unit that can be created in Kubernetes. \cite{docuKubePods} A Pod in Kubernetes is comprised of multiple containers and storage volumes that are run together within the same execution environment. As a result, all containers included in a single Pod will always run on the same machine. \cite{kubeUpAndRunningPods}
@@ -110,8 +113,9 @@ Kubernetes version 1.5 came with a new object called StatefulSet that allows a s
 
 In version 1.7, Kubernetes introduced the Custom Resources extension to its API. \cite{githubIBMCr} This extension allows Kubernetes to use user-defined resources that are not native to Kubernetes as if they were native. \cite{NewStackCRDs} Custom resources (CR) is an extension to the Kubernetes API that extends the deployment with additional parameters that are not part of it. CR stores these parameters and allows the API server to access them just like the native Kubernetes parts. CR is created in the Kubernetes cluster using a definition called Custom Resource Definition (CRD). \cite{OperatorsAtK8sIface}
 
-Kuberentes controllers are control loops\footnote{A control loop is a process that continuously monitors the state of a system, compares it to a desired state, and makes adjustments to bring the system closer to the desired state.} that constantly check the state of their controlled objects. If the controlled objects are not in the desired state, the controller performs actions to get the controlled objects into that state. For example, restart a crashed node, add a new replica, modify settings, etc. \cite{docuKubeControllers}
+Kuberentes controllers are control loops\footnote[1]{A control loop is a process that continuously monitors the state of a system, compares it to a desired state, and makes adjustments to bring the system closer to the desired state.} that constantly check the state of their controlled objects. If the controlled objects are not in the desired state, the controller performs actions to get the controlled objects into that state. For example, restart a crashed node, add a new replica, modify settings, etc. \cite{docuKubeControllers}
 However, to work with CR, custom controllers that can work with these resources must be created, these controllers are called Custom Controllers. \cite{docuKubeCR}
+
 
 \obr{Kubernetes controller \cite{OperatorWhitepaper} }{}{1}{graphics/Kubernetes_controller.png}
 
@@ -124,6 +128,7 @@ However, to work with CR, custom controllers that can work with these resources 
 
 
 \n{2}{Running Postgres in Kubernetes}
+\label{chap:postgresInKube}
 Kubernetes cannot know all complex stateful applications, which can contain a large number of nodes and have a wide range of uses while remaining general-purpose. The goal of Kubernetes is to provide an abstraction covering basic application concepts and providing options for extensions for more complex applications and their specific operations. Kubernetes cannot and should not know all the possible settings and operations that, for example, a Postgres cluster needs to run. \cite{OperatorsTeaches}
 
 The easiest way to run Postgres in Kubernetes is through the StatefulSet just mentioned. This StatefulSet can start a Postgres pod, create a persistent volume, and connect this volume to the pod. A stateful set can do this for all replicas set in its configuration. It can also scale up or down. Unfortunately, however, all independent Postgres instances created by StatefulSet controller are not synchronized in any manner.
@@ -152,7 +157,8 @@ Therefore the complete database life cycle can be outlined by following events:
 
 \pagebreak
 \n{2}{Operators}
-As described in the previous chapters, Kubernetes can run stateless applications very well. But its general purpose makes running complex stateful applications on top of it quite challenging.
+\label{chap:operators}
+As described in chapter~\ref{chap:postgresInKube}, Kubernetes can run stateless applications very well. But its general purpose makes running complex stateful applications on top of it quite challenging.
 
 
 This has changed in 2016 when CoreOS came up with Operators as a way to deploy complex applications with state such as databases, caches, or monitoring systems. \cite{IArchiveCOSOperators}
@@ -201,7 +207,7 @@ The following options are advised by the Operator white paper \cite{OperatorWhit
 \end{itemize}
 
 \n{1}{Resource questions}
-TBD: gravy is needed
+With a thorough understanding of Postgres, Kubernetes, the Postgres lifecycle, and Operators established in previous chapters, it is possible for research questions to be formulated. These questions are designed to enable a deeper exploration into the complexities of managing Postgres in a Kubernetes environment via Operators.
 
 \begin{enumerate}
   \item What Operators exist for lifecycle management of Postgres in Kubernetes?
@@ -211,27 +217,42 @@ TBD: gravy is needed
 \end{enumerate}
 
 \n{1}{Operators for Lifecycle Management in Kubernetes}
-TBD: Connect to resource questions
-
-
-TBD: each operator security Artifact hub https://artifacthub.io/packages/olm/community-operators/postgresql
-
-TBD: Postgres update every three months https://access.crunchydata.com/documentation/postgres-operator/5.3.0/tutorial/update-cluster/
-
-TBD: Container types CloudNativePG is built on immutable application containers. What does it mean? https://cloudnative-pg.io/documentation/1.19/faq/
-
-As recommended in the previous section. The choice of Operator should first be consulted with the manufacturer of the controlled source. Postgres offers the following Kubernetes Operators in its software catalog \cite{docuPgSwCatalogue}: CloudNativePG, EDB Postgres for Kubernetes a Kubegres.
+This chapter aims to answer the first research question: 'What Operators exist for lifecycle management of Postgres in Kubernetes?'"
+As recommended in chapter~\ref{chap:operators} the selection of the Operator should first be consulted with the manufacturer of the controlled source. Postgres offers the following Kubernetes Operators in its software catalog \cite{docuPgSwCatalogue}: CloudNativePG, EDB Postgres for Kubernetes a Kubegres.
 
 The next step involved a search of the Operators' registers. In particular the Operator Hub. \cite{OperatorHubPGSearch} Operator Hub presents nine operators with varying levels of capabilities, including Crunchy Postgres for Kubernetes by Crunchy Data, EDB Postgres for Kubernetes by EnterpriseDB Corporation, Ext Postgres Operator by movetokube.com, Percona Operator for PostgreSQL by Percona, Postgres-Operator by Zalando SE, Postgresql Operator by Openlabs, PostgreSQL Operator by Dev4Ddevs.com and StackGres by OnGres.
 
 A deeper internet search revealed Stolon Operator. \cite{PalarkComparingKubernetes}
 
-Of the thirteen operators available, only five meet our minimum capability requirement of Deep Insight, namely: Crunchy Postgres for Kubernetes, EDB Postgres for Kubernetes, Percona Operator for PostgreSQL, CloudNativePG Operator, and StackGres Operator. As a result, only these five will be subjected to deeper research, testing, and evaluation.
+Of the thirteen operators available, only five meet the minimum capability requirement of Deep Insight, namely: Crunchy Postgres for Kubernetes, EDB Postgres for Kubernetes, Percona Operator for PostgreSQL, CloudNativePG Operator, and StackGres Operator. As a result, only these five will be subjected to deeper research, testing, and evaluation.
 
 \pagebreak
 \n{2}{Crunchy Postgres for Kubernetes}
 Crunchy Postgres for Kubernetes (PGO) is a Postgres Operator provided by Crunchy Data, which offers a declarative solution for the management of PostgreSQL clusters, with a focus on automation.
 Crunchy Data is a company that specializes in providing open-source software solutions for Postgres. The company also provides a range of support, consulting, and training services to help organizations implement and optimize their Postgres deployment. \cite{Crunchy}
+
+PGO’s capabilities are the following:
+\begin{itemize}
+  \item \textbf{Postgres Cluster Provisioning:} PGO is able to create \cite{CrunchyDocCreate}, update \cite{CrunchyDocUpdate} or delete Postgres cluster \cite{CrunchyDocDelete}
+  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique with Primary and Standby architecture. \cite{CrunchyDocHA}
+  \item \textbf{Postgres updates:} PGO is able to apply minor patches \cite{CrunchyDocMinorUpdates}, and major upgrades since version 5.1. \cite{CrunchyBlogUpdates}
+  \item \textbf{Backups:} PGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), ad hoc backups, backup compression, and backup encryption. \cite{CrunchyDocBackups}
+  \item \textbf{Disaster Recovery:} PGO is capable of Point In Time recovery, in place Point in Time Recovery, restore of an individual database. \cite{CrunchyDocDisasterRecovery}
+  \item \textbf{Cloning:} PGO is able to clone cluster. \cite{CrunchyDocDisasterRecovery}
+  \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager. \cite{CrunchyDocMonitoring}
+  \item \textbf{Connection Pooling:} PgBouncer connection pooler from Postgres is part of PGO. \cite{CrunchyDocConnectionPooling}
+  \item  \textbf{Customization:} PGO provides a wide area of Postgres customization. \cite{CrunchyDocCustomisation}
+\end{itemize}
+
+
+PGO consists of the following key components \cite{CrunchyPGOGit}:
+\begin{itemize}
+  \item High Availability: Patroni
+  \item Backups: PgBackRest
+  \item Connection Pooler: PgBouncer
+  \item Monitoring: PgMonitor, Prometheus, Grafana, and Alertmanager
+\end{itemize}
+\obr{PGO’s architecture \cite{CrunchyDocArchitecture}}{}{1}{graphics/pgo_architecture.png}
 
 The current stable version of PGO is 5.3.1 was released on 17th February 2023. \cite{CrunchyV531releaseNotes}
 
@@ -240,10 +261,6 @@ PGO is distributed under the Apache License 2.0, an open-source license that all
 \n{2}{EDB Postgres for Kubernetes}
 The EDB Postgres for Kubernetes (EDBO) is a fully supported operator that has been designed, developed, and maintained by EnterpriseDB Corporation. It provides comprehensive coverage of the entire lifecycle of highly available PostgreSQL database clusters with a Primary/Standby architecture, utilizing native streaming replication. The operator is based on the open-source CloudNativePG operator and offers additional benefits. \cite{OperatorHubEDB}
 
-EnterpriseDB (EDB) is a software company that provides enterprise-class PostgreSQL software and services. EDB is a leading provider of PostgreSQL technology, offering a range of products and services designed to help organizations adopt, deploy, and manage PostgreSQL databases. \cite{EDB}
-
-As stated previously EDBO is based on open-source CloudNativePG operator. EDBO provides additional features on top of CloudNativePG operator such as support for Oracle compatibility using EDB Postgres Advanced Server, support for additional platforms such as IBM Power, and additional enterprise-grade security features. \cite{EDBdocu}
-
 EDBO is distributed under the EDB Limited Usage License Agreement, a proprietary license that is specific to software provided by EnterpriseDB Corporation. A license key is always required for the operator to work longer than 30 days. \cite{EDBdocuLicence} Due to the restrictive nature of the license EDBO will no longer be subject to testing and evaluation but its key component CloudNativePG will.
 
 \n{2}{CloudNativePG}
@@ -251,15 +268,65 @@ The CloudNativePG operator (CNPGO) is an operator that is available as an open-s
 
 Initially developed by EDB, CNPGO was later made available to the public as an open-source software under the Apache License 2.0. In April 2022, the project was submitted to CNCF Sandbox for further development and community engagement. \cite{CNPGdocu}
 
-The current major stable version of CNPGO is 1.19.1 was released on 20th March 2023. \cite{CNPGreleases} CNPGO is distributed under the Apache License 2.0 open-source license. CNPGO is considered to have the highest capability level, labeled as Autopilot. \cite{CNPGdocu}
+CNPGO’s capabilities are the following:
+\begin{itemize}
+  \item \textbf{Postgres Cluster Provisioning:} CNPGO is able to create, update or delete Postgres cluster. \cite{CNPGdocuCapabilityLevels}
+  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique with Primary and Standby architecture. \cite{CNPGdocuReplication}
+  \item \textbf{Direct database imports:} CNPGO provides direct database import from remote Postgres server by using pg\_dump and pg\_restore even on different Postgres versions. \cite{CNPGdocuDatabaseImports}
+  \item \textbf{Postgres updates:} CNPGO is able to apply minor patches. \cite{CNPGdocuUpdates} Major updates are possible by Direct database imports\footnote{Due to its nature Direct database imports cannot be considered as major upgrade option.}.
+  \item \textbf{Backups:} CNPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), on-demand backups, and backup encryption \cite{CNPGdocuBackup}\cite{CNPGdocuTDE}. Due to EDB’s backup software Barman backup compression is available also. \cite{CNPGdocuBackup}
+  \item \textbf{Disaster Recovery:} CNPGO is capable of Point In Time recovery. \cite{CNPGdocuBackup}
+  \item \textbf{Cloning:} CNPGO is able to create cluster replicas. \cite{CNPGdocuReplication}
+  \item \textbf{Monitoring:} Monitoring can be provided by the additional installation of Prometheus, and Grafana, and Alertmanager. \cite{CNPGdocuQuickstart}
+  \item \textbf{Connection Pooling:} Provided by native Postgres pooler PgBouncer. \cite{CNPGdocuConnectionPooling}
+  \item \textbf{Customization:} CNPGO provides a wide area of Postgres customization such as max parallel workers tuning or WAL configuration \cite{CNPGdocuConfiguration}
+\end{itemize}
+
+TBD: footnotes numbering
+
+CNPGO consists of the following key components \cite{PostgresOnKubernetes} \cite{CNPGdocuQuickstart}:
+\begin{itemize}
+  \item High Availability: Postgres instance manager
+  \item Backups: Barman
+  \item Connection Pooler: PgBouncer
+  \item Monitoring: Prometheus, Grafana, and Alertmanager
+\end{itemize}
+
+\obr{CNPGO’s architecture \cite{CNPGdocuConnectionPooling}}{}{1}{graphics/CNPGO_architecture.png}
+
+The current major stable version of CNPGO is 1.20.0 was released on 27th April 2023. \cite{CNPGreleases} CNPGO is distributed under the Apache License 2.0 open-source license. CNPGO is considered to have the highest capability level, labeled as Autopilot. \cite{CNPGdocu}
 
 \n{2}{StackGres Operator}
-StackGres (SPGO) is a comprehensive distribution of PostgreSQL for Kubernetes, delivered in a user-friendly deployment package. The distribution includes a set of PostgreSQL components that have been carefully selected and optimized to work seamlessly with each other. \cite{SPGOgitlab}
+StackGres (SPGO) is a comprehensive distribution of Postgres for Kubernetes, delivered in a user-friendly deployment package. The distribution includes a set of Postgres components that have been carefully selected and optimized to work seamlessly with each other. \cite{SPGOgitlab}
 
 SPGO is developed by OnGres that was established as a result of years of experience in working with and creating products based on Postgres and supporting clients with their Postgres infrastructures. Postgres databases are at the heart of the company's business, as the name suggests. \cite{OnGres}
 
+SPGO’s capabilities are the following \cite{OnGres}:
+\begin{itemize}
+  \item \textbf{Postgres Cluster Provisioning:} SPGO is able to create, update or delete Postgres cluster.
+  \item \textbf{High Availability:} High availability is achieved by adding additional nodes with Primary and Standby architecture.
+  \item \textbf{Postgres updates:} SPGO is able to apply minor patches. Major updates are possible by SGDbOps \cite{SPGODocuMajorUpdates}.
+  \item \textbf{Backups:} SPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob)
+  \item \textbf{Disaster Recovery:} SPGO is capable of Point In Time recovery.
+  \item \textbf{Cloning:} SPGO is able to create cluster replicas.
+  \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager.
+  \item \textbf{Connection Pooling:} Is provided by PgBouncer.
+  \item \textbf{Customization:} SPGO provides a wide area of Postgres customization such as WAL configuration, archive mode, vacuum, etc. \cite{SPGODocuCustomization}
+  \item \textbf{Mamagement Console:} SPGO provides a fully featured management web console.
 
-The current stable version of SPGO is 1.4.3\footnote{Version 1.5.0 is not yet production-ready and therefore will not be tested or evaluated.} was released on 24th January 2022. \cite{SPGOgitlabChangelog} SPGO is distributed under the AGPL3 open-source license. \cite{SPGODocuLicence}
+\end{itemize}
+
+SPGO consists of the following key components \cite{PostgresOnKubernetes}:
+\begin{itemize}
+  \item High Availability: Patroni
+  \item Backups: WAL-G
+  \item Connection Pooler: PgBouncer
+  \item Monitoring: Prometheus, Grafana, and Alertmanager.
+\end{itemize}
+
+\obr{SPGO’s architecture \cite{SPGOdocuArchitecture}}{}{1}{graphics/SPGO_architecture.png}
+
+The current stable version of SPGO is 1.4.3\footnote[2]{Version 1.5.0 has also been released, it is not yet production-ready yet. Therefore will not be tested or evaluated.} was released on 24th January 2022. \cite{SPGOgitlabChangelog} SPGO is distributed under the AGPL3 open-source license. \cite{SPGODocuLicence}
 With regards to capability, SPGO is considered to have the second highest capability level, labeled as Deep Insights. \cite{OperatorHubStackgres}
 
 \n{2}{Percona Operator for PostgreSQL}
@@ -267,15 +334,33 @@ Percona is a company that provides services and solutions for open-source databa
 
 Percona Operator for PostgreSQL (PPO) is based on Crunchy Postgres for Kubernetes. Percona forked PGO v 4.7 and has added enhancements for monitoring, upgradability, and flexibility. \cite{PerconaBlogProsAndCons}
 
-The current stable version of PPO is 1.4.0 was released on 31st March 2023\footnote{Version 2.0.0 is not yet production-ready and therefore will not be tested or evaluated}. \cite{PerconaDocuV2} PPO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PPO is considered to have the second highest capability level, labeled as Deep Insights. \cite{OperatorHubPercona}
+Differences between PGO and PPO are the following:
+\begin{itemize}
+  \item \textbf{Postgres updates:} PPO provides automatic Postgres updates for minor and major versions of Postgres.  \cite{PerconaDocuUpdate}
+  \item \textbf{Backups:} PPO is not able to back up to Azure. \cite{PerconaDocuCompare} Although it uses Patroni, which has this ability.
+  \item \textbf{Disaster Recovery:} PPO documentation does not mention the possibility of restoring a single database from a backup. \cite{PerconaDocuBackups}
+  \item \textbf{Monitoring:} PPO is not using the usual monitoring stack consisting of Prometheus and Grafana but their own Percona Monitoring and Management. \cite{PerconaDocuMonitoring}
+\end{itemize}
+
+The current stable version of PPO is 1.4.0 was released on 31st March 2023\footnote[3]{Version 2.0.0 has also been released, it is not yet production-ready yet. Therefore will not be tested or evaluated.}. \cite{PerconaDocuV2} PPO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PPO is considered to have the second highest capability level, labeled as Deep Insights. \cite{OperatorHubPercona}
 
 \n{2}{Summary}
-\tab{Summary of selected operators}{tab:operatorsSummary}{1}{|l|l|l|l|}{
+\tab{Summary of selected 0perators}{tab:operatorsSummary}{1}{|l|l|l|l|}{
   \hline Operator & Maturity level & Current production version & Release date\\ \hline
   PGO & Autopilot & 5.3.1 & 17th February 2023\\ \hline
-  CNPGO & Autopilot & 1.19.1 & 20th March 2023\\ \hline
+  CNPGO & Autopilot & 1.20.0 & 27th April 2023\\ \hline
   SPGO & Deep Insights & 1.4.3 & 23th February 2022\\ \hline
   PPO & Deep Insights & 1.4.0 & 31st March 2023\\ \hline
+}
+
+\n{2}{Key differences}
+\tab{Key differences between selected Operators}{tab:operatorsDiffences}{1}{|l|l|l|l|l|}{
+  \hline Feature & PGO & CNPGO & SPGO & PPO\\ \hline
+  In place Point in time recovery & Yes & No & No & No\\ \hline
+  Individual database restore & Yes & No & No & No\\ \hline
+  Operator user interface & No & No & Yes & No\\ \hline
+  Major version upgrade & Yes & No & Yes & Yes\\ \hline
+  Supported Postgres versions & v11 - v15 & v11 - v15 & v12 - v15 & v12 - v14\\ \hline
 }
 
 \n{1}{Metrics}
@@ -416,10 +501,10 @@ The process for reporting test incidents, as depicted in Figure \ref{fig:ieeeTes
 \obr{Test execution process \cite{ieeeTestProcess}}{fig:ieeeTestIncidentReportProcess}{1}{graphics/test_incident_report_process.png}
 
 \n{2}{Documents}
-All documents must meet the requirements of ISO/IEC/IEE 29119-3\footnote{https://standards.ieee.org/ieee/29119-3/5310/}
+All documents must meet the requirements of ISO/IEC/IEE 29119-3\footnote[4]{https://standards.ieee.org/ieee/29119-3/5310/}
 
 \n{2}{Level of detail}
-Please note that this chapter provides only a high-level overview of the testing methodology. More detailed information can be found in ISO/IEC/IEEE 29119-2\footnote{https://standards.ieee.org/ieee/29119-2/7498/}. If there are any doubts regarding the testing process, this standard should be used as a guide to ensure that all necessary aspects of testing are properly addressed.
+Please note that this chapter provides only a high-level overview of the testing methodology. More detailed information can be found in ISO/IEC/IEEE 29119-2\footnote[5]{https://standards.ieee.org/ieee/29119-2/7498/}. If there are any doubts regarding the testing process, this standard should be used as a guide to ensure that all necessary aspects of testing are properly addressed.
 
 
 
@@ -433,7 +518,7 @@ Please note that this chapter provides only a high-level overview of the testing
 %\obr{2022 Developer Survey \cite{so2022survey}}{}{1}{graphics/postgres_stack_overflow_survey.png}
 
 
-\cast{Implementation}
+\cast{Theory Application}
 
 \n{1}{Test process}
 
