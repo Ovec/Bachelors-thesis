@@ -11,7 +11,19 @@ TBD - remove
 The cloud has made our work easier. We no longer have to physically connect new machines to the network, configure network connections, add disks, or even plug in virtual ones. Kubernetes, together with the cloud, can automatically allocate new resources for our applications and, thanks to operators, can even create entire database clusters with high availability. Thanks to operators, it can also automatically set up scaling or backups. It can even restore an entire database system from a backup. This paper is focused on Kubernetes operators for the popular Postgres database management system. Its goal is to find Operators for Postgres. To evaluate their pros and cons. To test them and recommend the best one.
 
 TBD - remove end
+
 TBD - fix footnotes numbering
+
+TBD - switch to Czech layout
+
+TBD - Motto
+
+TBD - Czech abstract, English abstract
+
+TBD - Poděkování, motto
+
+TBD - fix tables
+
 
 % ============================================================================ %
 \cast{Theory}
@@ -217,6 +229,7 @@ With a thorough understanding of Postgres, Kubernetes, the Postgres lifecycle, a
 \end{enumerate}
 
 \n{1}{Operators for Lifecycle Management in Kubernetes}
+\label{chap:searchForOperators}
 This chapter aims to answer the first research question: 'What Operators exist for lifecycle management of Postgres in Kubernetes?'"
 As recommended in chapter~\ref{chap:operators} the selection of the Operator should first be consulted with the manufacturer of the controlled source. Postgres offers the following Kubernetes Operators in its software catalog \cite{docuPgSwCatalogue}: CloudNativePG, EDB Postgres for Kubernetes a Kubegres.
 
@@ -364,33 +377,34 @@ The current stable version of PPO is 1.4.0 was released on 31st March 2023\footn
 }
 
 \n{1}{Metrics}
-TBD: Connect to resource questions
-
-TBD: Add gravy
-
-TBD: Why was use qualitative metrics instead of functional metrics. Functions are already tested and lifecycle ensures that functions are ok. Qualities are more important to functions.
-
-THOUGHT: Functional requirements are already covered by the maturitiy level of the Operator.
-
+This chapter aims to answer the second research question: 'What metrics are suitable for comparing Opereators for lifecycle management in
+Kubernetes?'" According to Tom Gilb \cite{gilb1988principles}, the main issue in software attribute requirements is identified not in their functionality, but in their quality. Gilb differentiates these attribute requirements into two categories: Resources (people, time, money), which are always finite, and qualities or benefits, which are always fewer than desired. Knowledge about the functionality that an Operator must provide to achieve a certain level of capabilities is obtained from Chapter~\ref{chap:operators}. The most significant functional properties of Operators have been detailed in Chapter~\ref{chap:searchForOperators}. With the lifecycle of Postgres and the capabilities of operators now understood, what remains to be examined are their qualitative properties. The upcoming testing will be focused on the proposed qualitative metrics.
 
 \n{2}{Performance}
+Performance is a qualitative parameter of a system, defined by the efficiency with which the system utilizes allocated resources. In the case of Postgres, performance can be expressed as the number of transactions executed per unit of time. A higher transaction rate is indicative of superior performance.
 \n{2}{Reliability}
+Reliability is a qualitative parameter that determines the degree of system dependability. If a system cannot be relied upon, it cannot be utilized effectively. Therefore, reliability is a critical parameter of any system.
 \n{3}{Maturity}
+Maturity in the context of software refers to the degree to which a system is fully developed, perfected and reliable. A mature system is typically characterized by stability, reliability, robustness, and well-defined, predictable behavior based on its previous operation and iterations.
 \n{2}{Usability}
+Usability is a key aspect of software design that focuses on user experience. It refers to the ability of a system to achieve certain goals for certain users in a particular context of use.
 \n{3}{Learnability}
+How easy it is for users to learn how to use the system.
 \n{3}{Operabilitiy}
-\n{2}{Maintainability}
+How easy is it for users to successfully use the system.
+\n{2}{Maintenance}
+Activities that are performed after the software is deployed to ensure its correct functionality and performance. Maintenance may include bug fixes, adding new features, performance optimization, updates for compatibility with new systems, etc. Ignoring software maintenance can lead to increased repair costs and reduced system performance over time. Additionally, it can cause system instability, increased vulnerability to security threats, and eventually, potential system failure.
 \n{3}{Reneval}
+Renewal is considered a crucial aspect of software maintenance, playing a significant role in maintaining the relevance of a software system over time. Essentially, this process ensures that the software is consistently updated to align with current standards and technologies.
 \n{2}{Security}
+Security refers to the measures, practices, and technologies employed to protect the system and its data from threats and attacks.
 \n{3}{Vulnerabilities}
-\n{3}{Best practice}
-
-\n{1}{Metrics Quantification}
-
+Vulnerability refers to a weakness in a system that can be exploited by a threat actor, such as a hacker, to perform unauthorized actions within a computer system. This can involve gaining access to the system's features and data, or disrupting the system's normal functioning.
 
 
 \n{1}{Testing methodology}
-This chapter presents a high-level overview of the testing methodology. The goal of the methodology is to deliver rules and guidance for test process that produces test reports forming the basis of this comparison.
+This chapter aims to answer the third research question: 'What approach should be taken to determine the degree to which the metrics are
+met?'" and presents a high-level overview of the testing methodology. The goal of the methodology is to deliver rules and guidance for test process that produces test reports forming the basis of this comparison.
 
 \n{2}{Notice}
 It is important to notice at the beginning of this chapter that testing as described in \cite{FoundationOfSoftwareTesting} has following seven testing princliples:
@@ -411,14 +425,11 @@ Therefore, the test process derived from this methodology as every test process 
 \n{2}{Criteria}
 The following criteria will be subjected to testing. These criteria should provide a solid basis for the decision-making process.
 \begin{criterias}
-  \item	Features – What are the additional features provided by the Operator, besides its life cycle management capabilities?
-  \item	Deployment and configuration – How easy is the Operator deployment and configuration?
-  \item	Performance – What is the Operator performance?
-  \item	Stability and reability – How stable and reliable is the Operator?
-  \item	Scaling and high availability – How good is the Operator at scaling and achieving high availability?
-  \item	Backup and recovery – What are the backup and recovery capabilities of the Operator?
-  \item	Security – What are the vulnerabilities and poor practices associated with the Operator?
-  \item	Maturity – What is the maturity of the Operator?
+  \item	Performance – How performant is each operator?
+  \item	Reliability - How reliable is each operator?
+  \item	Usability – How usable is each operator?
+  \item	Maintenance – How is each operator maintained?
+  \item	Security – How secure is each operator?
 \end{criterias}
 
 
@@ -507,155 +518,79 @@ All documents must meet the requirements of ISO/IEC/IEE 29119-3\footnote[4]{http
 Please note that this chapter provides only a high-level overview of the testing methodology. More detailed information can be found in ISO/IEC/IEEE 29119-2\footnote[5]{https://standards.ieee.org/ieee/29119-2/7498/}. If there are any doubts regarding the testing process, this standard should be used as a guide to ensure that all necessary aspects of testing are properly addressed.
 
 
-
-
-
-
-
-
-
-
 %\obr{2022 Developer Survey \cite{so2022survey}}{}{1}{graphics/postgres_stack_overflow_survey.png}
 
 
-\cast{Theory Application}
+\cast{APPLICATION OF THEORY}
 
-\n{1}{Test process}
+\n{1}{Testing}
+\n{2}{Test process}
 
-\n{2}{Test plans}
-\n{3}{General test plan}
 
-\begin{itemize}
-  \item Test plan ID: TP0
-  \item Context of testing:
-        \begin{itemize}
-          \item Project: Bachelor’s thesis.
-          \item Test levels: Acceptance testing.
-          \item Test types: Static and dynamic.
-          \item Test items:
-                \begin{itemize}
-                  \item Crunchy Postgres for Kubernetes Operator v5.3.1.
-                  \item CloudNativePG Operator v1.9.1.
-                  \item StackGres Operator v1.4.3.
-                  \item Percona Operator for Postgres 1.4.0.
-                \end{itemize}
-          \item Test scope: Operator, Operator’s documentation, Operator’s repository.
-          \item Test basis: Defined criteria.
-        \end{itemize}
-  \item Risk register:
-        \begin{itemize}
-          \item Limited staff and time might prevent thorough testing of all features and functionalities of the software during acceptance testing.
-          \item Inadequately trained staff might struggle to design effective test cases, which could result in missed defects and lower overall testing effectiveness.
-          \item Due to the lack of expertise among staff members, the software's readiness for production might be inaccurately assessed, leading to incorrect conclusions about its quality and suitability for release
-        \end{itemize}
-  \item Test strategy:
-        \begin{itemize}
-          \item General: The purpose of testing is to evaluate the ability of Operators to fulfill the desired requirements, and to provide information for making informed decisions on which Operator to select in last chapter. Functional and non-functional requirements will be tested with static and dynamic test techniques.
-          \item Test levels: Acceptance testing
-          \item Test deliverables: Test plan, test model specification, test procedure specification, incident reports, test status reports, test competition reports.
-          \item Test design techniques: Exploratory Testing, Use cases, Walkthroughs
-          \item Entry criteria: Created environments.
-          \item Exit criteria – decision metrics were collected.
-          \item Test competition criteria: All criteria covered by at least one test case.
-          \item Degree of independence: No connection between tested Operators and tester. Tester is fully independent.
-          \item Metrics to be collected:
-                \begin{itemize}
-                  \item Static testing: Vulnerability analysis (number of vulnerabilities and their severity), Operators SDK scoreboard (score and findings), Repository review (sum of issues, sum of repaired issues, sum of Operator users, sum of contributors, sum of users, sum of stars),
-                  \item Dynamic testing:  Sum of passed, ignored and failed tests.
-                \end{itemize}
-          \item Test data requirements:
-                \begin{itemize}
-                  \item Crunchy Postgres for Kubernetes Operator v5.3.1
-                        \begin{itemize}
-                          \item PGO: https://github.com/CrunchyData/postgres-operator-examples
-                          \item PGODOC: https://access.crunchydata.com/documentation/postgres-operator/v5/
-                          \item PGOREPO: https://github.com/CrunchyData/postgres-operator
-                        \end{itemize}
+\obr{Test process}{fig:testingTestProcess}{1}{graphics/test_process.png}
 
-                  \item CloudNativePG Operator version 1.19.1
-                        \begin{itemize}
-                          \item CNPGO: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.19/releases/cnpg-1.19.1.yaml
-                          \item CNPGODOC: https://cloudnative-pg.io/documentation/1.19/
-                          \item CNPGOREPO: https://github.com/cloudnative-pg/cloudnative-pg
-                        \end{itemize}
 
-                  \item StackGres Operator version 1.4.3
-                        \begin{itemize}
-                          \item SPGO: https://stackgres.io/downloads/stackgres-k8s/stackgres/helm/
-                          \item SPGODOC: https://stackgres.io/doc/1.4/
-                          \item SPGOREPO: https://gitlab.com/ongresinc/stackgres
-                        \end{itemize}
-                  \item Percona Operator for PostgreSQL version 1.4.O
-                        \begin{itemize}
-                          \item PPOO: https://raw.githubusercontent.com/percona/percona-postgresql-operator/v1.4.0/deploy/operator.yaml
-                          \item PPODOC: https://docs.percona.com/percona-operator-for-postgresql/index.html
-                          \item PPOREPO: https://github.com/percona/percona-postgresql-operator
-                        \end{itemize}
-                \end{itemize}
-          \item Test environment requirements:
-                \begin{itemize}
-                  \item Kind Kubernetes cluster with two worker nodes for all dynamic test except performance tests, installed on Unix/Linux compatible machine.
-                  \item Google Kubernetes Engine with two worker nodes.
-                  \item Terraform
-                  \item KUTTL kubernetes testing tool.
-                  \item Trivy security scanner.
-                  \item Kubectl kubernetes controll tool.
-                  \item Operator SDK.
-                  \item EXCEL.
-                \end{itemize}
-          \item Retesting: Retesting is not needed.
-          \item Reggresion testing: Reggresion testing is not needed.
-          \item Testing activities and estimates:
-                \begin{itemize}
-                  \item Environment setup – 30m.
-                  \item Documentation walkthrough – 2h/Operator.
-                  \item Deployment and configuration – 4h/Operator.
-                  \item Performance – 4h/Operator.
-                  \item Stability and reability – 4h/Operator.
-                  \item Scaling and high availability – 4h/Operator.
-                  \item Backup and recovery – 2h/Operator.
-                  \item Security audit – 2h/Operator.
-                  \item Test completion report – 1h/testing day.
-                \end{itemize}
+Tohle chci refnout~\ref{chap:generalTestPlan}
 
-          \item Staffing (roles and responsibilities)
-                \begin{itemize}
-                  \item Roles: Test architect, test manager, test designer, test automator, tester and test analyst
-                  \item Staff: Miroslav Šiřina.
-                \end{itemize}
-          \item Training needed
-                \begin{itemize}
-                  \item Test management.
-                  \item Test design.
-                  \item Test analyst.
-                  \item KUTTL.
-                  \item Trivy and results interpretation skills.
-                  \item Operator SDK skills.
-                \end{itemize}
-          \item Test priorities
-                \begin{itemize}
-                  \item Static tests have higher priority to dynamic.
-                  \item Critical features have higher priority.
-                \end{itemize}
-          \item Schedule
-                \begin{itemize}
-                  \item April 17th planning and test analyst training.
-                  \item April 18th documentation walkthroughs.
-                  \item April 19th repositories walkthroughs.
-                  \item April 20th planning, Operator SDK scoreboard training, Trivy training.
-                  \item April 21th security audits
-                  \item April 22th PGO deployments and config, backup and recovery. CNPGO deployments and config, backup and recovery.
-                  \item April 23th SPGO deployments and config, backup and recovery. PPO deployments and config, backup and recovery.
-                  \item April 24th planning, GKE environment setup.
-                  \item April 25th - 26th PGO performance, stability and reability, scaling and high availability.
-                  \item April 27th - 28th CNPGO performance, stability and reability, scaling and high availability.
-                  \item April 29th - 30th SPGO performance, stability and reability, scaling and high availability.
-                  \item April 30th - 1st PPO performance, stability and reability, scaling and high availability.
-                  \item May 2nd – 3rd Testing closure.
-                \end{itemize}
-        \end{itemize}
-\end{itemize}
+% \n{2}{Test plans}
 
+
+
+
+\n{2}{Static testing}
+\n{3}{Reliability and maintenance}
+In order to determine the maturity of the system, data was statically collected from the repositories of each operator. This included the popularity of the operators, the number of issues they had, and the number of issues that were resolved. The maturity was then determined based on the popularity of the operators and the ratio of resolved issues.
+
+\n{4}{Popularity}
+Popularity can be considered an indicator of maturity because broad recognition and use of a product often suggest that the product is reliable, efficient, and capable of meeting user requirements. In the context of software, popular software tends to be more thoroughly tested, leading to the identification and correction of bugs, and therefore greater stability and maturity.
+
+The operator with the highest number of stars, and therefore the most popular, is the PGO operator. To compare operators, the most popular one was assigned a popularity score of 100\%, and the others were assigned a score relative to their share of the maximum.
+
+\tab{Popularity of Operators}{tab:operatorMaturity}{1}{|l|l|l|l|l|}{
+  \hline
+  & PGO	& CNPGO	& SPGO & PPO \\ \hline
+  Popularity (stars)	& 3258	& 1198	 & 84 &	149 \\ \hline
+  Popularity ratio	& 100\% &	37\%	& 3\% &	5\% \\ \hline
+}
+
+\n{4}{Fixed issues}
+The number of issues resolved is often considered a sign of a software project's maturity, as it indicates that the developers are actively maintaining the software, responding to user feedback, and fixing problems as they arise. A high number of resolved issues indicates that the project has faced and overcome challenges, which may indicate that the software has been "battle tested" and improved over time.
+
+The operator with the highest proportion of resolved issues is PGO, which has successfully addressed 93\% of its reported issues. CNPGO and PPO exhibit a reasonable performance level in this area. However, SPGO, despite being less popular and more recent than PGO, has more reported issues and a large number of unresolved issues (445 in total). This could suggest that SPGO is still underdeveloped.
+
+\tab{Operators issues}{tab:operatorIssues}{1}{|l|l|l|l|l|}{
+  \hline
+  & PGO	& CNPGO	& SPGO & PPO \\ \hline
+  Total issues	&  1884	& 764	& 1959	& 317 \\ \hline
+  Issues fixed	&   1755	& 691 &	1514	& 282 \\ \hline
+  Fixed issues ratio	&  93\% &	90\% &	77\% &	89\% \\ \hline
+}
+
+The overall maturity of the operators was calculated as an average of popularity and the ratio of fixed issues. The results can be seen in Table \ref{tab:operatorMaturity}. As maturity is the only subtest under reliability, it is considered as a measure of reliability.
+
+\tab{Operators maturity}{tab:operatorMaturity}{1}{|l|l|l|l|l|}{
+  \hline
+  & PGO	& CNPGO	& SPGO & PPO \\ \hline
+  Overal maturity / reliability	& 97\%	& 64\% &	40\%	& 47\% \\ \hline
+}
+
+\n{4}{Reneval}
+Software renewal, a key aspect of software maintenance, is often essential to ensure that the software continues to be effective and efficient in light of changing user needs, technological progress, and evolving industry standards. Commits to the repository represent incremental changes in the project. Therefore, the number of commits per unit of time indicates the rate at which the software is being renewed.
+
+The overall renewal rate of the operators depicted in Table \ref{tab:operatorReneval} was calculated as the number of commits since the day of repository creation. The highest ratio of commits per day was achieved by SPGO with an average of 5.03 commits per day, earning it a score of 100\%, while the other operators were assigned scores relative to their share of this maximum.
+
+Interestingly, this contrasts with the Operator issues where SPGO scored the lowest and was therefore considered underdeveloped. A possible explanation for this could be that SPGO uses issues for its own project management, rather than solely for issue tracking. As reneval is the only subtest under maintenance, it is considered as a measure of maintenance.
+
+
+\tab{Operators reneval}{tab:operatorReneval}{1}{|l|l|l|l|l|}{
+  \hline
+  & PGO	& CNPGO	& SPGO & PPO \\ \hline
+  Repo creation	&  27th Feb 2017 & 18th Feb 2020	&  29th May 2019	&  27th Feb 2017 \\ \hline
+  Test date	&   1st May 2023 & 1st May 2023	&  1st May 2023	&  1st May 2023 \\ \hline
+  Sum of commits	&   5582	& 3362 &	7208	& 4689 \\ \hline
+  Commits/day	&   2.48	& 2.88	& 5.03	& 2.08 \\ \hline
+  Reneval &   49\%	&  57\%	&  100\%	& 41\% \\ \hline
+}
 
 
 
@@ -664,18 +599,32 @@ Please note that this chapter provides only a high-level overview of the testing
   \hline
   Test plan ID & tp1 \\ \hline
   Revision & 1 \\ \hline
-  Introducton &  \makecell{Documentation walkthrough} \\ \hline
-  Test items & Operator documentation \\ \hline
-  Criteria to be covered & C1 \\ \hline
+  Introducton &  Repositories walkthrough \\ \hline
+  Test items & Operator's repositories \\ \hline
+  Covered criteria  & C2, C3 \\ \hline
   Test type &	Static \\ \hline
-  Test approach &	Documentation walkthrough \\ \hline
-  Exit criteria & All documentation reviewed  \\ \hline
-  Delivarables & List of features \\ \hline
-  Duration & 1 h for each Operator \\ \hline
+  Test approach &	Repositories walkthrough \\ \hline
+  Exit criteria & All metrics gathered  \\ \hline
+  Delivarables & Sum of commits, sum of stars, sum of issues, sum of fixed issues.  \\ \hline
+  Duration & 2 h for each Operator \\ \hline
   Reviewer & Miroslav Šiřina \\ \hline
-  Start & April 17th \\ \hline
-  Schedule & \makecell{April 17th documentations walkthrough. \\ April 18th summary and test report.} \\ \hline
+  Start & May 1st \\ \hline
+  Schedule & May 1st repositories walkthrough and test report. \\ \hline
 }
+
+Test completition report
+
+Testing performed: Repositories walkthrough, repositories cloning, Percona Jira walkthrough
+
+Deviations from planed testing: Percona is using Jira for tracking issues. To get issues Jira walkthrough was necessary. To count number of commits and get the date of first commit the repository cloning was necessary.
+
+Test completion evaluation: The testing process was successful in gathering key data about the system despite deviations from the initial plan. The flexibility in testing procedures resulted in a more comprehensive evaluation and provided valuable insights into the system.
+
+Factors that blocked progress: reposistory clonning, Jira walkthrough
+
+Test Result Analysis: The tests provided valuable data about the state and history of repositories, as well as key insights into issue tracking. The specific details and implications of these findings would be discussed further in the respective sections of this report.
+
+Lessons Learned: The necessity to deviate from the initial test plan underlines the importance of flexibility in testing procedures. An adaptive approach can lead to a more thorough evaluation and better data collection.
 
 
 
@@ -697,6 +646,8 @@ Please note that this chapter provides only a high-level overview of the testing
   Tester & Miroslav Šiřina \\ \hline
   Start & April 21th \\ \hline
 }
+
+
 
 \tab{Test plan No 3}{tab:testplan3}{1}{|l|l|}{
   \hline
