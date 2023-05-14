@@ -22,12 +22,13 @@ TBD - Czech abstract, English abstract
 
 TBD - Poděkování, motto
 
-TBD - fix tables
+TBD - adjust the test theory to test process
 
+TBD - cíl práce, navrhout doporučení, rozhodovací strom
 
 % ============================================================================ %
 \cast{Theory}
-
+\sloppy
 \n{1}{Background}
 This chapter introduces the key technologies used in this thesis including Postgres, Kubernetes, and Kubernetes Operators.
 \n{2}{Postgres}
@@ -526,25 +527,15 @@ Please note that this chapter provides only a high-level overview of the testing
 \n{1}{Testing}
 \n{2}{Test process}
 
-
 \obr{Test process}{fig:testingTestProcess}{1}{graphics/test_process.png}
 
-
-Tohle chci refnout~\ref{chap:generalTestPlan}
-
-% \n{2}{Test plans}
-
-
-
-
-\n{2}{Static testing}
-\n{3}{Reliability and maintenance}
+\n{2}{Reliability and maintenance}
 
 In order to determine the maturity of the system, data was statically collected from the repositories of each operator. This included the popularity of the operators, the number of issues they had, and the number of issues that were resolved. The maturity was then determined based on the popularity of the operators and the ratio of resolved issues.
 
 Test Plan No. 1, which includes reliability and maintenance, can be found along with the Test Completion Report in Appendix A II. The subsequent sections will present the results of the test.
 
-\n{4}{Popularity}
+\n{3}{Popularity}
 Popularity can be considered an indicator of maturity because broad recognition and use of a product often suggest that the product is reliable, efficient, and capable of meeting user requirements. In the context of software, popular software tends to be more thoroughly tested, leading to the identification and correction of bugs, and therefore greater stability and maturity.
 
 The operator with the highest number of stars, and therefore the most popular, is the PGO operator. To compare operators, the most popular one was assigned a popularity score of 100\%, and the others were assigned a score relative to their share of the maximum.
@@ -556,7 +547,7 @@ The operator with the highest number of stars, and therefore the most popular, i
   Popularity ratio	& 100\% &	37\%	& 3\% &	5\% \\ \hline
 }
 
-\n{4}{Fixed issues}
+\n{3}{Fixed issues}
 The number of issues resolved is often considered a sign of a software project's maturity, as it indicates that the developers are actively maintaining the software, responding to user feedback, and fixing problems as they arise. A high number of resolved issues indicates that the project has faced and overcome challenges, which may indicate that the software has been "battle tested" and improved over time.
 
 The operator with the highest proportion of resolved issues is PGO, which has successfully addressed 93\% of its reported issues. CNPGO and PPO exhibit a reasonable performance level in this area. However, SPGO, despite being less popular and more recent than PGO, has more reported issues and a large number of unresolved issues (445 in total). This could suggest that SPGO is still underdeveloped.
@@ -577,7 +568,7 @@ The overall maturity of the operators was calculated as an average of popularity
   Overal maturity / reliability	& 97\%	& 64\% &	40\%	& 47\% \\ \hline
 }
 
-\n{4}{Reneval}
+\n{3}{Reneval}
 Software renewal, a key aspect of software maintenance, is often essential to ensure that the software continues to be effective and efficient in light of changing user needs, technological progress, and evolving industry standards. Commits to the repository represent incremental changes in the project. Therefore, the number of commits per unit of time indicates the rate at which the software is being renewed.
 
 The overall renewal rate of the operators depicted in Table \ref{tab:operatorReneval} was calculated as the number of commits since the day of repository creation. The highest ratio of commits per day was achieved by SPGO with an average of 5.03 commits per day, earning it a score of 100\%, while the other operators were assigned scores relative to their share of this maximum.
@@ -595,19 +586,19 @@ Interestingly, this contrasts with the Operator issues where SPGO scored the low
   Reneval &   49\%	&  57\%	&  100\%	& 41\% \\ \hline
 }
 
-\n{3}{Learnability}
-Learnability testing, which constitutes one facet of usability, aims to assess the ease with which new users can understand and use a product. This particular testing was conducted with two primary objectives. The first objective was to identify the presence of examples in the documentation, as learning facilitated by examples is generally more effective than without. The second objective was to gauge the level of learning required to operate the system effectively. This was accomplished through a detailed analysis of the provided examples.
+\n{2}{Learnability}
+Learnability testing, which is one part of usability, aims to assess the ease with which new users can understand and use a product. This particular testing was conducted with two primary objectives. The first objective was to identify the presence of examples in the documentation, as learning facilitated by examples is generally more effective than without. The second objective was to gauge the level of learning required to operate the system effectively. This was accomplished through a detailed analysis of the provided examples.
 
 Test Plan No. 2, which includes learnability, can be found along with
-the Test Completion Report, checklist and gathered examples in Appendix A II. The subsequent sections will present the results of the test.
+the Test Completion Report, checklist and gathered examples in Appendix A III. The subsequent sections will present the results of the test.
 
 The training required depicted in Table \ref{tab:operatorTraining} was calculated as the additional training needed to work with each operator, over and above knowledge of kubectl (the Kubernetes command-line tool). Each additional tool required to work successfully with the operator resulted in a 5\% score decrease. In this regard, CNPGO was at a disadvantage because, according to its documentation, the cnpg plugin is necessary to uninstall it. PGO also faced a similar issue as it utilizes the simple kustomize tool to customize its manifest with a namespace.
 
 \tab{Training needed}{tab:operatorTraining}{1}{|l|l|l|l|l|}{
   \hline
   & PGO	& CNPGO	& SPGO & PPO \\ \hline
-  &kubectl &	kubectl	& kubectl &	kubectl \\ \hline
-  &kustomize	 & cnpg	& helm &\\ \hline
+  Training &kubectl &	kubectl	& kubectl &	kubectl \\ \hline
+  Training &kustomize	 & cnpg	& helm &\\ \hline
   Score	&  95\%	& 95\% &	95\% &	100\%\\ \hline
 }
 
@@ -638,256 +629,84 @@ The overall learnability rating of the Operators, as depicted in Table \ref{tab:
   Learnability	& 98\% &	93\% &	88\% &	90\%\\ \hline
 }
 
-\n{3}{Security}
+\n{2}{Security}
+In order to perform the vulnerability analysis, the Docker images of each operator were scanned using the Trivy security scanner. To replicate these tests, please refer to the repository directory \url{tests/vulnerability_analysis}, which contains subdirectories for each operator with the corresponding commands used together with complete results.
 
+Each operator is deployed as a Docker image, which can be scanned for vulnerabilities. With this test, the main issue for the operators was the quality of the underlying operating system used in the image. CNPG is utilizing Debian 11.6, where Trivy was unable to detect any vulnerabilities. The rest of the operators are using the Red Hat 8.7 underlying Docker image, which resulted in almost identical vulnerability scores. Unfortunately, the implementation of Red Hat 8.7 in both PGO and SPGO has a high vulnerability with openssl-libs (CVE-2023-0286). More details about this vulnerability can be found here: \url{https://avd.aquasec.com/nvd/2023/cve-2023-0286/}.
 
-\n{3}{Static test plans}
+The results depicted in Table \ref{tab:operatorVuln} were quantified in the following manner: the presence of a critical vulnerability was scored as 0\%, a high severity vulnerability as 20\%, medium as 40\%, low as 60\%, unknown as 80\%, and no vulnerabilities as 100\%. CNPGO was the only operator with zero detected vulnerabilities, thus achieving a full score and can be considered secure. PPO, having only medium and lower severity vulnerabilities, can also be considered reasonably secure. However, both PGO and SPGO, which had high severity vulnerabilities, can be seen as less secure compared to CNPGO and PPO.
 
+Test Plan No. 3, which includes security, can be found along with
+the Test Completion Report in Appendix A IV.
 
-\tab{Test plan No 2}{tab:testplan2}{1}{|l|l|}{
+\tab{Vulnerability analysis}{tab:operatorVuln}{1}{|l|l|l|l|l|}{
   \hline
-  Test plan ID & tp2 \\ \hline
-  Revision & 1 \\ \hline
-  Introducton &  \makecell{ Vulnerability analysis test plan  } \\ \hline
-  Test items & 	Operator \\ \hline
-  Requirements to be covered & \makecell{ RQ15 } \\ \hline
-  Test type &	Static \\ \hline
-  Test approach &	Static analysis \\ \hline
-  Test envrioment & Kind kubernetes cluster \\ \hline
-  Test tools & Trivy \\ \hline
-  Entry criteria & \makecell{ Deployed operator }\\ \hline
-  Exit criteria & Vulnerability analysis finished for each Operator\\ \hline
-  Delivarables &	Test report \\ \hline
-  Duration & 2 h for each Operator \\ \hline
-  Tester & Miroslav Šiřina \\ \hline
-  Start & April 21th \\ \hline
+  & PGO	& CNPGO	& SPGO & PPO \\ \hline
+  Critical &	0	& 0 &	0 &	0 \\ \hline
+  High &	1 &	0 &	1 &	0\\ \hline
+  Medium &	40 &	0 &	41 &	35 \\ \hline
+  Low &	36 &	0 &	36 &	36 \\ \hline
+  Unkown &	0 &	0 &	0 &	0 \\ \hline
+  Security &	20\% &	100\%	& 20\%	& 40\% \\ \hline
 }
+\n{2}{Operability}
+\label{chap:testOperatbility}
 
+\n{2}{Performance}
 
+\obr{Kubernetes performance setup}{fig:testingGKEperformance}{1}{graphics/performance_setup.png}
 
-\tab{Test plan No 3}{tab:testplan3}{1}{|l|l|}{
-  \hline
-  Test plan ID & tp3 \\ \hline
-  Revision & 1 \\ \hline
-  Introducton &  \makecell{ Gathering metrics from Operator repositories \\ in order to realise how well maintained \\ the Operator and the size of the \\ Operator community. } \\ \hline
-  Test items & 	Operator documentation \\ \hline
-  Requirements to be covered & RQ17, RQ18 \\ \hline
-  Test type &	Static \\ \hline
-  Test approach &	Repository review \\ \hline
-  Entry criteria & List of metrics to be collected \\ \hline
-  Exit criteria & Metrics collected, ratio between Operators \\ \hline
-  Delivarables & Test report \\ \hline
-  Duration & 2 h for each Operator \\ \hline
-  Reviewer & Miroslav Šiřina \\ \hline
-  Start & April 18th \\ \hline
-}
+In order to perform performance testing, it was necessary to create a more robust cluster than the Kind cluster on MacBook Air. This was achieved by creating a Google Kubernetes Engine cluster with three e2-standard-2 nodes. Each node was equipped with 2 virtual CPUs and 8 GB of RAM. A standalone Postgres node with pgbench was also deployed to the cluster. A simplified version of this cluster is depicted in Figure \ref{fig:testingGKEperformance}. The Terraform plans for this deployment can be found in the \url{tests/environments/gke} repository directory.
 
+For each Operator test, the Kubernetes cluster was recreated to ensure a clean starting point. A Postgres cluster with three nodes (one primary and two replicas) was deployed, along with three connection pooler instances.
 
-\tab{Test plan No 4}{tab:testplan4}{1}{|l|l|}{
-  \hline
-  Test plan ID & tp4 \\ \hline
-  Revision & 1 \\ \hline
-  Introducton &  \makecell{ Contents of the documentation} \\ \hline
-  Test items & 	Operator documentation \\ \hline
-  Requirements to be covered & RQ16 \\ \hline
-  Test type &	Static \\ \hline
-  Test approach &	Checlist based documentation review \\ \hline
-  Entry criteria & Created checklist \\ \hline
-  Exit criteria & 100\% checklist coverage \\ \hline
-  Delivarables &	Completed checklist for each Operator \\ \hline
-  Duration & 2 h for each Operator \\ \hline
-  Reviewer & Miroslav Šiřina \\ \hline
-  Start & April 17th \\ \hline
-  Schedule & \makecell{April 17th Checklist creation. \\ April 20th Static testing for Contents PPO. \\ April 21th Static testing for Contents PGO, SPGO, CNPGO.} \\ \hline
-}
-
-\n{3}{Dynamic test plan}
-
-\tab{Test plan No 5}{tab:testplan5}{1}{|l|l|}{
-  \hline
-  Test plan ID & tp5 \\ \hline
-  Revision & 1 \\ \hline
-  Introducton & \makecell{ This test plan is to plan the dynamic test \\ on gathered requirements and to test that \\ the Operator can deliver what was promised \\ in the documentation. } \\ \hline
-  Test items & 	Operator \\ \hline
-  Requirements to be covered & \makecell{ RQ1, RQ2, RQ3, RQ4, RQ5, RQ6, RQ7, \\ RQ8, RQ9, RQ10, RQ11, RQ12, RQ13, RQ14 } \\ \hline
-  Test type &	Dynamic \\ \hline
-  Test approach &	Black box - use cases\\ \hline
-  Test envrioment & Kind kubernetes cluster \\ \hline
-  Test tools & Kubectl, KUTTL \\ \hline
-  Entry criteria & \makecell{  Checklist from previous static testing. \\ Use cases.}\\ \hline
-  Exit criteria & 100\% use case coverage \\ \hline
-  Delivarables &	Test report \\ \hline
-  Duration & 8 h for each Operator \\ \hline
-  Automation & All test except monitoring tests must be automated. \\ \hline
-  Tester & Miroslav Šiřina \\ \hline
-  Start & TBD \\ \hline
-  Schedule & \makecell{April 24th Use cases preparation. \\ April 25th – 27th Dynamic testing PGO. \\ April 28th – May 1st Dynamic testing CNPGO. \\ May 2nd – 4th  Dynamic testing SPO. \\ May 6th – 8th  Dynamic testing PPO.}\\ \hline
-}
-
-Test status report
+Cluster configurations were also adjusted according to the recommendations from the pgTune website. The adjusted settings were as follows:
 \begin{itemize}
-  \item ID: TR1
-  \item Overview: First day of testing
-  \item Test status: Test analyst training and pgbench training
-  \item Reporting period: April 17th
-  \item Progress against plan: Everything according to plan.
-  \item Factors blocking progress: None
-  \item Test measures: None
-  \item New and changed risks: None
-  \item Planned testing: None
+  \item max\_connections: 200
+  \item shared\_buffers: 1536MB
+  \item effective\_cache\_size: 4608MB
+  \item maintenance\_work\_mem: 384MB
+  \item checkpoint\_completion\_target: 0.9
+  \item wal\_buffers: 16MB
+  \item default\_statistics\_target: 100
+  \item random\_page\_cost: 4
+  \item effective\_io\_concurrency: 2
+  \item work\_mem: 3932kB
+  \item min\_wal\_size: 1GB
+  \item max\_wal\_size: 4GB
 \end{itemize}
 
-\begin{itemize}
-  \item ID: TR2
-  \item Overview: Second day of testing. Documentation walkthrough,
-  \item Test status: Operator properties were collected from the documentation.
-  \item Reporting period: April 18th
-  \item Progress against plan: A day of delay due to the diversity of documentations and the need to compare findings and create a report.
-  \item Factors blocking progress: None
-  \item Test measures: 80\% of TP1 delivered
-  \item New and changed risks: None
-  \item Planned testing: April 19th the summary of test and comparison.
-\end{itemize}
+This configuration was implemented to standardize each cluster configuration.
+
+After the deployment of the Postgres cluster, each Operator was tested using the pgBench tool, a PostgreSQL benchmarking utility. This tool was configured to execute 10,000 transactions across 25 concurrent clients and utilizing 10 threads. This benchmark was directed towards the Postgres cluster's pooler service. This procedure was replicated twice more for thoroughness.
+
+The results depicted in Table \ref{tab:operatorPerformance} only display the transactions per second, as these offer a sufficient indication of the operators' performance. For a comprehensive view of the results from this benchmark, along with the Test Completion Report, please refer to Appendix A VI.
+
+The commands executed throughout this procedure, along with the complete configuration of the operators, can be located in the \url{tests/performance} directory in the repository.
+
+\n{3}{Issues with CNPGO}
+CNPGO was the only one unable to execute 250,000 transactions in each run due to an error (client 6 script 0 aborted in command 4 query 0: FATAL: query wait timeout, SSL connection has been closed unexpectedly).
+This error usually occurs when a query takes too long to execute, leading to a timeout. The SSL connection is then closed unexpectedly, causing the transaction to fail. This might suggest that CNPGO is struggling with performance or network stability in this particular scenario.
+
+\n{3}{Issues with SPGO}
+The possible reason for SPGO's low transactions per second score is that a cluster profile is needed to deploy an SPGO cluster. When this profile was correctly set, Google Kubernetes Engine was unable to deploy the cluster. By gradually reducing these values, the available resources were eventually found, but these settings were probably too low for optimal performance (500m CPU and 2Gi RAM). Despite the cluster showing that it had more memory and CPU allocable, as may be seen in Figure \ref{fig:testingGKEnodes}, the reduced resource allocation might have constrained SPGO's performance.
+
+\n{3}{Issues with PPO}
+As described in Chapter~\ref{chap:testOperatbility}, changes to PPO's configuration do not affect the cluster, therefore, the cluster was not modified during this test. This means that the performance results for PPO are based on its default configuration settings.
 
 
-\tab{List of operator's features, first part.}{tab:features1}{1}{|l|l|l|l|l|}{
+\tab{Performance analysis}{tab:operatorPerformance}{1}{|l|l|l|l|l|}{
   \hline
-  & \textbf{PGO}  & \textbf{CNPGO} & \textbf{SPGO}  & \textbf{PPO} \\ \hline
-  \multicolumn{5}{|l|}{\textbf{Postgres}} \\ \hline
-  \multicolumn{5}{|l|}{\textbf{High Availability}} \\ \hline
-  High Availability & yes & yes & yes & yes \\ \hline
-  Synchronous replication & yes & yes & yes & yes \\ \hline
-  \multicolumn{5}{|l|}{\textbf{Scaling}} \\ \hline
-  Vertical scaling  & Manual & Manual & Manual & Manual \\ \hline
-  Horizontal scaling & Manual & Manual & Manual & Manual \\ \hline
-  \multicolumn{5}{|l|}{\textbf{Connection Pooling}} \\ \hline
-  Connection Pooling & yes & yes & yes & yes \\ \hline
-  \multicolumn{5}{|l|}{\textbf{Affinitiy}} \\ \hline
-  Affinitiy & yes & yes & yes & yes \\ \hline
-  Pod Anti-affinity & yes & yes & yes & yes \\ \hline
-  Node Affinity & yes & yes & yes & yes \\ \hline
-  Pod topology spread & yes & yes & yes & yes \\ \hline
-  \multicolumn{5}{|l|}{\textbf{User management by Operator}} \\ \hline
-  Database initialization SQL & yes & yes & yes & no \\ \hline
-  Creating new user & yes & no & no & no \\ \hline
-  Adjusting privileges & yes & no & no & no \\ \hline
-  Managing the Postgres user & yes & no & no & no \\ \hline
-  \multicolumn{5}{|l|}{\textbf{Backups and restore}} \\ \hline
-  Scheduled & yes & yes & yes & yes \\ \hline
-  Locations & \makecell{K8s volume \\ AWS S3 \\ (or S3 compatible) \\ GCS, Azure Blob} & \makecell{K8s volume \\ AWS S3 \\ (or S3 compatible) \\ GCS, Azure Blob} & \makecell{K8s volume \\ AWS S3 \\ (or S3 compatible) \\ GCS, Azure Blob} & \makecell{K8s volume \\ AWS S3 \\ (or S3 compatible) \\ GCS} \\ \hline
-  Ad-hoc & yes & yes & unable to decide & yes \\ \hline
-  Point in time recovery & yes & yes & yes & yes \\ \hline
-  In place Point in time recovery & yes & no & no & no \\ \hline
-  Encrypted backup & yes & yes & no & no \\ \hline
-  Cluster cloning & yes & yes & yes & yes \\ \hline
-  Restore individual database & yes & no & no & no \\ \hline
-  Backup compression & no & yes & no & no \\ \hline
-  Old backups delete & no & yes & no & no \\ \hline
+  & PGO	& CNPGO	& SPGO & PPO \\ \hline
+  First run &	544.91 tps	& 403.70 tps	& 284.39 tps &	401.46 tps \\ \hline
+  Second run &	543.29 tps &	402.54 tps &	279.89 tps &	392.04 tps\\ \hline
+  Third run &	538.51 tps &	392.63 tps &	309.16 tps &	387.79 tps \\ \hline
+  Mean &	542.24 tps &	399.62 tps &	291.15 tps &	393.77 tps \\ \hline
+  Performance &	100\%	& 74\%	& 54\%	& 73\% \\ \hline
 }
 
-\tab{List of operator's features, first part.}{tab:features1}{1}{|l|l|l|l|l|}{
-  \hline
-  & \textbf{PGO}  & \textbf{CNPGO} & \textbf{SPGO}  & \textbf{PPO} \\ \hline
-  \multicolumn{5}{|l|}{\textbf{Monitoring}} \\ \hline
-  User Interface & no & no & yes & yes \\ \hline
-  Overview & yes & unable to decide & unable to decide & unable to decide \\ \hline
-  Cluster details & yes & unable to decide & unable to decide & unable to decide \\ \hline
-  Pod details & yes & unable to decide & unable to decide & unable to decide \\ \hline
-  Backups  & yes & unable to decide & unable to decide & unable to decide \\ \hline
-  Health & yes & unable to decide & unable to decide & unable to decide \\ \hline
-  Query runtime & yes & unable to decide & unable to decide & unable to decide \\ \hline
-  Alerts & yes & unable to decide & unable to decide & unable to decide \\ \hline
-  API & no & no & yes & no \\ \hline
-  \multicolumn{5}{|l|}{\textbf{Upgrade}} \\ \hline
-  Minor version & Manual & Manual & Manual & Automatic \\ \hline
-  Major version & Manual & no & Manual & Automatic \\ \hline
-  \multicolumn{5}{|l|}{\textbf{Operator}} \\ \hline
-  Instalation & \makecell{Kustomize \\ Helm} & \makecell{ Cnpg \\ Kubectl \\ Helm} & \makecell{Kubectl \\ Helm} & \makecell{Kubectl \\ Helm} \\ \hline
-  Upgrade  & Manual & Seamles & Manual & Manual \\ \hline
-  Postgres versions & 11, 12, 13, 14, 15 & 11, 12, 13, 14, 15 & 12, 13, 14, 15 & 12, 13, 14 \\ \hline
-  Licence & Apache 2.0 & Apache 2.0 & Apache 2.0 & AGPL 3 \\ \hline
-  \multicolumn{5}{|l|}{\textbf{Technical support}} \\ \hline
-  Technical support & \makecell{Mailing list \\ Commercial support} & \makecell{Slack \\  GitHub Discussions \\ Commercial support} & \makecell{Slack \\ Discord \\ Commercial support}  & \makecell{Community forum \\ Jira \\ Commercial support} \\ \hline
-}
+\obr{GKE nodes details}{fig:testingGKEnodes}{1}{graphics/gke_nodes.png}
 
-
-
-Test report 18.4.
-- 6:39 - PGO start
-- 8:03 - PGO end
-- 8:10 - CNPGO start
-- 9:38 - CNPGO end
-- 9:38 - SPGO start
-- 1O:25 - SPGO end
-- 1O:30 - PPO start
-- 1O:52 - PPO start
-
-Test report 19.4.
-- 6:55 - list creation start
-- 10:33 - list creation end
-
-
-
-
-
-
-
-
-\n{1}{Nadpisy a podnadpisy}
-Na této stránce je k vidění způsob tvorby různých úrovní nadpisů.
-
-\n{2}{Podnadpis A}
-Text
-
-\n{2}{Podnadpis B}
-Text
-
-\n{2}{Podnadpis C}
-Text
-
-\n{3}{Podpodnadpis alfa}
-Text
-
-\n{3}{Podpodnadpis beta}
-Text
-
-\n{3}{Podpodnadpis gama}
-Text
-
-\n{2}{Podnadpis D}
-Text
-
-
-\n{1}{Vkládání obrázků, tabulek a citací}
-Níže následují ukázky vložení obrázku, tabulky a různorodých citací.
-
-
-\n{2}{Obrázek}
-Obrázek \ref{fig:logo} prezentuje logo Fakulty aplikované informatiky.
-
-% Obrázek lze vkládat pomocí následujícího zjednodušeného stylu, nebo klasickým LaTex způsobem
-% Pozor! Obrázek nesmí obsahovat alfa kanál (průhlednost). Jde to totiž proti požadovanému standardu PDF/A.
-\obr{Popisek obrázku}{fig:logo}{0.5}{graphics/logo/fai_logo_cz.png}
-
-
-\n{2}{Tabulka}
-Tabulka \ref{tab:priklad} obsahuje dva řádky a celkem 7 sloupců.
-
-% Tabulku lze vkládat pomocí následujícího zjednodušeného stylu, nebo klasickým LaTex způsobem
-\tab{Popisek tabulky}{tab:priklad}{0.65}{|l|c|c|c|c|c|r|}{
-  \hline
-  & 1 & 2 & 3 & 4 & 5 & Cena [Kč] \\ \hline
-  \emph{F} & (jedna) & (dva) & (tři) & (čtyři) & (pět) & 300 \\ \hline
-}
-
-% ============================================================================ %
-
-% Pokud Vaše práce obsahuje analytickou část, stačí odkomentovat nasledujících dva řádky
-%\cast{Analytická část}
-%\n{1}{Nadpis}
-
-
-% ============================================================================ %
 
 % ============================================================================ %
 \nn{Závěr}

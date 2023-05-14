@@ -129,7 +129,7 @@
 
 \priloha{Test Plan No. 1}
 
-\tab{Test plan No 1}{tab:testplan1}{1}{|l|l|}{
+\tab{Test plan No. 1}{tab:testplan1}{1}{|l|l|}{
     \hline
     Test plan ID & tp1 \\ \hline
     Revision & 1 \\ \hline
@@ -394,5 +394,462 @@ Test Result Analysis: The tests provided valuable data about the state of docume
 
 Lessons Learned: Future projects should be prepared for a high level of diversity in documentations. This might involve allocating more time for research or including personnel with a broader range of expertise.
 
+
+\priloha{Test Plan No. 3}
+
+\tab{Test plan No. 3}{tab:testplan3}{1}{|l|l|}{
+    \hline
+    Test plan ID & tp3 \\ \hline
+    Revision & 1 \\ \hline
+    Introducton & Vulnerability analysis of operators \\ \hline
+    Test items & Operator deployed in the cluster \\ \hline
+    Covered criteria  & C5 \\ \hline
+    Test type &	Static \\ \hline
+    Test approach &	Vulnerability analysis \\ \hline
+    Exit criteria & Completed analysis  \\ \hline
+    Tools & Trivy security scanner \\ \hline
+    Delivarables & Vulnerability reports  \\ \hline
+    Duration & 4 h for each Operator \\ \hline
+    Reviewer & Miroslav Šiřina \\ \hline
+    Start & May 2nd \\ \hline
+    Schedule & May 2nd analysis and test report. \\ \hline
+}
+
+\textbf{Test completition report}
+
+Testing performed: Vulnerability analysis
+
+Deviations from planed testing: None
+
+Test completion evaluation: The testing process was successful.
+
+Factors that blocked progress: None
+
+Test Result Analysis: The tests provided valuable data about vulnerabilities in Operators.
+
+\priloha{Test Plan No. 4}
+
+\tab{Test plan No. 4}{tab:testplan4}{1}{|l|l|}{
+    \hline
+    Test plan ID & tp4 \\ \hline
+    Revision & 1 \\ \hline
+    Introducton & Vulnerability analysis of operators \\ \hline
+    Test items & Operator deployed in the cluster \\ \hline
+    Covered criteria  & C5 \\ \hline
+    Test type &	Static \\ \hline
+    Test approach &	Vulnerability analysis \\ \hline
+    Exit criteria & Completed analysis  \\ \hline
+    Tools & Trivy security scanner \\ \hline
+    Delivarables & Vulnerability reports  \\ \hline
+    Duration & 4 h for each Operator \\ \hline
+    Reviewer & Miroslav Šiřina \\ \hline
+    Start & May 2nd \\ \hline
+    Schedule & May 2nd analysis and test report. \\ \hline
+}
+
+\priloha{Test Plan No. 5}
+
+\tab{Test plan No. 5}{tab:testplan5}{1}{|l|l|}{
+    \hline
+    Test plan ID & tp5 \\ \hline
+    Revision & 1 \\ \hline
+    Introducton & Performance analysis \\ \hline
+    Test items & Operator deployed GKE in the cluster \\ \hline
+    Covered criteria  & C1 \\ \hline
+    Test type &	Dynamic \\ \hline
+    Test approach &	Performance analysis \\ \hline
+    Exit criteria & Completed analysis  \\ \hline
+    Tools & PgBench Postgres benchmark tool  \\ \hline
+    Delivarables & Performance reports  \\ \hline
+    Duration & 4 h for each Operator \\ \hline
+    Reviewer & Miroslav Šiřina \\ \hline
+    Start & May 9th \\ \hline
+    Schedule & May 9th analysis and test report. \\ \hline
+}
+
+\textbf{Test completition report}
+
+Testing performed: Performance analysis
+
+Deviations from planed testing: SPGO analysis too
+
+Test completion evaluation: None
+
+Factors that blocked progress: Deploying SPGO proved challenging due to the fact that SPGO requires a cluster profile to deploy the cluster, which will specify the allocated processor and memory. With the correct settings of these values, the cluster was unable to find suitable resources for SPGO. By gradually reducing these values, available resources were eventually found.
+
+Test Result Analysis: The tests provided valuable data about performanc of Postgres deployed by Operators.
+
+\textbf{Test results}
+
+PGO
+
+pgbench (15.2)
+
+starting vacuum...end.
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 250000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 45.879 ms
+
+initial connection time = 745.406 ms
+
+tps = 544.913924 (without initial connection time)
+
+pgbench (15.2)
+
+starting vacuum...end.
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 250000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 46.016 ms
+
+initial connection time = 688.436 ms
+
+tps = 543.289895 (without initial connection time)
+
+pgbench (15.2)
+
+starting vacuum...end.
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 250000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 46.424 ms
+
+initial connection time = 750.453 ms
+
+tps = 538.511794 (without initial connection time)
+
+CNPG
+
+pgbench (15.2)
+
+starting vacuum...end.
+
+pgbench: error: client 6 script 0 aborted in command 4 query 0: FATAL:  query wait timeout
+
+SSL connection has been closed unexpectedly
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 240000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 61.927 ms
+
+initial connection time = 729.483 ms
+
+tps = 403.698126 (without initial connection time)
+
+pgbench: error: Run was aborted; the above results are incomplete.
+
+command terminated with exit code 2
+
+pgbench (15.2)
+
+starting vacuum...end.
+
+pgbench: error: client 21 script 0 aborted in command 4 query 0: FATAL:  query wait timeout
+
+SSL connection has been closed unexpectedly
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 240000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 62.105 ms
+
+initial connection time = 710.013 ms
+
+tps = 402.544415 (without initial connection time)
+
+pgbench: error: Run was aborted; the above results are incomplete.
+
+command terminated with exit code 2
+
+pgbench (15.2)
+
+starting vacuum...end.
+
+pgbench: error: client 1 script 0 aborted in command 4 query 0: FATAL:  query wait timeout
+
+SSL connection has been closed unexpectedly
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 240000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 63.673 ms
+
+initial connection time = 706.203 ms
+
+tps = 392.629101 (without initial connection time)
+
+pgbench: error: Run was aborted; the above results are incomplete.
+
+command terminated with exit code 2
+
+PPO
+
+pgbench (15.2, server 14.7 - Percona Distribution)
+
+starting vacuum...end.
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 250000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 62.272 ms
+
+initial connection time = 707.856 ms
+
+tps = 401.464378 (without initial connection time)
+
+pgbench (15.2, server 14.7 - Percona Distribution)
+
+starting vacuum...end.
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 250000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 63.769 ms
+
+initial connection time = 690.586 ms
+
+tps = 392.039997 (without initial connection time)
+
+pgbench (15.2, server 14.7 - Percona Distribution)
+
+starting vacuum...end.
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 250000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 64.467 ms
+
+initial connection time = 574.644 ms
+
+tps = 387.793393 (without initial connection time)
+
+SPGO
+
+pgbench (15.2, server 15.1 (OnGres 15.1-build-6.18))
+
+starting vacuum...end.
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 250000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 87.906 ms
+
+initial connection time = 60.527 ms
+
+tps = 284.394442 (without initial connection time)
+
+pgbench (15.2, server 15.1 (OnGres 15.1-build-6.18))
+
+starting vacuum...end.
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 250000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 89.321 ms
+
+initial connection time = 67.533 ms
+
+tps = 279.890815 (without initial connection time)
+
+
+pgbench (15.2, server 15.1 (OnGres 15.1-build-6.18))
+
+starting vacuum...end.
+
+transaction type: <builtin: TPC-B (sort of)>
+
+scaling factor: 1
+
+query mode: simple
+
+number of clients: 25
+
+number of threads: 10
+
+maximum number of tries: 1
+
+number of transactions per client: 10000
+
+number of transactions actually processed: 250000/250000
+
+number of failed transactions: 0 (0.000\%)
+
+latency average = 80.863 ms
+
+initial connection time = 74.577 ms
+
+tps = 309.164610 (without initial connection time)
+
+pgbench (15.2, server 15.1 (OnGres 15.1-build-6.18))
 
 % ============================================================================ %
