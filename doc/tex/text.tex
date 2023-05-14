@@ -80,13 +80,13 @@ Kubernetes, also known as K8s, is an open-source platform for automating deploym
 
 As described by Kubernetes Documentation \cite{docuKubeComponents} Kubernetes provides several key features, including:
 \begin{itemize}
-  \item \textbf{Service discovery:} A container can be exposed by Kubernetes either through its DNS name or its own IP address.
-  \item \textbf{Load balancing:} In the case of high traffic to a container, stability of the deployment can be ensured by Kubernetes load balancing and distributing the network traffic.
-  \item \textbf{Storage Orchestration:} Storage orchestration in Kubernetes allows for the automatic mounting of a storage system of choice, including local storage, public cloud providers, and others.
-  \item \textbf{Automated rollouts and rollbacks:} The desired state of deployed containers can be described using Kubernetes, and the actual state can be changed to the desired state at a controlled rate. For instance, the automation of Kubernetes can be utilized to create new containers for the deployment, remove existing containers, and transfer all their resources to the newly created container.
-  \item \textbf{Automatic bin packing:} A cluster of nodes for running containerized tasks is provided to Kubernetes. The amount of CPU and memory required by each container is specified to Kubernetes. The optimal utilization of resources can be achieved by Kubernetes fitting the containers onto the nodes.
-  \item \textbf{Self healing:} Containers that fail are restarted by Kubernetes, those that do not respond to the user-defined health check are replaced or killed, and they are not advertised to clients until they are deemed ready to serve.
-  \item \textbf{Secret and configuration management:} Sensitive information, such as passwords, OAuth tokens, and SSH keys, can be stored and managed by Kubernetes. The deployment and updating of secrets and application configuration can be done without the need to rebuild container images and without the exposure of secrets in the stack configuration.
+    \item \textbf{Service discovery:} A container can be exposed by Kubernetes either through its DNS name or its own IP address.
+    \item \textbf{Load balancing:} In the case of high traffic to a container, stability of the deployment can be ensured by Kubernetes load balancing and distributing the network traffic.
+    \item \textbf{Storage Orchestration:} Storage orchestration in Kubernetes allows for the automatic mounting of a storage system of choice, including local storage, public cloud providers, and others.
+    \item \textbf{Automated rollouts and rollbacks:} The desired state of deployed containers can be described using Kubernetes, and the actual state can be changed to the desired state at a controlled rate. For instance, the automation of Kubernetes can be utilized to create new containers for the deployment, remove existing containers, and transfer all their resources to the newly created container.
+    \item \textbf{Automatic bin packing:} A cluster of nodes for running containerized tasks is provided to Kubernetes. The amount of CPU and memory required by each container is specified to Kubernetes. The optimal utilization of resources can be achieved by Kubernetes fitting the containers onto the nodes.
+    \item \textbf{Self healing:} Containers that fail are restarted by Kubernetes, those that do not respond to the user-defined health check are replaced or killed, and they are not advertised to clients until they are deemed ready to serve.
+    \item \textbf{Secret and configuration management:} Sensitive information, such as passwords, OAuth tokens, and SSH keys, can be stored and managed by Kubernetes. The deployment and updating of secrets and application configuration can be done without the need to rebuild container images and without the exposure of secrets in the stack configuration.
 \end{itemize}
 \n{3}{Kubernetes Components}
 \label{chap:kubeComponents}
@@ -95,18 +95,18 @@ Kubernetes cluster is composed of a set of worker machines that run containerize
 
 The Kubernetes control plane is the management system of a Kubernetes cluster, responsible for maintaining the desired state of the cluster. It consists of multiple components that work together to manage the cluster and its resources, including pods, services, and volumes. The key components of control plane are \cite{masteringKubernetesConcepts}:
 \begin{itemize}
-  \item \textbf{kube-APIserver:} Acts as the front-end for the Kubernetes API and exposes the API to other components. \cite{docuKubeComponents}
-  \item \textbf{Etcd:} Highly available distributed key-value store that serves as the backing store for the cluster's configuration data. \cite{Dobies2020}
-  \item \textbf{kube-scheduler:} Assigns work to nodes in the cluster, such as scheduling pods to run on nodes. \cite{kubeUpAndRunningPods}
-  \item \textbf{kube-controller-manager:} Monitors the cluster's state and makes adjustments as necessary to maintain the desired state. \cite{masteringKubernetesConcepts}
-  \item \textbf{cloud-controller-manager:} Manages cloud-related tasks such as node creation and management, volume management, and load balancing, allowing the other components of the control plane to focus on their specific responsibilities. Cloud manager is optional. Can be avoided when Kubernetes not used in cloud. \cite{docuKubeComponents}
+    \item \textbf{kube-APIserver:} Acts as the front-end for the Kubernetes API and exposes the API to other components. \cite{docuKubeComponents}
+    \item \textbf{Etcd:} Highly available distributed key-value store that serves as the backing store for the cluster's configuration data. \cite{Dobies2020}
+    \item \textbf{kube-scheduler:} Assigns work to nodes in the cluster, such as scheduling pods to run on nodes. \cite{kubeUpAndRunningPods}
+    \item \textbf{kube-controller-manager:} Monitors the cluster's state and makes adjustments as necessary to maintain the desired state. \cite{masteringKubernetesConcepts}
+    \item \textbf{cloud-controller-manager:} Manages cloud-related tasks such as node creation and management, volume management, and load balancing, allowing the other components of the control plane to focus on their specific responsibilities. Cloud manager is optional. Can be avoided when Kubernetes not used in cloud. \cite{docuKubeComponents}
 \end{itemize}
 \textbf{Node components:}
 Node components in a Kubernetes cluster run on each node and provide crucial functionality for the operation of containers on that node. \cite{docuKubeComponents}
 \begin{itemize}
-  \item \textbf{kubelet:} Is responsible for communicating with the control plane and ensuring that containers are running and healthy. \cite{kubeUpAndRunning}
-  \item \textbf{kube-proxy:} Is responsible for maintaining network rules on the nodes, allowing network communication to the containers. It enables the containers in a pod to communicate with other containers and the outside world, and performs tasks such as load balancing and traffic routing. \cite{kubeUpAndRunning}
-  \item \textbf{container runtime:} Is responsible for running containers. \cite{docuKubeComponents}
+    \item \textbf{kubelet:} Is responsible for communicating with the control plane and ensuring that containers are running and healthy. \cite{kubeUpAndRunning}
+    \item \textbf{kube-proxy:} Is responsible for maintaining network rules on the nodes, allowing network communication to the containers. It enables the containers in a pod to communicate with other containers and the outside world, and performs tasks such as load balancing and traffic routing. \cite{kubeUpAndRunning}
+    \item \textbf{container runtime:} Is responsible for running containers. \cite{docuKubeComponents}
 \end{itemize}
 
 \n{3}{Kubernetes Concepts}
@@ -158,14 +158,14 @@ Operation is the process of running and managing the application, which starts w
 
 Therefore the complete database life cycle can be outlined by following events:
 \begin{itemize}
-  \item System installation
-  \item System upgrade to a newer version (major and minor)
-  \item System backup
-  \item System restore
-  \item System monitoring
-  \item System scaling (vertical and horizontal)
-  \item System configuration update
-  \item System uninstall
+    \item System installation
+    \item System upgrade to a newer version (major and minor)
+    \item System backup
+    \item System restore
+    \item System monitoring
+    \item System scaling (vertical and horizontal)
+    \item System configuration update
+    \item System uninstall
 \end{itemize}
 
 \pagebreak
@@ -185,9 +185,9 @@ By embedding the human operator's operational knowledge into the code, this ensu
 
 As described by Operator White Paper \cite{OperatorWhitepaper} and depicted in figure \ref{fig:operatorPatern}, Operator consists of the following parts
 \begin{itemize}
-  \item The managed application or infrastructure
-  \item Software that has some specific knowledge of the managed application or infrastructure and allows the user to declaratively set the desired state
-  \item Custom Controller, which is responsible for achieving the desired state
+    \item The managed application or infrastructure
+    \item Software that has some specific knowledge of the managed application or infrastructure and allows the user to declaratively set the desired state
+    \item Custom Controller, which is responsible for achieving the desired state
 \end{itemize}
 
 \obr{Operator pattern \cite{OperatorWhitepaper} }{fig:operatorPatern}{1}{graphics/operator_patern.png}
@@ -198,14 +198,14 @@ Like human operators, Kubernetes Operators can have a level of manual skill rang
 
 As stated in the Operator white paper, \cite{OperatorWhitepaper} the Operator should be able to cover the complete life cycle of the managed resource as defined in the previous chapter without the need for external installation or upgrade intervention. Specifically as follows:
 \begin{itemize}
-  \item Install or take ownership of the controlled application.
-  \item Upgrade the managed application, including the monitoring of the upgrade process. It should also be able to roll back in case of failure. He should record the status of the upgrade.
-  \item Back up the managed application and log when the application was last backed up and the status of that backup.
-  \item Restore the application from the backup.
-  \item Provide monitoring of the managed application.
-  \item Scale the application.
-  \item Automatically adapt the configuration of the application.
-  \item Uninstall or disconnect from the application.
+    \item Install or take ownership of the controlled application.
+    \item Upgrade the managed application, including the monitoring of the upgrade process. It should also be able to roll back in case of failure. He should record the status of the upgrade.
+    \item Back up the managed application and log when the application was last backed up and the status of that backup.
+    \item Restore the application from the backup.
+    \item Provide monitoring of the managed application.
+    \item Scale the application.
+    \item Automatically adapt the configuration of the application.
+    \item Uninstall or disconnect from the application.
 \end{itemize}
 
 These are all capabilities that an Operator should have at the highest level No. 5 - Autopilot. For lifecycle management described in previous chapter, the minimum level of Operator capabilities must be at least level No. 4 - Deep Insights with an option to scale.
@@ -214,19 +214,19 @@ The Kubernetes cluster is divided into individual namespaces that separate the o
 
 The following options are advised by the Operator white paper \cite{OperatorWhitepaper} in case the Operator is to be used for controlling the resource:
 \begin{itemize}
-  \item	Consultation with the creator of the resource to be controlled about the possibilities of using the Operator.
-  \item	The search for public Operator registries that provide a platform for publishing Operators and the underlying documentation.
-  \item	The creation of own Operator.
+    \item	Consultation with the creator of the resource to be controlled about the possibilities of using the Operator.
+    \item	The search for public Operator registries that provide a platform for publishing Operators and the underlying documentation.
+    \item	The creation of own Operator.
 \end{itemize}
 
 \n{1}{Resource questions}
 With a thorough understanding of Postgres, Kubernetes, the Postgres lifecycle, and Operators established in previous chapters, it is possible for research questions to be formulated. These questions are designed to enable a deeper exploration into the complexities of managing Postgres in a Kubernetes environment via Operators.
 
 \begin{enumerate}
-  \item What Operators exist for lifecycle management of Postgres in Kubernetes?
-  \item What metrics are suitable for comparing Opereators for lifecycle management in Kubernetes?
-  \item What approach should be taken to determine the degree to which the metrics are met?
-  \item How do the Operators score based on selected metrics?
+    \item What Operators exist for lifecycle management of Postgres in Kubernetes?
+    \item What metrics are suitable for comparing Opereators for lifecycle management in Kubernetes?
+    \item What approach should be taken to determine the degree to which the metrics are met?
+    \item How do the Operators score based on selected metrics?
 \end{enumerate}
 
 \n{1}{Operators for Lifecycle Management in Kubernetes}
@@ -247,24 +247,24 @@ Crunchy Data is a company that specializes in providing open-source software sol
 
 PGO’s capabilities are the following:
 \begin{itemize}
-  \item \textbf{Postgres Cluster Provisioning:} PGO is able to create \cite{CrunchyDocCreate}, update \cite{CrunchyDocUpdate} or delete Postgres cluster \cite{CrunchyDocDelete}
-  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique with Primary and Standby architecture. \cite{CrunchyDocHA}
-  \item \textbf{Postgres updates:} PGO is able to apply minor patches \cite{CrunchyDocMinorUpdates}, and major upgrades since version 5.1. \cite{CrunchyBlogUpdates}
-  \item \textbf{Backups:} PGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), ad hoc backups, backup compression, and backup encryption. \cite{CrunchyDocBackups}
-  \item \textbf{Disaster Recovery:} PGO is capable of Point In Time recovery, in place Point in Time Recovery, restore of an individual database. \cite{CrunchyDocDisasterRecovery}
-  \item \textbf{Cloning:} PGO is able to clone cluster. \cite{CrunchyDocDisasterRecovery}
-  \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager. \cite{CrunchyDocMonitoring}
-  \item \textbf{Connection Pooling:} PgBouncer connection pooler from Postgres is part of PGO. \cite{CrunchyDocConnectionPooling}
-  \item  \textbf{Customization:} PGO provides a wide area of Postgres customization. \cite{CrunchyDocCustomisation}
+    \item \textbf{Postgres Cluster Provisioning:} PGO is able to create \cite{CrunchyDocCreate}, update \cite{CrunchyDocUpdate} or delete Postgres cluster \cite{CrunchyDocDelete}
+    \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique with Primary and Standby architecture. \cite{CrunchyDocHA}
+    \item \textbf{Postgres updates:} PGO is able to apply minor patches \cite{CrunchyDocMinorUpdates}, and major upgrades since version 5.1. \cite{CrunchyBlogUpdates}
+    \item \textbf{Backups:} PGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), ad hoc backups, backup compression, and backup encryption. \cite{CrunchyDocBackups}
+    \item \textbf{Disaster Recovery:} PGO is capable of Point In Time recovery, in place Point in Time Recovery, restore of an individual database. \cite{CrunchyDocDisasterRecovery}
+    \item \textbf{Cloning:} PGO is able to clone cluster. \cite{CrunchyDocDisasterRecovery}
+    \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager. \cite{CrunchyDocMonitoring}
+    \item \textbf{Connection Pooling:} PgBouncer connection pooler from Postgres is part of PGO. \cite{CrunchyDocConnectionPooling}
+    \item  \textbf{Customization:} PGO provides a wide area of Postgres customization. \cite{CrunchyDocCustomisation}
 \end{itemize}
 
 
 PGO consists of the following key components \cite{CrunchyPGOGit}:
 \begin{itemize}
-  \item High Availability: Patroni
-  \item Backups: PgBackRest
-  \item Connection Pooler: PgBouncer
-  \item Monitoring: PgMonitor, Prometheus, Grafana, and Alertmanager
+    \item High Availability: Patroni
+    \item Backups: PgBackRest
+    \item Connection Pooler: PgBouncer
+    \item Monitoring: PgMonitor, Prometheus, Grafana, and Alertmanager
 \end{itemize}
 \obr{PGO’s architecture \cite{CrunchyDocArchitecture}}{}{1}{graphics/pgo_architecture.png}
 
@@ -284,26 +284,26 @@ Initially developed by EDB, CNPGO was later made available to the public as an o
 
 CNPGO’s capabilities are the following:
 \begin{itemize}
-  \item \textbf{Postgres Cluster Provisioning:} CNPGO is able to create, update or delete Postgres cluster. \cite{CNPGdocuCapabilityLevels}
-  \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique with Primary and Standby architecture. \cite{CNPGdocuReplication}
-  \item \textbf{Direct database imports:} CNPGO provides direct database import from remote Postgres server by using pg\_dump and pg\_restore even on different Postgres versions. \cite{CNPGdocuDatabaseImports}
-  \item \textbf{Postgres updates:} CNPGO is able to apply minor patches. \cite{CNPGdocuUpdates} Major updates are possible by Direct database imports\footnote{Due to its nature Direct database imports cannot be considered as major upgrade option.}.
-  \item \textbf{Backups:} CNPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), on-demand backups, and backup encryption \cite{CNPGdocuBackup}\cite{CNPGdocuTDE}. Due to EDB’s backup software Barman backup compression is available also. \cite{CNPGdocuBackup}
-  \item \textbf{Disaster Recovery:} CNPGO is capable of Point In Time recovery. \cite{CNPGdocuBackup}
-  \item \textbf{Cloning:} CNPGO is able to create cluster replicas. \cite{CNPGdocuReplication}
-  \item \textbf{Monitoring:} Monitoring can be provided by the additional installation of Prometheus, and Grafana, and Alertmanager. \cite{CNPGdocuQuickstart}
-  \item \textbf{Connection Pooling:} Provided by native Postgres pooler PgBouncer. \cite{CNPGdocuConnectionPooling}
-  \item \textbf{Customization:} CNPGO provides a wide area of Postgres customization such as max parallel workers tuning or WAL configuration \cite{CNPGdocuConfiguration}
+    \item \textbf{Postgres Cluster Provisioning:} CNPGO is able to create, update or delete Postgres cluster. \cite{CNPGdocuCapabilityLevels}
+    \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique with Primary and Standby architecture. \cite{CNPGdocuReplication}
+    \item \textbf{Direct database imports:} CNPGO provides direct database import from remote Postgres server by using pg\_dump and pg\_restore even on different Postgres versions. \cite{CNPGdocuDatabaseImports}
+    \item \textbf{Postgres updates:} CNPGO is able to apply minor patches. \cite{CNPGdocuUpdates} Major updates are possible by Direct database imports\footnote{Due to its nature Direct database imports cannot be considered as major upgrade option.}.
+    \item \textbf{Backups:} CNPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), on-demand backups, and backup encryption \cite{CNPGdocuBackup}\cite{CNPGdocuTDE}. Due to EDB’s backup software Barman backup compression is available also. \cite{CNPGdocuBackup}
+    \item \textbf{Disaster Recovery:} CNPGO is capable of Point In Time recovery. \cite{CNPGdocuBackup}
+    \item \textbf{Cloning:} CNPGO is able to create cluster replicas. \cite{CNPGdocuReplication}
+    \item \textbf{Monitoring:} Monitoring can be provided by the additional installation of Prometheus, and Grafana, and Alertmanager. \cite{CNPGdocuQuickstart}
+    \item \textbf{Connection Pooling:} Provided by native Postgres pooler PgBouncer. \cite{CNPGdocuConnectionPooling}
+    \item \textbf{Customization:} CNPGO provides a wide area of Postgres customization such as max parallel workers tuning or WAL configuration \cite{CNPGdocuConfiguration}
 \end{itemize}
 
 TBD: footnotes numbering
 
 CNPGO consists of the following key components \cite{PostgresOnKubernetes} \cite{CNPGdocuQuickstart}:
 \begin{itemize}
-  \item High Availability: Postgres instance manager
-  \item Backups: Barman
-  \item Connection Pooler: PgBouncer
-  \item Monitoring: Prometheus, Grafana, and Alertmanager
+    \item High Availability: Postgres instance manager
+    \item Backups: Barman
+    \item Connection Pooler: PgBouncer
+    \item Monitoring: Prometheus, Grafana, and Alertmanager
 \end{itemize}
 
 \obr{CNPGO’s architecture \cite{CNPGdocuConnectionPooling}}{}{1}{graphics/CNPGO_architecture.png}
@@ -317,25 +317,25 @@ SPGO is developed by OnGres that was established as a result of years of experie
 
 SPGO’s capabilities are the following \cite{OnGres}:
 \begin{itemize}
-  \item \textbf{Postgres Cluster Provisioning:} SPGO is able to create, update or delete Postgres cluster.
-  \item \textbf{High Availability:} High availability is achieved by adding additional nodes with Primary and Standby architecture.
-  \item \textbf{Postgres updates:} SPGO is able to apply minor patches. Major updates are possible by SGDbOps \cite{SPGODocuMajorUpdates}.
-  \item \textbf{Backups:} SPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob)
-  \item \textbf{Disaster Recovery:} SPGO is capable of Point In Time recovery.
-  \item \textbf{Cloning:} SPGO is able to create cluster replicas.
-  \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager.
-  \item \textbf{Connection Pooling:} Is provided by PgBouncer.
-  \item \textbf{Customization:} SPGO provides a wide area of Postgres customization such as WAL configuration, archive mode, vacuum, etc. \cite{SPGODocuCustomization}
-  \item \textbf{Mamagement Console:} SPGO provides a fully featured management web console.
+    \item \textbf{Postgres Cluster Provisioning:} SPGO is able to create, update or delete Postgres cluster.
+    \item \textbf{High Availability:} High availability is achieved by adding additional nodes with Primary and Standby architecture.
+    \item \textbf{Postgres updates:} SPGO is able to apply minor patches. Major updates are possible by SGDbOps \cite{SPGODocuMajorUpdates}.
+    \item \textbf{Backups:} SPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob)
+    \item \textbf{Disaster Recovery:} SPGO is capable of Point In Time recovery.
+    \item \textbf{Cloning:} SPGO is able to create cluster replicas.
+    \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager.
+    \item \textbf{Connection Pooling:} Is provided by PgBouncer.
+    \item \textbf{Customization:} SPGO provides a wide area of Postgres customization such as WAL configuration, archive mode, vacuum, etc. \cite{SPGODocuCustomization}
+    \item \textbf{Mamagement Console:} SPGO provides a fully featured management web console.
 
 \end{itemize}
 
 SPGO consists of the following key components \cite{PostgresOnKubernetes}:
 \begin{itemize}
-  \item High Availability: Patroni
-  \item Backups: WAL-G
-  \item Connection Pooler: PgBouncer
-  \item Monitoring: Prometheus, Grafana, and Alertmanager.
+    \item High Availability: Patroni
+    \item Backups: WAL-G
+    \item Connection Pooler: PgBouncer
+    \item Monitoring: Prometheus, Grafana, and Alertmanager.
 \end{itemize}
 
 \obr{SPGO’s architecture \cite{SPGOdocuArchitecture}}{}{1}{graphics/SPGO_architecture.png}
@@ -350,31 +350,31 @@ Percona Operator for PostgreSQL (PPO) is based on Crunchy Postgres for Kubernete
 
 Differences between PGO and PPO are the following:
 \begin{itemize}
-  \item \textbf{Postgres updates:} PPO provides automatic Postgres updates for minor and major versions of Postgres.  \cite{PerconaDocuUpdate}
-  \item \textbf{Backups:} PPO is not able to back up to Azure. \cite{PerconaDocuCompare} Although it uses Patroni, which has this ability.
-  \item \textbf{Disaster Recovery:} PPO documentation does not mention the possibility of restoring a single database from a backup. \cite{PerconaDocuBackups}
-  \item \textbf{Monitoring:} PPO is not using the usual monitoring stack consisting of Prometheus and Grafana but their own Percona Monitoring and Management. \cite{PerconaDocuMonitoring}
+    \item \textbf{Postgres updates:} PPO provides automatic Postgres updates for minor and major versions of Postgres.  \cite{PerconaDocuUpdate}
+    \item \textbf{Backups:} PPO is not able to back up to Azure. \cite{PerconaDocuCompare} Although it uses Patroni, which has this ability.
+    \item \textbf{Disaster Recovery:} PPO documentation does not mention the possibility of restoring a single database from a backup. \cite{PerconaDocuBackups}
+    \item \textbf{Monitoring:} PPO is not using the usual monitoring stack consisting of Prometheus and Grafana but their own Percona Monitoring and Management. \cite{PerconaDocuMonitoring}
 \end{itemize}
 
 The current stable version of PPO is 1.4.0 was released on 31st March 2023\footnote[3]{Version 2.0.0 has also been released, it is not yet production-ready yet. Therefore will not be tested or evaluated.}. \cite{PerconaDocuV2} PPO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PPO is considered to have the second highest capability level, labeled as Deep Insights. \cite{OperatorHubPercona}
 
 \n{2}{Summary}
 \tab{Summary of selected 0perators}{tab:operatorsSummary}{1}{|l|l|l|l|}{
-  \hline Operator & Maturity level & Current production version & Release date\\ \hline
-  PGO & Autopilot & 5.3.1 & 17th February 2023\\ \hline
-  CNPGO & Autopilot & 1.20.0 & 27th April 2023\\ \hline
-  SPGO & Deep Insights & 1.4.3 & 23th February 2022\\ \hline
-  PPO & Deep Insights & 1.4.0 & 31st March 2023\\ \hline
+    \hline Operator & Maturity level & Current production version & Release date\\ \hline
+    PGO & Autopilot & 5.3.1 & 17th February 2023\\ \hline
+    CNPGO & Autopilot & 1.20.0 & 27th April 2023\\ \hline
+    SPGO & Deep Insights & 1.4.3 & 23th February 2022\\ \hline
+    PPO & Deep Insights & 1.4.0 & 31st March 2023\\ \hline
 }
 
 \n{2}{Key differences}
 \tab{Key differences between selected Operators}{tab:operatorsDiffences}{1}{|l|l|l|l|l|}{
-  \hline Feature & PGO & CNPGO & SPGO & PPO\\ \hline
-  In place Point in time recovery & Yes & No & No & No\\ \hline
-  Individual database restore & Yes & No & No & No\\ \hline
-  Operator user interface & No & No & Yes & No\\ \hline
-  Major version upgrade & Yes & No & Yes & Yes\\ \hline
-  Supported Postgres versions & v11 - v15 & v11 - v15 & v12 - v15 & v12 - v14\\ \hline
+    \hline Feature & PGO & CNPGO & SPGO & PPO\\ \hline
+    In place Point in time recovery & Yes & No & No & No\\ \hline
+    Individual database restore & Yes & No & No & No\\ \hline
+    Operator user interface & No & No & Yes & No\\ \hline
+    Major version upgrade & Yes & No & Yes & Yes\\ \hline
+    Supported Postgres versions & v11 - v15 & v11 - v15 & v12 - v15 & v12 - v14\\ \hline
 }
 
 \n{1}{Metrics}
@@ -410,13 +410,13 @@ met?'" and presents a high-level overview of the testing methodology. The goal o
 \n{2}{Notice}
 It is important to notice at the beginning of this chapter that testing as described in \cite{FoundationOfSoftwareTesting} has following seven testing princliples:
 \begin{enumerate}
-  \item Testing shows the presence of defects, not their absence
-  \item Exhausting testing is impossible
-  \item Early testing saves time and money
-  \item Defects clusters together
-  \item Beware of pesticide paradox
-  \item Testing is context dependent
-  \item Absence of errors is fallacy
+    \item Testing shows the presence of defects, not their absence
+    \item Exhausting testing is impossible
+    \item Early testing saves time and money
+    \item Defects clusters together
+    \item Beware of pesticide paradox
+    \item Testing is context dependent
+    \item Absence of errors is fallacy
 \end{enumerate}
 
 
@@ -426,11 +426,11 @@ Therefore, the test process derived from this methodology as every test process 
 \n{2}{Criteria}
 The following criteria will be subjected to testing. These criteria should provide a solid basis for the decision-making process.
 \begin{criterias}
-  \item	Performance – How performant is each operator?
-  \item	Reliability - How reliable is each operator?
-  \item	Usability – How usable is each operator?
-  \item	Maintenance – How is each operator maintained?
-  \item	Security – How secure is each operator?
+    \item	Performance – How performant is each operator?
+    \item	Reliability - How reliable is each operator?
+    \item	Usability – How usable is each operator?
+    \item	Maintenance – How is each operator maintained?
+    \item	Security – How secure is each operator?
 \end{criterias}
 
 
@@ -445,14 +445,14 @@ Thesis test process will consist of one management process that will create two 
 
 The main management consist of following tasks:
 \begin{itemize}
-  \item High-level test strategy
-  \item High-level test planning
+    \item High-level test strategy
+    \item High-level test planning
 \end{itemize}
 
 Subprocess consist of following tasks:
 \begin{itemize}
-  \item Test strategy
-  \item Test test planning
+    \item Test strategy
+    \item Test test planning
 \end{itemize}
 
 \n{2}{Test strategy and planning}
@@ -467,17 +467,17 @@ In order to create a test plan, IEEE proposes the following procedure shown in t
 
 The result of a properly designed test plan should be:
 \begin{itemize}
-  \item Scope of testing
-  \item The risks of which testing
-  \item Testing strategy
-  \item Test environment
-  \item Test tools
-  \item Test data
-  \item Staffing
-  \item Scheduling
-  \item Required training
-  \item Estimates of time and resources
-  \item Compliance with all stakeholders
+    \item Scope of testing
+    \item The risks of which testing
+    \item Testing strategy
+    \item Test environment
+    \item Test tools
+    \item Test data
+    \item Staffing
+    \item Scheduling
+    \item Required training
+    \item Estimates of time and resources
+    \item Compliance with all stakeholders
 \end{itemize}
 
 \n{2}{Test monitoring and control process}
@@ -541,10 +541,10 @@ Popularity can be considered an indicator of maturity because broad recognition 
 The operator with the highest number of stars, and therefore the most popular, is the PGO operator. To compare operators, the most popular one was assigned a popularity score of 100\%, and the others were assigned a score relative to their share of the maximum.
 
 \tab{Popularity of Operators}{tab:operatorMaturity}{1}{|l|l|l|l|l|}{
-  \hline
-  & PGO	& CNPGO	& SPGO & PPO \\ \hline
-  Popularity (stars)	& 3258	& 1198	 & 84 &	149 \\ \hline
-  Popularity ratio	& 100\% &	37\%	& 3\% &	5\% \\ \hline
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Popularity (stars)	& 3258	& 1198	 & 84 &	149 \\ \hline
+    Popularity ratio	& 100\% &	37\%	& 3\% &	5\% \\ \hline
 }
 
 \n{3}{Fixed issues}
@@ -553,19 +553,19 @@ The number of issues resolved is often considered a sign of a software project's
 The operator with the highest proportion of resolved issues is PGO, which has successfully addressed 93\% of its reported issues. CNPGO and PPO exhibit a reasonable performance level in this area. However, SPGO, despite being less popular and more recent than PGO, has more reported issues and a large number of unresolved issues (445 in total). This could suggest that SPGO is still underdeveloped.
 
 \tab{Operators issues}{tab:operatorIssues}{1}{|l|l|l|l|l|}{
-  \hline
-  & PGO	& CNPGO	& SPGO & PPO \\ \hline
-  Total issues	&  1884	& 764	& 1959	& 317 \\ \hline
-  Issues fixed	&   1755	& 691 &	1514	& 282 \\ \hline
-  Fixed issues ratio	&  93\% &	90\% &	77\% &	89\% \\ \hline
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Total issues	&  1884	& 764	& 1959	& 317 \\ \hline
+    Issues fixed	&   1755	& 691 &	1514	& 282 \\ \hline
+    Fixed issues ratio	&  93\% &	90\% &	77\% &	89\% \\ \hline
 }
 
 The overall maturity of the operators was calculated as an average of popularity and the ratio of fixed issues. The results can be seen in Table \ref{tab:operatorMaturity}. As maturity is the only subtest under reliability, it is considered as a measure of reliability.
 
 \tab{Operators maturity}{tab:operatorMaturity}{1}{|l|l|l|l|l|}{
-  \hline
-  & PGO	& CNPGO	& SPGO & PPO \\ \hline
-  Overal maturity / reliability	& 97\%	& 64\% &	40\%	& 47\% \\ \hline
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Overal maturity / reliability	& 97\%	& 64\% &	40\%	& 47\% \\ \hline
 }
 
 \n{3}{Reneval}
@@ -577,13 +577,13 @@ Interestingly, this contrasts with the Operator issues where SPGO scored the low
 
 
 \tab{Operators reneval}{tab:operatorReneval}{1}{|l|l|l|l|l|}{
-  \hline
-  & PGO	& CNPGO	& SPGO & PPO \\ \hline
-  Repo creation	&  27th Feb 2017 & 18th Feb 2020	&  29th May 2019	&  27th Feb 2017 \\ \hline
-  Test date	&   1st May 2023 & 1st May 2023	&  1st May 2023	&  1st May 2023 \\ \hline
-  Sum of commits	&   5582	& 3362 &	7208	& 4689 \\ \hline
-  Commits/day	&   2.48	& 2.88	& 5.03	& 2.08 \\ \hline
-  Reneval &   49\%	&  57\%	&  100\%	& 41\% \\ \hline
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Repo creation	&  27th Feb 2017 & 18th Feb 2020	&  29th May 2019	&  27th Feb 2017 \\ \hline
+    Test date	&   1st May 2023 & 1st May 2023	&  1st May 2023	&  1st May 2023 \\ \hline
+    Sum of commits	&   5582	& 3362 &	7208	& 4689 \\ \hline
+    Commits/day	&   2.48	& 2.88	& 5.03	& 2.08 \\ \hline
+    Reneval &   49\%	&  57\%	&  100\%	& 41\% \\ \hline
 }
 
 \n{2}{Learnability}
@@ -595,38 +595,38 @@ the Test Completion Report, checklist and gathered examples in Appendix A III. T
 The training required depicted in Table \ref{tab:operatorTraining} was calculated as the additional training needed to work with each operator, over and above knowledge of kubectl (the Kubernetes command-line tool). Each additional tool required to work successfully with the operator resulted in a 5\% score decrease. In this regard, CNPGO was at a disadvantage because, according to its documentation, the cnpg plugin is necessary to uninstall it. PGO also faced a similar issue as it utilizes the simple kustomize tool to customize its manifest with a namespace.
 
 \tab{Training needed}{tab:operatorTraining}{1}{|l|l|l|l|l|}{
-  \hline
-  & PGO	& CNPGO	& SPGO & PPO \\ \hline
-  Training &kubectl &	kubectl	& kubectl &	kubectl \\ \hline
-  Training &kustomize	 & cnpg	& helm &\\ \hline
-  Score	&  95\%	& 95\% &	95\% &	100\%\\ \hline
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Training &kubectl &	kubectl	& kubectl &	kubectl \\ \hline
+    Training &kustomize	 & cnpg	& helm &\\ \hline
+    Score	&  95\%	& 95\% &	95\% &	100\%\\ \hline
 }
 
 As depicted in Table \ref{tab:operatorDocExamples}, documentation examples were prevalent across all operators. SPGO, however, is at a disadvantage here due to its own UI, which is capable of managing the entire cluster and can easily handle all cluster operations. Surprisingly, it does not provide examples for major and minor updates, which can be easily configured via the UI. Considering that there are ten examples, each example was assigned a value of 10\% towards the total score.
 
 \tab{Documentation examples}{tab:operatorDocExamples}{1}{|l|l|l|l|l|}{
-  \hline
-  & PGO	& CNPGO	& SPGO & PPO \\ \hline
-  Cluster creation &	Yes &	Yes &	Yes &	Yes \\ \hline
-  Minor upgrade &	Yes &	Yes &	No &	Yes \\ \hline
-  Major upgrade &	Yes &	No &	No &	Yes \\ \hline
-  Backup &	Yes &	Yes &	Yes &	Yes \\ \hline
-  Restore &	Yes &	Yes &	Yes &	Yes \\ \hline
-  Monitoring &	Yes &	Yes &	Yes &	Yes \\ \hline
-  Vertical scaling &	Yes &	Yes &	Yes &	No \\ \hline
-  Horizontal scaling &	Yes &	Yes &	Yes &	Yes \\ \hline
-  Configuration Update &	Yes &	Yes &	Yes &	Yes \\ \hline
-  Uninstall&	Yes &	Yes &	Yes &	No \\ \hline
-  Score &	100\%	& 90\%	& 80\%	& 80\% \\ \hline
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Cluster creation &	Yes &	Yes &	Yes &	Yes \\ \hline
+    Minor upgrade &	Yes &	Yes &	No &	Yes \\ \hline
+    Major upgrade &	Yes &	No &	No &	Yes \\ \hline
+    Backup &	Yes &	Yes &	Yes &	Yes \\ \hline
+    Restore &	Yes &	Yes &	Yes &	Yes \\ \hline
+    Monitoring &	Yes &	Yes &	Yes &	Yes \\ \hline
+    Vertical scaling &	Yes &	Yes &	Yes &	No \\ \hline
+    Horizontal scaling &	Yes &	Yes &	Yes &	Yes \\ \hline
+    Configuration Update &	Yes &	Yes &	Yes &	Yes \\ \hline
+    Uninstall&	Yes &	Yes &	Yes &	No \\ \hline
+    Score &	100\%	& 90\%	& 80\%	& 80\% \\ \hline
 }
 
 
 The overall learnability rating of the Operators, as depicted in Table \ref{tab:operatorLearnability}, was calculated as the average of the scores from the required training and the documentation examples. Given the high level of overall learnability among the operators, it can be inferred that these operators should be relatively easy to learn.
 
 \tab{Learnability of Operators}{tab:operatorLearnability}{1}{|l|l|l|l|l|}{
-  \hline
-  & PGO	& CNPGO	& SPGO & PPO \\ \hline
-  Learnability	& 98\% &	93\% &	88\% &	90\%\\ \hline
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Learnability	& 98\% &	93\% &	88\% &	90\%\\ \hline
 }
 
 \n{2}{Security}
@@ -640,14 +640,14 @@ Test Plan No. 3, which includes security, can be found along with
 the Test Completion Report in Appendix A IV.
 
 \tab{Vulnerability analysis}{tab:operatorVuln}{1}{|l|l|l|l|l|}{
-  \hline
-  & PGO	& CNPGO	& SPGO & PPO \\ \hline
-  Critical &	0	& 0 &	0 &	0 \\ \hline
-  High &	1 &	0 &	1 &	0\\ \hline
-  Medium &	40 &	0 &	41 &	35 \\ \hline
-  Low &	36 &	0 &	36 &	36 \\ \hline
-  Unkown &	0 &	0 &	0 &	0 \\ \hline
-  Security &	20\% &	100\%	& 20\%	& 40\% \\ \hline
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Critical &	0	& 0 &	0 &	0 \\ \hline
+    High &	1 &	0 &	1 &	0\\ \hline
+    Medium &	40 &	0 &	41 &	35 \\ \hline
+    Low &	36 &	0 &	36 &	36 \\ \hline
+    Unkown &	0 &	0 &	0 &	0 \\ \hline
+    Security &	20\% &	100\%	& 20\%	& 40\% \\ \hline
 }
 \n{2}{Operability}
 \label{chap:testOperatbility}
@@ -662,18 +662,18 @@ For each Operator test, the Kubernetes cluster was recreated to ensure a clean s
 
 Cluster configurations were also adjusted according to the recommendations from the pgTune website. The adjusted settings were as follows:
 \begin{itemize}
-  \item max\_connections: 200
-  \item shared\_buffers: 1536MB
-  \item effective\_cache\_size: 4608MB
-  \item maintenance\_work\_mem: 384MB
-  \item checkpoint\_completion\_target: 0.9
-  \item wal\_buffers: 16MB
-  \item default\_statistics\_target: 100
-  \item random\_page\_cost: 4
-  \item effective\_io\_concurrency: 2
-  \item work\_mem: 3932kB
-  \item min\_wal\_size: 1GB
-  \item max\_wal\_size: 4GB
+    \item max\_connections: 200
+    \item shared\_buffers: 1536MB
+    \item effective\_cache\_size: 4608MB
+    \item maintenance\_work\_mem: 384MB
+    \item checkpoint\_completion\_target: 0.9
+    \item wal\_buffers: 16MB
+    \item default\_statistics\_target: 100
+    \item random\_page\_cost: 4
+    \item effective\_io\_concurrency: 2
+    \item work\_mem: 3932kB
+    \item min\_wal\_size: 1GB
+    \item max\_wal\_size: 4GB
 \end{itemize}
 
 This configuration was implemented to standardize each cluster configuration.
@@ -696,14 +696,16 @@ As described in Chapter~\ref{chap:testOperatbility}, changes to PPO's configurat
 
 
 \tab{Performance analysis}{tab:operatorPerformance}{1}{|l|l|l|l|l|}{
-  \hline
-  & PGO	& CNPGO	& SPGO & PPO \\ \hline
-  First run &	544.91 tps	& 403.70 tps	& 284.39 tps &	401.46 tps \\ \hline
-  Second run &	543.29 tps &	402.54 tps &	279.89 tps &	392.04 tps\\ \hline
-  Third run &	538.51 tps &	392.63 tps &	309.16 tps &	387.79 tps \\ \hline
-  Mean &	542.24 tps &	399.62 tps &	291.15 tps &	393.77 tps \\ \hline
-  Performance &	100\%	& 74\%	& 54\%	& 73\% \\ \hline
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    First run &	544.91 tps	& 403.70 tps	& 284.39 tps &	401.46 tps \\ \hline
+    Second run &	543.29 tps &	402.54 tps &	279.89 tps &	392.04 tps\\ \hline
+    Third run &	538.51 tps &	392.63 tps &	309.16 tps &	387.79 tps \\ \hline
+    Mean &	542.24 tps &	399.62 tps &	291.15 tps &	393.77 tps \\ \hline
+    Performance &	100\%	& 74\%	& 54\%	& 73\% \\ \hline
 }
+
+The most performant Operator PGO received a score of 100\% in this test, while the other operators were assigned scores proportionally based on their performance.
 
 \obr{GKE nodes details}{fig:testingGKEnodes}{1}{graphics/gke_nodes.png}
 

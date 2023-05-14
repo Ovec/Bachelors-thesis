@@ -433,19 +433,96 @@ Test Result Analysis: The tests provided valuable data about vulnerabilities in 
     \hline
     Test plan ID & tp4 \\ \hline
     Revision & 1 \\ \hline
-    Introducton & Vulnerability analysis of operators \\ \hline
+    Introducton & This test should test the Operators usability \\ \hline
+    & and quality of their monitoring. \\ \hline
     Test items & Operator deployed in the cluster \\ \hline
-    Covered criteria  & C5 \\ \hline
-    Test type &	Static \\ \hline
-    Test approach &	Vulnerability analysis \\ \hline
-    Exit criteria & Completed analysis  \\ \hline
-    Tools & Trivy security scanner \\ \hline
-    Delivarables & Vulnerability reports  \\ \hline
-    Duration & 4 h for each Operator \\ \hline
-    Reviewer & Miroslav Šiřina \\ \hline
-    Start & May 2nd \\ \hline
-    Schedule & May 2nd analysis and test report. \\ \hline
+    Covered criteria  & C3 \\ \hline
+    Test type &	Dynamic \\ \hline
+    Test approach &	Use case based Blackbox testing \\ \hline
+    Exit criteria & Each use case covered with atleast one test case \\ \hline
+    Tools & Kind cluster, kubectl, helm, kustomize \\ \hline
+    Delivarables & Number of steps needed to perform required operation. \\ \hline
+    & List of covered monitoring topics. Print screens of monitoring.   \\ \hline
+    Duration & 8 h for each Operator \\ \hline
+    Tester & Miroslav Šiřina \\ \hline
+    Start & May 3rd \\ \hline
+    End & May 8th \\ \hline
+    Schedule & May 3rd Use cases creation \\ \hline
+    & May 4th PGO \\ \hline
+    & May 5th CNPGO \\ \hline
+    & May 6th SPGO \\ \hline
+    & May 7th PPO \\ \hline
 }
+
+\obr{PGO monitoring}{fig:pgoMonitoring1}{1}{graphics/monitoring/PGO/pgo_monitoring1.png}
+\obr{PGO monitoring}{fig:pgoMonitoring2}{1}{graphics/monitoring/PGO/pgo_monitoring2.png}
+\obr{PGO monitoring}{fig:pgoMonitoring3}{1}{graphics/monitoring/PGO/pgo_monitoring3.png}
+\obr{PGO monitoring}{fig:pgoMonitoring4}{1}{graphics/monitoring/PGO/pgo_monitoring4.png}
+\obr{PGO monitoring}{fig:pgoMonitoring5}{1}{graphics/monitoring/PGO/pgo_monitoring5.png}
+\obr{PGO monitoring}{fig:pgoMonitoring6}{1}{graphics/monitoring/PGO/pgo_monitoring6.png}
+\obr{PGO monitoring}{fig:pgoMonitoring7}{1}{graphics/monitoring/PGO/pgo_monitoring7.png}
+\obr{PGO monitoring}{fig:pgoMonitoring8}{1}{graphics/monitoring/PGO/pgo_monitoring8.png}
+\obr{PGO monitoring}{fig:pgoMonitoring9}{1}{graphics/monitoring/PGO/pgo_monitoring9.png}
+
+
+\obr{CNPGO monitoring}{fig:cnpgoMonitoring1}{1}{graphics/monitoring/CNPGO/cnpgo_monitoring1.png}
+\obr{CNPGO monitoring}{fig:cnpgoMonitoring2}{1}{graphics/monitoring/CNPGO/cnpgo_monitoring2.png}
+\obr{CNPGO monitoring}{fig:cnpgoMonitoring3}{1}{graphics/monitoring/CNPGO/cnpgo_monitoring3.png}
+\obr{CNPGO monitoring}{fig:cnpgoMonitoring4}{1}{graphics/monitoring/CNPGO/cnpgo_monitoring4.png}
+\obr{CNPGO monitoring}{fig:cnpgoMonitoring5}{1}{graphics/monitoring/CNPGO/cnpgo_monitoring5.png}
+\obr{CNPGO monitoring}{fig:cnpgoMonitoring6}{1}{graphics/monitoring/CNPGO/cnpgo_monitoring6.png}
+\obr{CNPGO monitoring}{fig:cnpgoMonitoring7}{1}{graphics/monitoring/CNPGO/cnpgo_monitoring7.png}
+\obr{CNPGO monitoring}{fig:cnpgoMonitoring8}{1}{graphics/monitoring/CNPGO/cnpgo_monitoring8.png}
+\obr{CNPGO monitoring}{fig:cnpgoMonitoring9}{1}{graphics/monitoring/CNPGO/cnpgo_monitoring9.png}
+
+\obr{SPGO monitoring}{fig:spgoMonitoring1}{1}{graphics/monitoring/SPGO/spgo_monitoring1.png}
+\obr{SPGO monitoring}{fig:spgoMonitoring2}{1}{graphics/monitoring/SPGO/spgo_monitoring2.png}
+\obr{SPGO monitoring}{fig:spgoMonitoring3}{1}{graphics/monitoring/SPGO/spgo_monitoring3.png}
+
+\obr{PPO monitoring}{fig:ppoMonitoring1}{1}{graphics/monitoring/PPO/ppo_monitoring1.png}
+\obr{PPO monitoring}{fig:ppoMonitoring2}{1}{graphics/monitoring/PPO/ppo_monitoring2.png}
+\obr{PPO monitoring}{fig:ppoMonitoring3}{1}{graphics/monitoring/PPO/ppo_monitoring3.png}
+\obr{PPO monitoring}{fig:ppoMonitoring4}{1}{graphics/monitoring/PPO/ppo_monitoring4.png}
+\obr{PPO monitoring}{fig:ppoMonitoring5}{1}{graphics/monitoring/PPO/ppo_monitoring5.png}
+\obr{PPO monitoring}{fig:ppoMonitoring6}{1}{graphics/monitoring/PPO/ppo_monitoring6.png}
+\obr{PPO monitoring}{fig:ppoMonitoring7}{1}{graphics/monitoring/PPO/ppo_monitoring7.png}
+\obr{PPO monitoring}{fig:ppoMonitoring8}{1}{graphics/monitoring/PPO/ppo_monitoring8.png}
+\obr{PPO monitoring}{fig:ppoMonitoring9}{1}{graphics/monitoring/PPO/ppo_monitoring9.png}
+\obr{PPO monitoring}{fig:ppoMonitoring10}{1}{graphics/monitoring/PPO/ppo_monitoring10.png}
+\obr{PPO monitoring}{fig:ppoMonitoring11}{1}{graphics/monitoring/PPO/ppo_monitoring11.png}
+\obr{PPO monitoring}{fig:ppoMonitoring12}{1}{graphics/monitoring/PPO/ppo_monitoring12.png}
+\obr{PPO monitoring}{fig:ppoMonitoring13}{1}{graphics/monitoring/PPO/ppo_monitoring13.png}
+\obr{PPO monitoring}{fig:ppoMonitoring14}{1}{graphics/monitoring/PPO/ppo_monitoring14.png}
+\obr{PPO monitoring}{fig:ppoMonitoring15}{1}{graphics/monitoring/PPO/ppo_monitoring15.png}
+\obr{PPO monitoring}{fig:ppoMonitoring16}{1}{graphics/monitoring/PPO/ppo_monitoring16.png}
+\obr{PPO monitoring}{fig:ppoMonitoring17}{1}{graphics/monitoring/PPO/ppo_monitoring17.png}
+\obr{PPO monitoring}{fig:ppoMonitoring18}{1}{graphics/monitoring/PPO/ppo_monitoring18.png}
+\obr{PPO monitoring}{fig:ppoMonitoring19}{1}{graphics/monitoring/PPO/ppo_monitoring19.png}
+\obr{PPO monitoring}{fig:ppoMonitoring20}{1}{graphics/monitoring/PPO/ppo_monitoring20.png}
+\obr{PPO monitoring}{fig:ppoMonitoring21}{1}{graphics/monitoring/PPO/ppo_monitoring21.png}
+\obr{PPO monitoring}{fig:ppoMonitoring22}{1}{graphics/monitoring/PPO/ppo_monitoring22.png}
+\obr{PPO monitoring}{fig:ppoMonitoring23}{1}{graphics/monitoring/PPO/ppo_monitoring23.png}
+\obr{PPO monitoring}{fig:ppoMonitoring24}{1}{graphics/monitoring/PPO/ppo_monitoring24.png}
+\obr{PPO monitoring}{fig:ppoMonitoring25}{1}{graphics/monitoring/PPO/ppo_monitoring25.png}
+\obr{PPO monitoring}{fig:ppoMonitoring26}{1}{graphics/monitoring/PPO/ppo_monitoring26.png}
+\obr{PPO monitoring}{fig:ppoMonitoring27}{1}{graphics/monitoring/PPO/ppo_monitoring27.png}
+
+% \obr{SPGO user interface}{fig:spgoUI1}{1}{graphics/monitoring/SPGO/spgo_ui1.png}
+% \obr{SPGO user interface}{fig:spgoUI2}{1}{graphics/monitoring/SPGO/spgo_ui2.png}
+% \obr{SPGO user interface}{fig:spgoUI3}{1}{graphics/monitoring/SPGO/spgo_ui3.png}
+% \obr{SPGO user interface}{fig:spgoUI4}{1}{graphics/monitoring/SPGO/spgo_ui4.png}
+% \obr{SPGO user interface}{fig:spgoUI5}{1}{graphics/monitoring/SPGO/spgo_ui5.png}
+% \obr{SPGO user interface}{fig:spgoUI6}{1}{graphics/monitoring/SPGO/spgo_ui6.png}
+% \obr{SPGO user interface}{fig:spgoUI7}{1}{graphics/monitoring/SPGO/spgo_ui7.png}
+% \obr{SPGO user interface}{fig:spgoUI8}{1}{graphics/monitoring/SPGO/spgo_ui8.png}
+% \obr{SPGO user interface}{fig:spgoUI9}{1}{graphics/monitoring/SPGO/spgo_ui9.png}
+% \obr{SPGO user interface}{fig:spgoUI10}{1}{graphics/monitoring/SPGO/spgo_ui10.png}
+% \obr{SPGO user interface}{fig:spgoUI11}{1}{graphics/monitoring/SPGO/spgo_ui11.png}
+% \obr{SPGO user interface}{fig:spgoUI12}{1}{graphics/monitoring/SPGO/spgo_ui12.png}
+% \obr{SPGO user interface}{fig:spgoUI13}{1}{graphics/monitoring/SPGO/spgo_ui13.png}
+% \obr{SPGO user interface}{fig:spgoUI14}{1}{graphics/monitoring/SPGO/spgo_ui14.png}
+% \obr{SPGO user interface}{fig:spgoUI15}{1}{graphics/monitoring/SPGO/spgo_ui15.png}
+
 
 \priloha{Test Plan No. 5}
 
@@ -462,10 +539,11 @@ Test Result Analysis: The tests provided valuable data about vulnerabilities in 
     Tools & PgBench Postgres benchmark tool  \\ \hline
     Delivarables & Performance reports  \\ \hline
     Duration & 4 h for each Operator \\ \hline
-    Reviewer & Miroslav Šiřina \\ \hline
+    Tester & Miroslav Šiřina \\ \hline
     Start & May 9th \\ \hline
     Schedule & May 9th analysis and test report. \\ \hline
 }
+
 
 \textbf{Test completition report}
 
