@@ -127,4 +127,272 @@
           \end{itemize}
 \end{itemize}
 
+\priloha{Test Plan No. 1}
+
+\tab{Test plan No 1}{tab:testplan1}{1}{|l|l|}{
+    \hline
+    Test plan ID & tp1 \\ \hline
+    Revision & 1 \\ \hline
+    Introducton &  Repositories walkthrough \\ \hline
+    Test items & Operator's repositories \\ \hline
+    Covered criteria  & C2, C4 \\ \hline
+    Test type &	Static \\ \hline
+    Test approach &	Repositories walkthrough \\ \hline
+    Exit criteria & All metrics gathered  \\ \hline
+    Delivarables & Sum of commits, sum of stars, sum of issues, sum of fixed issues.  \\ \hline
+    Duration & 2 h for each Operator \\ \hline
+    Reviewer & Miroslav Šiřina \\ \hline
+    Start & May 1st \\ \hline
+    Schedule & May 1st repositories walkthrough and test report. \\ \hline
+}
+
+\textbf{Test completition report}
+
+Testing performed: Repositories walkthrough, repositories cloning, Percona Jira walkthrough
+
+Deviations from planed testing: Percona is using Jira for tracking issues. To get issues Jira walkthrough was necessary. To count number of commits and get the date of first commit the repository cloning was necessary.
+
+Test completion evaluation: The testing process was successful in gathering key data about the system despite deviations from the initial plan. The flexibility in testing procedures resulted in a more comprehensive evaluation and provided valuable insights into the system.
+
+Factors that blocked progress: reposistory clonning, Jira walkthrough
+
+Test Result Analysis: The tests provided valuable data about the state and history of repositories, as well as key insights into issue tracking.
+
+Lessons Learned: The necessity to deviate from the initial test plan underlines the importance of flexibility in testing procedures. An adaptive approach can lead to a more thorough evaluation and better data collection.
+
+
+\priloha{Test Plan No. 2}
+
+\tab{Test plan No. 2}{tab:testplan2}{1}{|l|l|}{
+    \hline
+    Test plan ID & tp2 \\ \hline
+    Revision & 1 \\ \hline
+    Introducton & Checklist-based documentations walkthrough \\ \hline
+    Test items & Operator's documentations \\ \hline
+    Covered criteria  & C3 \\ \hline
+    Test type &	Static \\ \hline
+    Test approach &	Checklist-based Testing \\ \hline
+    Exit criteria & All checklists completed  \\ \hline
+    Delivarables & List of examples and checklist  \\ \hline
+    Duration & 2 h for each Operator \\ \hline
+    Reviewer & Miroslav Šiřina \\ \hline
+    Start & May 1st \\ \hline
+    Schedule & May 1st documentations walkthrough and test report. \\ \hline
+}
+
+\textbf{Checklist}
+\begin{itemize}
+    \item Instalation
+    \item Minor upgrade to new version
+    \item Major upgrade to new version
+    \item Backup
+    \item Restore
+    \item Monitoring
+    \item Vertical scaling
+    \item Horizontal scaling
+    \item Configuration Update
+    \item Uninstall
+    \item Training needed
+\end{itemize}
+\textbf{Test results}
+
+PGO
+Documentation
+\sloppy
+\url{https://access.crunchydata.com/documentation/postgres-operator/v5/}
+
+Cluster creation
+
+\url{https://access.crunchydata.com/documentation/postgres-operator/v5/tutorial/create-cluster/}
+
+Minor upgrade to new version
+
+\url{https://access.crunchydata.com/documentation/postgres-operator/5.3.1/tutorial/update-cluster/}
+
+Major upgrade to new version
+
+\url{https://access.crunchydata.com/documentation/postgres-operator/5.3.1/guides/major-postgres-version-upgrade/}
+
+Backup
+
+\url{https://access.crunchydata.com/documentation/postgres-operator/v5/tutorial/backup-management/}
+
+Restore
+
+\url{https://access.crunchydata.com/documentation/postgres-operator/5.3.1/tutorial/disaster-recovery/}
+
+Monitoring
+
+\url{https://access.crunchydata.com/documentation/postgres-operator/5.3.1/tutorial/monitoring/}
+
+Vertical scaling
+
+\url{https://access.crunchydata.com/documentation/postgres-operator/5.3.1/tutorial/resize-cluster/}
+
+Horizontal scaling
+
+\url{https://access.crunchydata.com/documentation/postgres-operator/5.3.1/tutorial/resize-cluster/}
+
+Configuration Update
+
+\url{https://access.crunchydata.com/documentation/postgres-operator/5.3.1/tutorial/customize-cluster/}
+
+Uninstall
+
+\url{https://access.crunchydata.com/documentation/postgres-operator/5.3.1/tutorial/delete-cluster/}
+
+Notes: PGO use kustomize for customization of yaml manifests.
+
+CNPGO
+
+Documentation
+
+\url{https://cloudnative-pg.io/documentation/1.19/}
+
+Cluster creation
+
+\url{https://cloudnative-pg.io/documentation/1.19/quickstart/#part-3-deploy-a-postgresql-cluster}
+
+Minor upgrade to new version
+
+\url{https://cloudnative-pg.io/documentation/1.19/rolling_update/}
+
+Major upgrade to new version
+Not found
+
+Backup
+
+\url{https://cloudnative-pg.io/documentation/1.19/backup_recovery/#scheduled-backups}
+
+Restore
+
+\url{https://cloudnative-pg.io/documentation/1.19/backup_recovery/#scheduled-backups}
+
+Monitoring
+
+\url{https://cloudnative-pg.io/documentation/1.19/monitoring/}
+
+Vertical scaling
+
+\url{https://cloudnative-pg.io/documentation/1.19/resource_management/#resource-management}
+
+Horizontal scaling
+
+\url{https://cloudnative-pg.io/documentation/1.19/resource_management/#resource-management}
+
+Configuration Update
+
+\url{https://cloudnative-pg.io/documentation/1.19/postgresql_conf/#postgresql-configuration}
+
+Uninstall
+
+\url{https://cloudnative-pg.io/documentation/1.19/cnpg-plugin/#destroy}
+
+Notes: Uninstall example use cnpg plugin
+
+SPGO
+Documentation
+
+\url{https://stackgres.io/doc/1.4/}
+
+Cluster creation
+
+\url{https://stackgres.io/doc/1.4/demo/quickstart/}
+
+Minor upgrade to new version – It is mentioned in documentation but without example
+
+\url{https://stackgres.io/doc/1.4/reference/crd/sgdbops/#major-version-upgrade}
+
+Major upgrade to new version - It is mentioned in documentation but without example
+
+\url{https://stackgres.io/doc/1.4/reference/crd/sgdbops/#minor-version-upgrade}
+
+Backup
+
+\url{https://stackgres.io/doc/1.4/tutorial/complete-cluster/backup-configuration/}
+
+Restore
+
+\url{https://stackgres.io/doc/1.4/runbooks/restore-backup/}
+
+Monitoring
+
+\url{https://stackgres.io/doc/1.4/install/prerequisites/monitoring/}
+
+Vertical scaling
+
+\url{https://stackgres.io/doc/1.4/tutorial/complete-cluster/instance-profile/}
+
+Horizontal scaling
+
+\url{https://stackgres.io/doc/1.4/tutorial/complete-cluster/create-cluster/}
+
+Configuration Update
+
+\url{https://stackgres.io/doc/1.4/tutorial/complete-cluster/postgres-config/}
+
+Uninstall
+
+\url{https://stackgres.io/doc/1.4/administration/uninstall/}
+
+Notes: helm is needed to install monitoring
+
+PPO
+Documentation
+
+\url{https://docs.percona.com/percona-operator-for-postgresql/index.html}
+
+Cluster creation
+
+\url{https://docs.percona.com/percona-operator-for-postgresql/gke.html#installing-the-operator}
+
+Minor upgrade to new version
+
+\url{https://docs.percona.com/percona-operator-for-postgresql/update.html?h=postgres+update#semi-automatic-upgrade}
+
+Major upgrade to new version
+
+\url{https://docs.percona.com/percona-operator-for-postgresql/update.html?h=postgres+update#semi-automatic-upgrade}
+
+Backup
+
+\url{https://docs.percona.com/percona-operator-for-postgresql/backups.html?h=backup#use-google-cloud-storage-for-backups}
+
+Restore
+
+\url{https://docs.percona.com/percona-operator-for-postgresql/backups.html?h=backup#use-google-cloud-storage-for-backups}
+
+Monitoring
+
+\url{https://docs.percona.com/percona-operator-for-postgresql/monitoring.html?h=version#installing-the-pmm-client}
+
+Vertical scaling
+Not found
+
+Horizontal scaling
+
+\url{https://docs.percona.com/percona-operator-for-postgresql/scaling.html?h=scale}
+
+Configuration Update
+
+\url{https://docs.percona.com/percona-operator-for-postgresql/options.html#creating-a-cluster-with-custom-options}
+
+Uninstall
+Not found
+
+\textbf{Test completition report}
+
+Testing performed: Checklist-based Testing
+
+Deviations from planed testing: None
+
+Test completion evaluation: The testing process was successful.
+
+Factors that blocked progress: None
+
+Test Result Analysis: The tests provided valuable data about the state of documentations, as well as key insights into Operators operation.
+
+Lessons Learned: Future projects should be prepared for a high level of diversity in documentations. This might involve allocating more time for research or including personnel with a broader range of expertise.
+
+
 % ============================================================================ %

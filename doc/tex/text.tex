@@ -539,7 +539,10 @@ Tohle chci refnout~\ref{chap:generalTestPlan}
 
 \n{2}{Static testing}
 \n{3}{Reliability and maintenance}
+
 In order to determine the maturity of the system, data was statically collected from the repositories of each operator. This included the popularity of the operators, the number of issues they had, and the number of issues that were resolved. The maturity was then determined based on the popularity of the operators and the ratio of resolved issues.
+
+Test Plan No. 1, which includes reliability and maintenance, can be found along with the Test Completion Report in Appendix A II. The subsequent sections will present the results of the test.
 
 \n{4}{Popularity}
 Popularity can be considered an indicator of maturity because broad recognition and use of a product often suggest that the product is reliable, efficient, and capable of meeting user requirements. In the context of software, popular software tends to be more thoroughly tested, leading to the identification and correction of bugs, and therefore greater stability and maturity.
@@ -592,40 +595,53 @@ Interestingly, this contrasts with the Operator issues where SPGO scored the low
   Reneval &   49\%	&  57\%	&  100\%	& 41\% \\ \hline
 }
 
+\n{3}{Learnability}
+Learnability testing, which constitutes one facet of usability, aims to assess the ease with which new users can understand and use a product. This particular testing was conducted with two primary objectives. The first objective was to identify the presence of examples in the documentation, as learning facilitated by examples is generally more effective than without. The second objective was to gauge the level of learning required to operate the system effectively. This was accomplished through a detailed analysis of the provided examples.
+
+Test Plan No. 2, which includes learnability, can be found along with
+the Test Completion Report, checklist and gathered examples in Appendix A II. The subsequent sections will present the results of the test.
+
+The training required depicted in Table \ref{tab:operatorTraining} was calculated as the additional training needed to work with each operator, over and above knowledge of kubectl (the Kubernetes command-line tool). Each additional tool required to work successfully with the operator resulted in a 5\% score decrease. In this regard, CNPGO was at a disadvantage because, according to its documentation, the cnpg plugin is necessary to uninstall it. PGO also faced a similar issue as it utilizes the simple kustomize tool to customize its manifest with a namespace.
+
+\tab{Training needed}{tab:operatorTraining}{1}{|l|l|l|l|l|}{
+  \hline
+  & PGO	& CNPGO	& SPGO & PPO \\ \hline
+  &kubectl &	kubectl	& kubectl &	kubectl \\ \hline
+  &kustomize	 & cnpg	& helm &\\ \hline
+  Score	&  95\%	& 95\% &	95\% &	100\%\\ \hline
+}
+
+As depicted in Table \ref{tab:operatorDocExamples}, documentation examples were prevalent across all operators. SPGO, however, is at a disadvantage here due to its own UI, which is capable of managing the entire cluster and can easily handle all cluster operations. Surprisingly, it does not provide examples for major and minor updates, which can be easily configured via the UI. Considering that there are ten examples, each example was assigned a value of 10\% towards the total score.
+
+\tab{Documentation examples}{tab:operatorDocExamples}{1}{|l|l|l|l|l|}{
+  \hline
+  & PGO	& CNPGO	& SPGO & PPO \\ \hline
+  Cluster creation &	Yes &	Yes &	Yes &	Yes \\ \hline
+  Minor upgrade &	Yes &	Yes &	No &	Yes \\ \hline
+  Major upgrade &	Yes &	No &	No &	Yes \\ \hline
+  Backup &	Yes &	Yes &	Yes &	Yes \\ \hline
+  Restore &	Yes &	Yes &	Yes &	Yes \\ \hline
+  Monitoring &	Yes &	Yes &	Yes &	Yes \\ \hline
+  Vertical scaling &	Yes &	Yes &	Yes &	No \\ \hline
+  Horizontal scaling &	Yes &	Yes &	Yes &	Yes \\ \hline
+  Configuration Update &	Yes &	Yes &	Yes &	Yes \\ \hline
+  Uninstall&	Yes &	Yes &	Yes &	No \\ \hline
+  Score &	100\%	& 90\%	& 80\%	& 80\% \\ \hline
+}
+
+
+The overall learnability rating of the Operators, as depicted in Table \ref{tab:operatorLearnability}, was calculated as the average of the scores from the required training and the documentation examples. Given the high level of overall learnability among the operators, it can be inferred that these operators should be relatively easy to learn.
+
+\tab{Learnability of Operators}{tab:operatorLearnability}{1}{|l|l|l|l|l|}{
+  \hline
+  & PGO	& CNPGO	& SPGO & PPO \\ \hline
+  Learnability	& 98\% &	93\% &	88\% &	90\%\\ \hline
+}
+
+\n{3}{Security}
 
 
 \n{3}{Static test plans}
-\tab{Test plan No 1}{tab:testplan1}{1}{|l|l|}{
-  \hline
-  Test plan ID & tp1 \\ \hline
-  Revision & 1 \\ \hline
-  Introducton &  Repositories walkthrough \\ \hline
-  Test items & Operator's repositories \\ \hline
-  Covered criteria  & C2, C3 \\ \hline
-  Test type &	Static \\ \hline
-  Test approach &	Repositories walkthrough \\ \hline
-  Exit criteria & All metrics gathered  \\ \hline
-  Delivarables & Sum of commits, sum of stars, sum of issues, sum of fixed issues.  \\ \hline
-  Duration & 2 h for each Operator \\ \hline
-  Reviewer & Miroslav Šiřina \\ \hline
-  Start & May 1st \\ \hline
-  Schedule & May 1st repositories walkthrough and test report. \\ \hline
-}
-
-Test completition report
-
-Testing performed: Repositories walkthrough, repositories cloning, Percona Jira walkthrough
-
-Deviations from planed testing: Percona is using Jira for tracking issues. To get issues Jira walkthrough was necessary. To count number of commits and get the date of first commit the repository cloning was necessary.
-
-Test completion evaluation: The testing process was successful in gathering key data about the system despite deviations from the initial plan. The flexibility in testing procedures resulted in a more comprehensive evaluation and provided valuable insights into the system.
-
-Factors that blocked progress: reposistory clonning, Jira walkthrough
-
-Test Result Analysis: The tests provided valuable data about the state and history of repositories, as well as key insights into issue tracking. The specific details and implications of these findings would be discussed further in the respective sections of this report.
-
-Lessons Learned: The necessity to deviate from the initial test plan underlines the importance of flexibility in testing procedures. An adaptive approach can lead to a more thorough evaluation and better data collection.
-
 
 
 \tab{Test plan No 2}{tab:testplan2}{1}{|l|l|}{
