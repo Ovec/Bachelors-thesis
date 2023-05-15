@@ -651,6 +651,83 @@ the Test Completion Report in Appendix A IV.
 }
 \n{2}{Operability}
 \label{chap:testOperatbility}
+To evaluate the ease of working with each Operator, use cases derived from the Postgres lifecycle (as described in chapter \ref{chap:lifecycle}) were created. A separate test case was developed for each use case, and the Operators were evaluated accordingly.
+Testing was conducted on a local Kind Kubernetes cluster set up on a first generation M1 Macbook Air with 8GB of RAM and a 500GB disk size.
+
+For specific test cases, such as cluster monitoring for SPGO and PPO, and cluster restore for CNPGO, SPGO, and PPO, the Operators could not proceed with the local Kind cluster. Therefore, Google Kubernetes Engine (GKE) cluster was utilized. The configurations for both GKE and Kind clusters can be located in the repository folder at \url{tests/environments}.
+Use cases, their scenarios, and the test plan can be found in Appendix A V.
+
+Operability depicted in Table \ref{tab:operatorOperability} was evaluated based on two aspects. The first aspect, 'ease of use,' evaluated the number of command executions needed to achieve each goal. The second aspect focused on the quality of the Operator's monitoring capabilities.
+
+\tab{Operability}{tab:operatorOperability}{1}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Ease of use &	32\% & 25\% &	100\% &	17\% \\ \hline
+    Monitoring &	83\% & 75\% &	50\% &	75\% \\ \hline
+    Operability &	58\% &	50\%	& 75\%	& 46\% \\ \hline
+}
+
+\n{3}{Ease of use}
+The number of commands executed to achieve the goal was counted for each test case. If an Operator did not provide the necessary functionality, the number of steps required was designated as 10. This is because realizing this functionality would require significant effort, or it might not be achievable at all.
+Test procedures can be found in the repository folder at \url{tests/operability/ease_of_use}.
+
+The operator with the fewest steps was assigned a score of 100\%. The scores for the other operators were calculated relative to this maximum. The results are depicted in Table \ref{tab:operatorEaseOfUse}.
+
+\n{4}{SPGO}
+The reason SPGO scored the highest is due to its user-friendly interface. Most tasks can be accomplished directly within this interface, eliminating the need for using the terminal. Even complex tasks, such as performing a major version upgrade, can be easily carried out via this user interface. An example of this user interface is shown in Figure \ref{fig:spgoUI7}. Additional images can be found in the repository folder at \url{doc/graphics/monitoring/SPGO}.
+
+\n{4}{Cluster major version upgrade}
+The upgrade to a new major version appears to be the most challenging task for each Operator. While SPGO handled the cluster upgrade seamlessly, PGO required four steps to proceed with the major version upgrade. On the other hand, CNPGO claimed to be capable of an "Offline import of existing PostgreSQL databases, including major upgrades of PostgreSQL". This process involves dumping the database and restoring it to a new cluster, which can be done with any cluster and is not considered a major upgrade. PPO declared in their documentation that they are capable of automatic updates even between versions. However, this Jira issue (\url{https://jira.percona.com/projects/K8SPG/issues/K8SPG-254?filter=allopenissues}) suggests otherwise.
+
+\n{3}{Monitoring}
+To evaluate the monitoring capabilities of each operator, a set of necessary monitoring parameters was created. During the monitoring deployment test case, screenshots of each monitoring system were taken. These screenshots can be found in the repository folder at \url{doc/graphics/monitoring}. Each operator's score was determined based on the number of parameters covered by its monitoring system.
+
+All of the operators, except for PPO, use the traditional Grafana Prometheus monitoring stack, while PPO uses the Percona Monitoring and Management solution. This Percona monitoring system is quite extensive, but its coverage of parameters is comparable to that of the less extensive CNPGO monitoring system.
+
+It can be inferred that all operators, with the exception of SPGO, offer high-quality monitoring. While SPGO is easy to operate, it is difficult to monitor effectively.
+
+\obr{SPGO's user interface}{fig:spgoUI7}{1}{graphics/monitoring/SPGO/spgo_ui7.png}
+
+\tab{Ease of use}{tab:operatorEaseOfUse}{.5}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Operator installation & 2 & 1 & 2 & 3 \\ \hline
+    Cluster installation & 1 &	2 &	0 &	1\\ \hline
+    Cluster monitoring & 2 & 4 & 3 & 5 \\ \hline
+    Cluster vertical scaling & 1 &	1 &	0 &	1 \\ \hline
+    Cluster horizontal scaling & 1 & 1 & 0 & 1\\ \hline
+    Cluster connection pooling & 1 & 1 & 0 & 0 \\ \hline
+    Cluster extension install & 1	& 1 & 0 & 10 \\ \hline
+    Cluster number of connections increase & 1 &	1 &	0 &	2 \\ \hline
+    Cluster max\_wall\_size increase & 1 & 1 & 0 & 3 \\ \hline
+    Cluster scheduled backup & 1 & 1 & 0 & 1 \\ \hline
+    Cluster ad-hoc backup & 2	& 1 & 0 & 1 \\ \hline
+    Cluster restore & 2 & 1 & 1 & 1 \\ \hline
+    Cluster minor version upgrade & 1 &	1 &	0 &	1 \\ \hline
+    Cluster major version upgrade & 4 &	10 & 0 & 10 \\ \hline
+    Operator uninstall & 1	& 1 & 1 & 1 \\ \hline
+    Cluster uninstall  & 1 & 1 & 0	& 1 \\ \hline
+    Overal & 22 & 28 & 7 & 41 \\ \hline
+    Ease of use &	32\% & 25\% &	100\% &	17\% \\ \hline
+}
+
+\tab{Monitoring}{tab:operatorMonitoring}{.5}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Health & Yes &	Yes &	Yes &	Yes\\ \hline
+    Query performance & Yes	& Yes	& No	& Yes\\ \hline
+    Number of connections & Yes	& Yes	& Yes	 &Yes \\ \hline
+    Locks & Yes	& Yes	& Yes	& Yes \\ \hline
+    Index hit  & No	& No	& No	& No\\ \hline
+    Cache hit & Yes	& No	& Yes	& Yes \\ \hline
+    Disk space usage & Yes	& Yes	& No	& Yes \\ \hline
+    CPU and memory usage & Yes	& Yes	& Yes	& Yes \\ \hline
+    WAL generation rate & Yes	& Yes & No	& Yes \\ \hline
+    Replication lag & Yes	& Yes	& No	& No \\ \hline
+    Errors and logs & No	& No	& No	& Yes \\ \hline
+    Backup and recovery & Yes	& Yes	& Yes	& No \\ \hline
+    Monitoring &	83\% & 75\% &	50\% &	75\% \\ \hline
+}
 
 \n{2}{Performance}
 
