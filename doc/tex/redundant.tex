@@ -786,3 +786,89 @@ and Query statistics \ref{fig:PGO_monitoring_QueryStatistics} (verry helpfull st
 
 \n{3}{Operator uninstall}
 
+
+
+\n{2}{Test management process}
+According to the IEEE Standard for Software Test Documentation \cite{ieeeTestProcess}, test management processes have three main test processes: test strategy and planning, test monitoring and control, and test completion.
+As depicted below testing has more than one management test process. The main process is the Organizational process which is further divided into Test management processes that are then devided into Dynamic test processes.
+
+\obr{Test management process relationships \cite{ieeeTestProcess}}{fig:ieeeTestProcess}{1}{graphics/test_management_process.png}
+
+Thesis test process will consist of one management process that will create two managed subprocesses, one for static testing and one for dynamic testing. This test management process will monitor and control subprocesses. Subprocesses will deliver all their deliverables to this main process.
+
+The main management consist of following tasks:
+\begin{itemize}
+    \item High-level test strategy
+    \item High-level test planning
+\end{itemize}
+
+Subprocess consist of following tasks:
+\begin{itemize}
+    \item Test strategy
+    \item Test test planning
+\end{itemize}
+
+\n{2}{Test strategy and planning}
+The output of the test strategy and planing will be the test plan, as the basis for its creation will be the requirements created earlier. Details about activities are described by ISO/IEC/IEE 29119-3.
+
+As depicted on \ref{fig:ieeeTestProcess} test plan is not static but it changes according to monitoring.
+
+
+\n{2}{Test plan}
+\obr{Test plan creation activities \cite{ieeeTestProcess}}{fig:ieeeTestPlan}{1}{graphics/test_plan_process.png}
+In order to create a test plan, IEEE proposes the following procedure shown in the figure \ref{fig:ieeeTestPlan} with the idea that some activities can be repeated.
+
+The result of a properly designed test plan should be:
+\begin{itemize}
+    \item Scope of testing
+    \item The risks of which testing
+    \item Testing strategy
+    \item Test environment
+    \item Test tools
+    \item Test data
+    \item Staffing
+    \item Scheduling
+    \item Required training
+    \item Estimates of time and resources
+    \item Compliance with all stakeholders
+\end{itemize}
+
+\n{2}{Test monitoring and control process}
+The role of the test monitoring and control process is to observe the test process and detect deviations from the plan. This process controls the test process throughout its duration. The findings are then used to modify the test plan.
+
+Testing progress will be reported on a daily basis with the status report.
+
+\n{2}{Test completion process}
+The test completion process as depicted in the figure \ref{fig:ieeeTestProcess} will be used in testing after each test the test competition report will be created and delivered to a higher level.
+\obr{Test completion process \cite{ieeeTestProcess}}{fig:ieeeTestCompletition}{1}{graphics/test_completation_report.png}
+
+
+\n{2}{Dynamic and static Test processes}
+According to ISTQB \cite{FoundationOfSoftwareTesting} there are two types of tests. Static and dynamic. The main difference is that the static technique does not execute the tested software, but the dynamic does. The testing process will utilize both techniques using the dynamic testing process depicted in figure \ref{fig:ieeeTestDynamicTestProcess}.
+
+\obr{Dynamic test processes \cite{ieeeTestProcess}}{fig:ieeeTestDynamicTestProcess}{1}{graphics/test_dynamic_test_processes.png}
+
+\n{2}{Test design and implementation processes}
+Test design and implementation process must follow the process depicted in the figure \ref{fig:ieeeTestDesignAndImplementation}. Test design techniques should be used to derive test cases. Test cases must be traceable to requirements and must meet the ISO/IEC/IEE 29119-3 requirements. This process can be reentered multiple times and must meet the completion criteria specified in the test plan.
+\obr{Test design and implementation \cite{ieeeTestProcess}}{fig:ieeeTestDesignAndImplementation}{1}{graphics/test_design_and_implementation.png}
+
+
+\n{2}{Test environment and data management processes}
+Based on the test plan all the environments must be established and well mainteained.
+
+\n{2}{Test execution process}
+Test execution process depicted in \ref{fig:ieeeTestExecutionProcess} must be followed. After the test execution, the execution log must be delivered. Details about activities are described by ISO/IEC/IEE 29119-3.
+
+\obr{Test execution process \cite{ieeeTestProcess}}{fig:ieeeTestExecutionProcess}{1}{graphics/test_execution_process.png}
+
+\n{2}{Test incident report process}
+The process for reporting test incidents, as depicted in Figure \ref{fig:ieeeTestExecutionProcess}, must be followed. It is important to note that the purpose of testing is not to simply find incidents, but rather to test the capabilities of the system. As such, the term "finding" will be used in cases where it is more appropriate.
+\obr{Test execution process \cite{ieeeTestProcess}}{fig:ieeeTestIncidentReportProcess}{1}{graphics/test_incident_report_process.png}
+
+\n{2}{Documents}
+All documents must meet the requirements of ISO/IEC/IEE 29119-3\footnote[4]{https://standards.ieee.org/ieee/29119-3/5310/}
+
+\n{2}{Level of detail}
+Please note that this chapter provides only a high-level overview of the testing methodology. More detailed information can be found in ISO/IEC/IEEE 29119-2\footnote[5]{https://standards.ieee.org/ieee/29119-2/7498/}. If there are any doubts regarding the testing process, this standard should be used as a guide to ensure that all necessary aspects of testing are properly addressed.
+
+

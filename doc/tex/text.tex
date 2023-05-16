@@ -219,14 +219,23 @@ The following options are advised by the Operator white paper \cite{OperatorWhit
     \item	The creation of own Operator.
 \end{itemize}
 
+\n{1}{Thesis objective}
+The objective of this thesis is to conduct an extensive evaluation of various Kubernetes Operators available for Postgres lifecycle management.
+
+The ultimate aim is to provide clear and comprehensive recommendations on which Operators are best suited to meet different stakeholder needs and preferences. This thesis intends to serve as a valuable resource that can guide stakeholders in making informed decisions about choosing the right Operator for their specific operational context and requirements.
+
+Furthermore, it aims to contribute to the broader knowledge base about Kubernetes Operators and their application in managing Postgres databases in a cloud-native environment.
+
+
 \n{1}{Resource questions}
-With a thorough understanding of Postgres, Kubernetes, the Postgres lifecycle, and Operators established in previous chapters, it is possible for research questions to be formulated. These questions are designed to enable a deeper exploration into the complexities of managing Postgres in a Kubernetes environment via Operators.
+Having defined the thesis objective and established a thorough understanding of PostgreSQL, Kubernetes, the PostgreSQL lifecycle, and Operators in previous chapters, we are now in a position to formulate research questions.
+These questions are designed to enable a deeper exploration into the complexities of managing Postgres in a Kubernetes environment via Operators.
 
 \begin{enumerate}
     \item What Operators exist for lifecycle management of Postgres in Kubernetes?
     \item What metrics are suitable for comparing Opereators for lifecycle management in Kubernetes?
     \item What approach should be taken to determine the degree to which the metrics are met?
-    \item How do the Operators score based on selected metrics?
+    \item How do the Operators perform when evaluated according to the chosen metrics?
 \end{enumerate}
 
 \n{1}{Operators for Lifecycle Management in Kubernetes}
@@ -378,6 +387,7 @@ The current stable version of PPO is 1.4.0 was released on 31st March 2023\footn
 }
 
 \n{1}{Metrics}
+\label{chap:metrics}
 This chapter aims to answer the second research question: 'What metrics are suitable for comparing Opereators for lifecycle management in
 Kubernetes?'" According to Tom Gilb \cite{gilb1988principles}, the main issue in software attribute requirements is identified not in their functionality, but in their quality. Gilb differentiates these attribute requirements into two categories: Resources (people, time, money), which are always finite, and qualities or benefits, which are always fewer than desired. Knowledge about the functionality that an Operator must provide to achieve a certain level of capabilities is obtained from Chapter~\ref{chap:operators}. The most significant functional properties of Operators have been detailed in Chapter~\ref{chap:searchForOperators}. With the lifecycle of Postgres and the capabilities of operators now understood, what remains to be examined are their qualitative properties. The upcoming testing will be focused on the proposed qualitative metrics.
 
@@ -395,7 +405,7 @@ How easy it is for users to learn how to use the system.
 How easy is it for users to successfully use the system.
 \n{2}{Maintenance}
 Activities that are performed after the software is deployed to ensure its correct functionality and performance. Maintenance may include bug fixes, adding new features, performance optimization, updates for compatibility with new systems, etc. Ignoring software maintenance can lead to increased repair costs and reduced system performance over time. Additionally, it can cause system instability, increased vulnerability to security threats, and eventually, potential system failure.
-\n{3}{Reneval}
+\n{3}{Renewal}
 Renewal is considered a crucial aspect of software maintenance, playing a significant role in maintaining the relevance of a software system over time. Essentially, this process ensures that the software is consistently updated to align with current standards and technologies.
 \n{2}{Security}
 Security refers to the measures, practices, and technologies employed to protect the system and its data from threats and attacks.
@@ -405,7 +415,7 @@ Vulnerability refers to a weakness in a system that can be exploited by a threat
 
 \n{1}{Testing methodology}
 This chapter aims to answer the third research question: 'What approach should be taken to determine the degree to which the metrics are
-met?'" and presents a high-level overview of the testing methodology. The goal of the methodology is to deliver rules and guidance for test process that produces test reports forming the basis of this comparison.
+met?'" and presents a high-level overview of the testing methodology. The goal of the methodology is to deliver rules and guidance for test process that produces test reports forming the basis of this evaluation.
 
 \n{2}{Notice}
 It is important to notice at the beginning of this chapter that testing as described in \cite{FoundationOfSoftwareTesting} has following seven testing princliples:
@@ -421,23 +431,34 @@ It is important to notice at the beginning of this chapter that testing as descr
 
 
 
-Therefore, the test process derived from this methodology as every test process will not exhaustively test the Operators and will be depended on thesis context, author bias, and author skills. Because the goal of this thesis is the comparison of the selected Postgres Operators for lifecycle management the main scope of this methodology is to deliver test process that will produce test reports that will form the base for this comparison.
+Therefore, the test process derived from this methodology as every test process will not exhaustively test the Operators and will be depended on thesis context, author bias, and author skills. Because The objective of this thesis is to conduct an extensive evaluation of various Kubernetes
+Operators available for Postgres lifecycle management the main scope of this methodology is to deliver test process that will produce test reports that will form the base for this evaluation.
 
 \n{2}{Criteria}
-The following criteria will be subjected to testing. These criteria should provide a solid basis for the decision-making process.
-\begin{criterias}
-    \item	Performance – How performant is each operator?
-    \item	Reliability - How reliable is each operator?
-    \item	Usability – How usable is each operator?
-    \item	Maintenance – How is each operator maintained?
-    \item	Security – How secure is each operator?
-\end{criterias}
+The following criteria described in Chapter \ref{chap:metrics} will be subjected to testing. These criteria should provide a solid basis for the decision-making process. To keep track of these criteria, each one has been assigned an ID. The list of identified criteria is as follows:
 
+\begin{itemize}
+    \item	CP: Performance
+          \begin{itemize}
+              \item	CP1: Maturity
+          \end{itemize}
+    \item	CR: Reliability
+    \item	CU: Usability
+          \begin{itemize}
+              \item	CU1: Learnability
+              \item  CU2: Operabilitiy
+          \end{itemize}
+    \item	CM: Maintenance
+          \begin{itemize}
+              \item	CM1: Renewal
+          \end{itemize}
+    \item	CS: Security
+\end{itemize}
 
 
 \n{2}{Test management process}
 According to the IEEE Standard for Software Test Documentation \cite{ieeeTestProcess}, test management processes have three main test processes: test strategy and planning, test monitoring and control, and test completion.
-As depicted below testing has more than one management test process. The main process is the Organizational process which is further divided into Test management processes that are then devided into Dynamic test processes.
+As depicted in Figure \ref{fig:ieeeTestProcess} testing has more than one management test process. The main process is the Organizational process which is further divided into Test management processes that are then devided into Dynamic test processes.
 
 \obr{Test management process relationships \cite{ieeeTestProcess}}{fig:ieeeTestProcess}{1}{graphics/test_management_process.png}
 
@@ -468,7 +489,7 @@ In order to create a test plan, IEEE proposes the following procedure shown in t
 The result of a properly designed test plan should be:
 \begin{itemize}
     \item Scope of testing
-    \item The risks of which testing
+    \item List of identified risks
     \item Testing strategy
     \item Test environment
     \item Test tools
@@ -483,10 +504,10 @@ The result of a properly designed test plan should be:
 \n{2}{Test monitoring and control process}
 The role of the test monitoring and control process is to observe the test process and detect deviations from the plan. This process controls the test process throughout its duration. The findings are then used to modify the test plan.
 
-Testing progress will be reported on a daily basis with the status report.
+To avoid unnecessary bureaucracy, where the manager and tester are the same person, and consequently the testing progress would be reported to the person who is also filing it, there will be no status reports during this process.
 
 \n{2}{Test completion process}
-The test completion process as depicted in the figure \ref{fig:ieeeTestProcess} will be used in testing after each test the test competition report will be created and delivered to a higher level.
+The test completion process as depicted in the figure \ref{fig:ieeeTestCompletition} will be used in testing after each test the test competition report will be created and delivered to a higher level.
 \obr{Test completion process \cite{ieeeTestProcess}}{fig:ieeeTestCompletition}{1}{graphics/test_completation_report.png}
 
 
@@ -510,30 +531,37 @@ Test execution process depicted in \ref{fig:ieeeTestExecutionProcess} must be fo
 
 \n{2}{Test incident report process}
 The process for reporting test incidents, as depicted in Figure \ref{fig:ieeeTestExecutionProcess}, must be followed. It is important to note that the purpose of testing is not to simply find incidents, but rather to test the capabilities of the system. As such, the term "finding" will be used in cases where it is more appropriate.
-\obr{Test execution process \cite{ieeeTestProcess}}{fig:ieeeTestIncidentReportProcess}{1}{graphics/test_incident_report_process.png}
-
-\n{2}{Documents}
-All documents must meet the requirements of ISO/IEC/IEE 29119-3\footnote[4]{https://standards.ieee.org/ieee/29119-3/5310/}
 
 \n{2}{Level of detail}
 Please note that this chapter provides only a high-level overview of the testing methodology. More detailed information can be found in ISO/IEC/IEEE 29119-2\footnote[5]{https://standards.ieee.org/ieee/29119-2/7498/}. If there are any doubts regarding the testing process, this standard should be used as a guide to ensure that all necessary aspects of testing are properly addressed.
 
-
-%\obr{2022 Developer Survey \cite{so2022survey}}{}{1}{graphics/postgres_stack_overflow_survey.png}
-
-
 \cast{APPLICATION OF THEORY}
+\n{1}{Test process}
+As stated in the methodology, the main test process with a general test plan was created. The general test plan can be seen in Appendix AI. This process was divided into two subprocesses: one for static testing and one for dynamic testing.
 
-\n{1}{Testing}
-\n{2}{Test process}
+According to the priorities stated in the general test plan, the first test process to be conducted was the static test process.
 
-\obr{Test process}{fig:testingTestProcess}{1}{graphics/test_process.png}
+\obr{Test process}{fig:testingTestProcess}{1}{graphics/test_process-2.png}
+
+\n{2}{Static test process}
+The static test process was divided into three separate subprocesses, each with its own testing procedures.
+\n{3}{Reliability and maintenance}
+
+PLAN
+
+MODEL
+
+INCIDENT REPORT
+
+Test Plan No. 1, which includes reliability and maintenance, can be found along with the Test Completion Report in Appendix A II. The subsequent sections will present the results of the test.
+
+
+\n{1}{Evaluation}
+
 
 \n{2}{Reliability and maintenance}
 
 In order to determine the maturity of the system, data was statically collected from the repositories of each operator. This included the popularity of the operators, the number of issues they had, and the number of issues that were resolved. The maturity was then determined based on the popularity of the operators and the ratio of resolved issues.
-
-Test Plan No. 1, which includes reliability and maintenance, can be found along with the Test Completion Report in Appendix A II. The subsequent sections will present the results of the test.
 
 \n{3}{Popularity}
 Popularity can be considered an indicator of maturity because broad recognition and use of a product often suggest that the product is reliable, efficient, and capable of meeting user requirements. In the context of software, popular software tends to be more thoroughly tested, leading to the identification and correction of bugs, and therefore greater stability and maturity.
@@ -543,7 +571,7 @@ The operator with the highest number of stars, and therefore the most popular, i
 \tab{Popularity of Operators}{tab:operatorMaturity}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
-    Popularity (stars)	& 3258	& 1198	 & 84 &	149 \\ \hline
+    Popularity (stars)	& 3258	& 1198	 & 84 &	149 \\ \hline  \hline
     Popularity ratio	& 100\% &	37\%	& 3\% &	5\% \\ \hline
 }
 
@@ -556,7 +584,7 @@ The operator with the highest proportion of resolved issues is PGO, which has su
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
     Total issues	&  1884	& 764	& 1959	& 317 \\ \hline
-    Issues fixed	&   1755	& 691 &	1514	& 282 \\ \hline
+    Issues fixed	&   1755	& 691 &	1514	& 282 \\ \hline  \hline
     Fixed issues ratio	&  93\% &	90\% &	77\% &	89\% \\ \hline
 }
 
@@ -568,22 +596,22 @@ The overall maturity of the operators was calculated as an average of popularity
     Overal maturity / reliability	& 97\%	& 64\% &	40\%	& 47\% \\ \hline
 }
 
-\n{3}{Reneval}
+\n{3}{Renewal}
 Software renewal, a key aspect of software maintenance, is often essential to ensure that the software continues to be effective and efficient in light of changing user needs, technological progress, and evolving industry standards. Commits to the repository represent incremental changes in the project. Therefore, the number of commits per unit of time indicates the rate at which the software is being renewed.
 
-The overall renewal rate of the operators depicted in Table \ref{tab:operatorReneval} was calculated as the number of commits since the day of repository creation. The highest ratio of commits per day was achieved by SPGO with an average of 5.03 commits per day, earning it a score of 100\%, while the other operators were assigned scores relative to their share of this maximum.
+The overall renewal rate of the operators depicted in Table \ref{tab:operatorRenewal} was calculated as the number of commits since the day of repository creation. The highest ratio of commits per day was achieved by SPGO with an average of 5.03 commits per day, earning it a score of 100\%, while the other operators were assigned scores relative to their share of this maximum.
 
-Interestingly, this contrasts with the Operator issues where SPGO scored the lowest and was therefore considered underdeveloped. A possible explanation for this could be that SPGO uses issues for its own project management, rather than solely for issue tracking. As reneval is the only subtest under maintenance, it is considered as a measure of maintenance.
+Interestingly, this contrasts with the Operator issues where SPGO scored the lowest and was therefore considered underdeveloped. A possible explanation for this could be that SPGO uses issues for its own project management, rather than solely for issue tracking. As renewal is the only subtest under maintenance, it is considered as a measure of maintenance.
 
 
-\tab{Operators reneval}{tab:operatorReneval}{1}{|l|l|l|l|l|}{
+\tab{Operators renewal}{tab:operatorRenewal}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
     Repo creation	&  27th Feb 2017 & 18th Feb 2020	&  29th May 2019	&  27th Feb 2017 \\ \hline
     Test date	&   1st May 2023 & 1st May 2023	&  1st May 2023	&  1st May 2023 \\ \hline
     Sum of commits	&   5582	& 3362 &	7208	& 4689 \\ \hline
-    Commits/day	&   2.48	& 2.88	& 5.03	& 2.08 \\ \hline
-    Reneval &   49\%	&  57\%	&  100\%	& 41\% \\ \hline
+    Commits/day	&   2.48	& 2.88	& 5.03	& 2.08 \\ \hline  \hline
+    Renewal / maintenance &   49\%	&  57\%	&  100\%	& 41\% \\ \hline
 }
 
 \n{2}{Learnability}
@@ -592,16 +620,22 @@ Learnability testing, which is one part of usability, aims to assess the ease wi
 Test Plan No. 2, which includes learnability, can be found along with
 the Test Completion Report, checklist and gathered examples in Appendix A III. The subsequent sections will present the results of the test.
 
-The training required depicted in Table \ref{tab:operatorTraining} was calculated as the additional training needed to work with each operator, over and above knowledge of kubectl (the Kubernetes command-line tool). Each additional tool required to work successfully with the operator resulted in a 5\% score decrease. In this regard, CNPGO was at a disadvantage because, according to its documentation, the cnpg plugin is necessary to uninstall it. PGO also faced a similar issue as it utilizes the simple kustomize tool to customize its manifest with a namespace.
+\n{3}{Required training}
+The training required depicted in Table \ref{tab:operatorTraining} was calculated as the additional training needed to work with each operator, over and above knowledge of Kubectl (the Kubernetes command-line tool). Each additional tool required to work successfully with the operator resulted in a 5\% score decrease. In this regard, CNPGO was at a disadvantage because, according to its documentation, the Cnpg plugin is necessary to uninstall it. PGO also faced a similar issue as it utilizes the simple Kustomize tool to customize its manifest with a namespace.
+
+Additional training needs were identified during the Ease of Use testing, where both CNPGO and PPO required the use of Helm for the deployment of monitoring. During these tests, the CNPGO cluster was easily uninstalled using Kubectl, indicating that the CNPGO plugin isn't necessary for utilizing CNPGO.
+
+Overall, the learnability scores are quite high, suggesting that all of the operators are relatively easy to learn. If monitoring is not a requirement, knowledge of Kubectl commands is sufficient to work with the CNPGO, SPGO, and PPO Operators. However, to install monitoring, Helm is necessary for these operators. For PGO, learning Kustomize for cluster operations is sufficient, and no additional tool is needed for monitoring.
 
 \tab{Training needed}{tab:operatorTraining}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
-    Training &kubectl &	kubectl	& kubectl &	kubectl \\ \hline
-    Training &kustomize	 & cnpg	& helm &\\ \hline
-    Score	&  95\%	& 95\% &	95\% &	100\%\\ \hline
+    1st training & Kubectl &	Kubectl	& Kubectl &	Kubectl \\ \hline
+    2nd training & Kustomize	 & Helm	& Helm & Helm\\ \hline \hline
+    Required Training &  95\%	& 95\% &	95\% &	95\%\\ \hline
 }
 
+\n{3}{Documentation examples}
 As depicted in Table \ref{tab:operatorDocExamples}, documentation examples were prevalent across all operators. SPGO, however, is at a disadvantage here due to its own UI, which is capable of managing the entire cluster and can easily handle all cluster operations. Surprisingly, it does not provide examples for major and minor updates, which can be easily configured via the UI. Considering that there are ten examples, each example was assigned a value of 10\% towards the total score.
 
 \tab{Documentation examples}{tab:operatorDocExamples}{1}{|l|l|l|l|l|}{
@@ -616,17 +650,17 @@ As depicted in Table \ref{tab:operatorDocExamples}, documentation examples were 
     Vertical scaling &	Yes &	Yes &	Yes &	No \\ \hline
     Horizontal scaling &	Yes &	Yes &	Yes &	Yes \\ \hline
     Configuration Update &	Yes &	Yes &	Yes &	Yes \\ \hline
-    Uninstall&	Yes &	Yes &	Yes &	No \\ \hline
-    Score &	100\%	& 90\%	& 80\%	& 80\% \\ \hline
+    Uninstall&	Yes &	Yes &	Yes &	No \\ \hline  \hline
+    Documentation examples &	100\%	& 90\%	& 80\%	& 80\% \\ \hline
 }
 
 
-The overall learnability rating of the Operators, as depicted in Table \ref{tab:operatorLearnability}, was calculated as the average of the scores from the required training and the documentation examples. Given the high level of overall learnability among the operators, it can be inferred that these operators should be relatively easy to learn.
+The overall learnability rating of the Operators, as depicted in Table \ref{tab:operatorLearnability}, was calculated as the average of the scores from the required training and the documentation examples. Given the high level of overall learnability among the operators, it can be derived that these operators should be relatively easy to learn.
 
 \tab{Learnability of Operators}{tab:operatorLearnability}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
-    Learnability	& 98\% &	93\% &	88\% &	90\%\\ \hline
+    Learnability	& 98\% &	93\% &	88\% &	88\%\\ \hline
 }
 
 \n{2}{Security}
@@ -646,7 +680,7 @@ the Test Completion Report in Appendix A IV.
     High &	1 &	0 &	1 &	0\\ \hline
     Medium &	40 &	0 &	41 &	35 \\ \hline
     Low &	36 &	0 &	36 &	36 \\ \hline
-    Unkown &	0 &	0 &	0 &	0 \\ \hline
+    Unkown &	0 &	0 &	0 &	0 \\ \hline  \hline
     Security &	20\% &	100\%	& 20\%	& 40\% \\ \hline
 }
 \n{2}{Operability}
@@ -663,7 +697,7 @@ Operability depicted in Table \ref{tab:operatorOperability} was evaluated based 
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
     Ease of use &	32\% & 25\% &	100\% &	17\% \\ \hline
-    Monitoring &	83\% & 75\% &	50\% &	75\% \\ \hline
+    Monitoring &	83\% & 75\% &	50\% &	75\% \\ \hline  \hline
     Operability &	58\% &	50\%	& 75\%	& 46\% \\ \hline
 }
 
@@ -684,7 +718,7 @@ To evaluate the monitoring capabilities of each operator, a set of necessary mon
 
 All of the operators, except for PPO, use the traditional Grafana Prometheus monitoring stack, while PPO uses the Percona Monitoring and Management solution. This Percona monitoring system is quite extensive, but its coverage of parameters is comparable to that of the less extensive CNPGO monitoring system.
 
-It can be inferred that all operators, with the exception of SPGO, offer high-quality monitoring. While SPGO is easy to operate, it is difficult to monitor effectively.
+It can be derived that all operators, with the exception of SPGO, offer high-quality monitoring. While SPGO is easy to operate, it is difficult to monitor effectively.
 
 \obr{SPGO's user interface}{fig:spgoUI7}{1}{graphics/monitoring/SPGO/spgo_ui7.png}
 
@@ -707,7 +741,7 @@ It can be inferred that all operators, with the exception of SPGO, offer high-qu
     Cluster major version upgrade & 4 &	10 & 0 & 10 \\ \hline
     Operator uninstall & 1	& 1 & 1 & 1 \\ \hline
     Cluster uninstall  & 1 & 1 & 0	& 1 \\ \hline
-    Overal & 22 & 28 & 7 & 41 \\ \hline
+    Overal & 22 & 28 & 7 & 41 \\ \hline  \hline
     Ease of use &	32\% & 25\% &	100\% &	17\% \\ \hline
 }
 
@@ -725,7 +759,7 @@ It can be inferred that all operators, with the exception of SPGO, offer high-qu
     WAL generation rate & Yes	& Yes & No	& Yes \\ \hline
     Replication lag & Yes	& Yes	& No	& No \\ \hline
     Errors and logs & No	& No	& No	& Yes \\ \hline
-    Backup and recovery & Yes	& Yes	& Yes	& No \\ \hline
+    Backup and recovery & Yes	& Yes	& Yes	& No \\ \hline  \hline
     Monitoring &	83\% & 75\% &	50\% &	75\% \\ \hline
 }
 
@@ -778,7 +812,7 @@ As described in Chapter~\ref{chap:testOperatbility}, changes to PPO's configurat
     First run &	544.91 tps	& 403.70 tps	& 284.39 tps &	401.46 tps \\ \hline
     Second run &	543.29 tps &	402.54 tps &	279.89 tps &	392.04 tps\\ \hline
     Third run &	538.51 tps &	392.63 tps &	309.16 tps &	387.79 tps \\ \hline
-    Mean &	542.24 tps &	399.62 tps &	291.15 tps &	393.77 tps \\ \hline
+    Mean &	542.24 tps &	399.62 tps &	291.15 tps &	393.77 tps \\ \hline  \hline
     Performance &	100\%	& 74\%	& 54\%	& 73\% \\ \hline
 }
 
@@ -787,8 +821,35 @@ The most performant Operator PGO received a score of 100\% in this test, while t
 \obr{GKE nodes details}{fig:testingGKEnodes}{1}{graphics/gke_nodes.png}
 
 
+\n{2}{Usability}
+The overall usability was calculated as the average of learnability, as shown in Table \ref{tab:operatorTraining}, and operability, as presented in Table \ref{tab:operatorOperability}. The results are shown in Table \ref{tab:operatorUsability}.
+
+\tab{Usability}{tab:operatorUsability}{1}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Learnability & 98\% &	93\% &	88\% &	88\% \\ \hline
+    Operability &	58\% & 50\% & 75\% & 46\%\\ \hline \hline
+    Usability &	78\%	& 72\%	& 82\%	& 67\% \\ \hline
+}
+
+\n{1}{Evaluation}
+
+\tab{Overall quality of Operators}{tab:operatorOveralQuality}{1}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Performance &	100\% & 74\% & 54\% & 73\% \\ \hline
+    Reliability &	97\% & 64\% & 40\% & 47\%\\ \hline
+    Usability &	78\% &	72\% &	82\% &	67\% \\ \hline
+    Maintenance &	49\% & 57\% & 100\% & 41\% \\ \hline
+    Security &	20\% & 100\% & 20\% & 40\% \\ \hline \hline
+    Quality &	68.8\% & 73.4\%	& 59.2\% & 53.6\% \\ \hline
+}
+
+
 % ============================================================================ %
 \nn{Závěr}
+
+
 Text závěru.
 
 
