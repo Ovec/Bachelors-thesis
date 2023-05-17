@@ -439,10 +439,10 @@ The following criteria described in Chapter \ref{chap:metrics} will be subjected
 
 \begin{itemize}
     \item	CP: Performance
-          \begin{itemize}
-              \item	CP1: Maturity
-          \end{itemize}
     \item	CR: Reliability
+          \begin{itemize}
+              \item	CR1: Maturity
+          \end{itemize}
     \item	CU: Usability
           \begin{itemize}
               \item	CU1: Learnability
@@ -473,7 +473,7 @@ The main management consist of following tasks:
 Subprocess consist of following tasks:
 \begin{itemize}
     \item Test strategy
-    \item Test test planning
+    \item Test planning
 \end{itemize}
 
 \n{2}{Test strategy and planning}
@@ -544,16 +544,42 @@ According to the priorities stated in the general test plan, the first test proc
 \obr{Test process}{fig:testingTestProcess}{1}{graphics/test_process-2.png}
 
 \n{2}{Static test process}
-The static test process was divided into three separate subprocesses, each with its own testing procedures.
+The static test process was divided into three separate subprocesses, each with its own testing process.
 \n{3}{Reliability and maintenance}
+Reliability and maintenance testing consists of two parts: renewal and maturity. Both of these parts form part of the first static testing process because they share the same test items. This process was designed to provide the necessary information for decision-making regarding the maintenance quality and maturity level of the Operators. A detailed test plan and further specifics of this process can be found in Appendix A II.
 
-PLAN
+Results of these repositories analysis are depicted in Table \ref{tab:operatorTestRelAndMaint}.
 
-MODEL
+\tab{Operator repository analysis}{tab:operatorTestRelAndMaint}{.5}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Repo creation	&  27th Feb 2017 & 18th Feb 2020	&  29th May 2019	&  27th Feb 2017 \\ \hline
+    Test date	&   1st May 2023 & 1st May 2023	&  1st May 2023	&  1st May 2023 \\ \hline
+    Stars	& 3258	& 1198	 & 84 &	149 \\ \hline
+    Issues	&  1884	& 764	& 1959	& 317 \\ \hline
+    Issues fixed	&   1755	& 691 &	1514	& 282 \\ \hline
+    Commits	&   5582	& 3362 &	7208	& 4689 \\ \hline
+}
 
-INCIDENT REPORT
 
-Test Plan No. 1, which includes reliability and maintenance, can be found along with the Test Completion Report in Appendix A II. The subsequent sections will present the results of the test.
+\n{3}{Security}
+To proceed with the security testing, a vulnerability analysis test plan was created (which can be found in Appendix A IV), and the process was carried out according to this plan.
+
+According to test plan, the test items for this process were identified, the test tool was downloaded, and a test procedure was developed which consisted of four test cases - one for each operator (details in Appendix A IV). Each operator was then tested according to this procedure, with the overal vulnerability results depicted in Table \ref{tab:operatorTestVuln}.
+
+Trivy was unable to detect any vulnerabilities in CNPG's container image utilizing Debian 11.6. The rest of the operators are using the Red Hat 8.7 container image, which resulted in almost identical vulnerability scores. Unfortunately, the implementation of Red Hat 8.7 in both PGO and SPGO has a high vulnerability with openssl-libs (CVE-2023-0286). More details about this vulnerability can be found here: \url{https://avd.aquasec.com/nvd/2023/cve-2023-0286/}. Complete results of Trivy scans can be located in the thesis repository\footnote[0]{https://github.com/Ovec/Bachelors-thesis} folder at \url{tests/vulnerability_analysis}.
+
+\tab{Vulnerability analysis results}{tab:operatorTestVuln}{1}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Critical &	0	& 0 &	0 &	0 \\ \hline
+    High &	1 &	0 &	1 &	0\\ \hline
+    Medium &	40 &	0 &	41 &	35 \\ \hline
+    Low &	36 &	0 &	36 &	36 \\ \hline
+    Unkown &	0 &	0 &	0 &	0 \\ \hline
+}
+
+
 
 
 \n{1}{Evaluation}
@@ -664,23 +690,13 @@ The overall learnability rating of the Operators, as depicted in Table \ref{tab:
 }
 
 \n{2}{Security}
-In order to perform the vulnerability analysis, the Docker images of each operator were scanned using the Trivy security scanner. To replicate these tests, please refer to the repository directory \url{tests/vulnerability_analysis}, which contains subdirectories for each operator with the corresponding commands used together with complete results.
+The results of vulnerability analysis depicted in Table \ref{tab:operatorTestVuln} were quantified in the following manner: the presence of a critical vulnerability was scored as 0\%, a high severity vulnerability as 20\%, medium as 40\%, low as 60\%, unknown as 80\%, and no vulnerabilities as 100\%. CNPGO was the only operator with zero detected vulnerabilities, thus achieving a full score and can be considered secure. PPO, having only medium and lower severity vulnerabilities, can also be considered reasonably secure. However, both PGO and SPGO, which had high-severity vulnerabilities, can be seen as less secure compared to CNPGO and PPO.
 
-Each operator is deployed as a Docker image, which can be scanned for vulnerabilities. With this test, the main issue for the operators was the quality of the underlying operating system used in the image. CNPG is utilizing Debian 11.6, where Trivy was unable to detect any vulnerabilities. The rest of the operators are using the Red Hat 8.7 underlying Docker image, which resulted in almost identical vulnerability scores. Unfortunately, the implementation of Red Hat 8.7 in both PGO and SPGO has a high vulnerability with openssl-libs (CVE-2023-0286). More details about this vulnerability can be found here: \url{https://avd.aquasec.com/nvd/2023/cve-2023-0286/}.
-
-The results depicted in Table \ref{tab:operatorVuln} were quantified in the following manner: the presence of a critical vulnerability was scored as 0\%, a high severity vulnerability as 20\%, medium as 40\%, low as 60\%, unknown as 80\%, and no vulnerabilities as 100\%. CNPGO was the only operator with zero detected vulnerabilities, thus achieving a full score and can be considered secure. PPO, having only medium and lower severity vulnerabilities, can also be considered reasonably secure. However, both PGO and SPGO, which had high severity vulnerabilities, can be seen as less secure compared to CNPGO and PPO.
-
-Test Plan No. 3, which includes security, can be found along with
-the Test Completion Report in Appendix A IV.
+TBD: there are certainly some bugs in Debian but the Trivy was unable to find any. Why?
 
 \tab{Vulnerability analysis}{tab:operatorVuln}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
-    Critical &	0	& 0 &	0 &	0 \\ \hline
-    High &	1 &	0 &	1 &	0\\ \hline
-    Medium &	40 &	0 &	41 &	35 \\ \hline
-    Low &	36 &	0 &	36 &	36 \\ \hline
-    Unkown &	0 &	0 &	0 &	0 \\ \hline  \hline
     Security &	20\% &	100\%	& 20\%	& 40\% \\ \hline
 }
 \n{2}{Operability}

@@ -127,15 +127,15 @@
           \end{itemize}
 \end{itemize}
 
-\priloha{Test Plan No. 1}
+\priloha{Test process No. 1}
 
 \tab{Test plan No. 1}{tab:testplan1}{1}{|l|l|}{
     \hline
     Test plan ID & tp1 \\ \hline
-    Revision & 1 \\ \hline
+    Revision & 2 \\ \hline
     Introducton &  Repositories walkthrough \\ \hline
     Test items & Operator's repositories \\ \hline
-    Covered criteria  & C2, C4 \\ \hline
+    Covered criteria  & CR1, CM1 \\ \hline
     Test type &	Static \\ \hline
     Test approach &	Repositories walkthrough \\ \hline
     Exit criteria & All metrics gathered  \\ \hline
@@ -144,7 +144,34 @@
     Reviewer & Miroslav Šiřina \\ \hline
     Start & May 1st \\ \hline
     Schedule & May 1st repositories walkthrough and test report. \\ \hline
+    Revisions & Rev No. 2 - added repository cloning and Jira walkthrough. \\ \hline
 }
+
+\n{2}{Test items}
+Test items for the procedure were following:
+\begin{itemize}
+    \item PGOREPO from General test plan
+    \item CNPGOREPO from General test plan
+    \item SPGOREPO from General test plan
+    \item PPODREPO from General test plan
+    \item PPOJIRA https://jira.percona.com/projects/DISTPG/issues/DISTPG-352?filter=allopenissues
+\end{itemize}
+
+\n{2}{Test tools}
+Excel sheet
+
+\n{2}{Test procedures}
+\begin{itemize}
+    \item MRC1 - PGOREPO walkthrough
+    \item MRC2 - CNPGOREPO walkthrough
+    \item MRC3 - SPGOREPO walkthrough
+    \item MRC4 - PPODREPO walkthrough
+    \item MRC5 - PGOREPO cloning - retrieving the date of creation
+    \item MRC6 - CNPGOREPO cloning - retrieving the date of creation
+    \item MRC7 - SPGOREPO cloning - retrieving the date of creation
+    \item MRC8 - PPODREPO cloning - retrieving the date of creation
+    \item MRC9 - PPOJIRA walkthrough
+\end{itemize}
 
 \textbf{Test completition report}
 
@@ -161,7 +188,7 @@ Test Result Analysis: The tests provided valuable data about the state and histo
 Lessons Learned: The necessity to deviate from the initial test plan underlines the importance of flexibility in testing procedures. An adaptive approach can lead to a more thorough evaluation and better data collection.
 
 
-\priloha{Test Plan No. 2}
+\priloha{Test Process No. 2}
 
 \tab{Test plan No. 2}{tab:testplan2}{1}{|l|l|}{
     \hline
@@ -395,28 +422,47 @@ Test Result Analysis: The tests provided valuable data about the state of docume
 Lessons Learned: Future projects should be prepared for a high level of diversity in documentations. This might involve allocating more time for research or including personnel with a broader range of expertise.
 
 
-\priloha{Test Plan No. 3}
-
+\priloha{Test process No. 3}
+\n{2}{Test plan No. 3}
 \tab{Test plan No. 3}{tab:testplan3}{1}{|l|l|}{
     \hline
     Test plan ID & tp3 \\ \hline
     Revision & 1 \\ \hline
     Introducton & Vulnerability analysis of operators \\ \hline
-    Test items & Operator deployed in the cluster \\ \hline
+    Test items & Operator's container images \\ \hline
     Covered criteria  & C5 \\ \hline
     Test type &	Static \\ \hline
     Test approach &	Vulnerability analysis \\ \hline
     Exit criteria & Completed analysis  \\ \hline
     Tools & Trivy security scanner \\ \hline
-    Delivarables & Vulnerability reports  \\ \hline
+    Delivarables & Sum of vulnerabilities, vulnerability reports  \\ \hline
     Duration & 4 h for each Operator \\ \hline
-    Reviewer & Miroslav Šiřina \\ \hline
+    Tester & Miroslav Šiřina \\ \hline
     Start & May 2nd \\ \hline
+    End & May 2nd \\ \hline
     Schedule & May 2nd analysis and test report. \\ \hline
 }
+\n{2}{Test items}
+Test items for the procedure were following:
+\begin{itemize}
+    \item registry.developers.crunchydata.com/crunchydata/postgres-operator:ubi8-5.3.1-0
+    \item ghcr.io/cloudnative-pg/cloudnative-pg:1.20.0
+    \item stackgres/operator:1.4.3
+    \item percona/percona-postgresql-operator:1.4.0-postgres-operator
+\end{itemize}
 
-\textbf{Test completition report}
+\n{2}{Test tools}
+Trivy security scaner version: 0.39.0, Vulnerability DB from 2nd May.
 
+\n{2}{Test procedures}
+\begin{itemize}
+    \item STC1 - trivy image registry.developers.crunchydata.com/crunchydata/postgres-operator:ubi8-5.3.1-0
+    \item STC2 - trivy image ghcr.io/cloudnative-pg/cloudnative-pg:1.20.0
+    \item STC3 - trivy image stackgres/operator:1.4.3
+    \item STC4 - trivy image percona/percona-postgresql-operator:1.4.0-postgres-operator
+\end{itemize}
+
+\n{2}{Test completition report}
 Testing performed: Vulnerability analysis
 
 Deviations from planed testing: None
@@ -427,7 +473,7 @@ Factors that blocked progress: None
 
 Test Result Analysis: The tests provided valuable data about vulnerabilities in Operators.
 
-\priloha{Test Plan No. 4}
+\priloha{Test Process No. 4}
 
 \tab{Test plan No. 4}{tab:testplan4}{1}{|l|l|}{
     \hline
