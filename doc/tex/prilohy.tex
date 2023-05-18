@@ -118,11 +118,11 @@
                     \end{itemize}
               \item Schedule
                     \begin{itemize}
-                        \item May 1st repositories and documentations walkthroughs.
-                        \item May 2nd vulnerability analysis.
-                        \item May 3rd - 8th operability testing.
-                        \item May 9th performance testing.
-                        \item May 10th – 11th Testing closure.
+                        \item 1st May: repositories and documentations walkthroughs.
+                        \item 2nd May: vulnerability analysis.
+                        \item 3rd - 8th May: operability testing.
+                        \item 9th May:  performance testing.
+                        \item 10th May: 11th Testing closure.
                     \end{itemize}
           \end{itemize}
 \end{itemize}
@@ -142,9 +142,9 @@
     Delivarables & Sum of commits, sum of stars, sum of issues, sum of fixed issues.  \\ \hline
     Duration & 2 h for each Operator \\ \hline
     Reviewer & Miroslav Šiřina \\ \hline
-    Start & May 1st \\ \hline
-    Schedule & May 1st repositories walkthrough and test report. \\ \hline
-    Revisions & Rev No. 2 - added repository cloning and Jira walkthrough. \\ \hline
+    Start & 1st May  \\ \hline
+    Schedule & 1st May: repositories walkthrough and test report. \\ \hline
+    Revisions & Rev No. 2 - added test cases MRC5 to MRC9. \\ \hline
 }
 
 \n{2}{Test items}
@@ -166,10 +166,10 @@ Excel sheet
     \item MRC2 - CNPGOREPO walkthrough
     \item MRC3 - SPGOREPO walkthrough
     \item MRC4 - PPODREPO walkthrough
-    \item MRC5 - PGOREPO cloning - retrieving the date of creation
-    \item MRC6 - CNPGOREPO cloning - retrieving the date of creation
-    \item MRC7 - SPGOREPO cloning - retrieving the date of creation
-    \item MRC8 - PPODREPO cloning - retrieving the date of creation
+    \item MRC5 - PGOREPO cloning - retrieving the date of creation and number of commits
+    \item MRC6 - CNPGOREPO cloning - retrieving the date of creation and number of commits
+    \item MRC7 - SPGOREPO cloning - retrieving the date of creation and number of commits
+    \item MRC8 - PPODREPO cloning - retrieving the date of creation and number of commits
     \item MRC9 - PPOJIRA walkthrough
 \end{itemize}
 
@@ -196,15 +196,15 @@ Lessons Learned: The necessity to deviate from the initial test plan underlines 
     Revision & 1 \\ \hline
     Introducton & Checklist-based documentations walkthrough \\ \hline
     Test items & Operator's documentations \\ \hline
-    Covered criteria  & C3 \\ \hline
+    Covered criteria  & CU1 \\ \hline
     Test type &	Static \\ \hline
     Test approach &	Checklist-based Testing \\ \hline
     Exit criteria & All checklists completed  \\ \hline
     Delivarables & List of examples and checklist  \\ \hline
     Duration & 2 h for each Operator \\ \hline
     Reviewer & Miroslav Šiřina \\ \hline
-    Start & May 1st \\ \hline
-    Schedule & May 1st documentations walkthrough and test report. \\ \hline
+    Start & 1st May \\ \hline
+    Schedule & 1st May: documentations walkthrough and test report. \\ \hline
 }
 
 \textbf{Checklist}
@@ -427,7 +427,7 @@ Lessons Learned: Future projects should be prepared for a high level of diversit
 \tab{Test plan No. 3}{tab:testplan3}{1}{|l|l|}{
     \hline
     Test plan ID & tp3 \\ \hline
-    Revision & 1 \\ \hline
+    Revision & 2 \\ \hline
     Introducton & Vulnerability analysis of operators \\ \hline
     Test items & Operator's container images \\ \hline
     Covered criteria  & C5 \\ \hline
@@ -438,9 +438,10 @@ Lessons Learned: Future projects should be prepared for a high level of diversit
     Delivarables & Sum of vulnerabilities, vulnerability reports  \\ \hline
     Duration & 4 h for each Operator \\ \hline
     Tester & Miroslav Šiřina \\ \hline
-    Start & May 2nd \\ \hline
-    End & May 2nd \\ \hline
-    Schedule & May 2nd analysis and test report. \\ \hline
+    Start & 2nd May \\ \hline
+    End & 18th May \\ \hline
+    Schedule & 2nd May: analysis and test report. \\ \hline
+    Revisions & 18th May: Rev No. 2 - added test cases STC5. \\ \hline
 }
 \n{2}{Test items}
 Test items for the procedure were following:
@@ -452,7 +453,7 @@ Test items for the procedure were following:
 \end{itemize}
 
 \n{2}{Test tools}
-Trivy security scaner version: 0.39.0, Vulnerability DB from 2nd May.
+Trivy security scaner version: 0.39.0, Vulnerability DB for all test cases except STC5 from 2nd May. Vulnerability DB for STC5 from 18th May.
 
 \n{2}{Test procedures}
 \begin{itemize}
@@ -460,6 +461,7 @@ Trivy security scaner version: 0.39.0, Vulnerability DB from 2nd May.
     \item STC2 - trivy image ghcr.io/cloudnative-pg/cloudnative-pg:1.20.0
     \item STC3 - trivy image stackgres/operator:1.4.3
     \item STC4 - trivy image percona/percona-postgresql-operator:1.4.0-postgres-operator
+    \item STC5 - trivy image debian:11.6
 \end{itemize}
 
 \n{2}{Test completition report}
@@ -491,13 +493,13 @@ Test Result Analysis: The tests provided valuable data about vulnerabilities in 
     & List of covered monitoring topics. Print screens of monitoring.   \\ \hline
     Duration & 8 h for each Operator \\ \hline
     Tester & Miroslav Šiřina \\ \hline
-    Start & May 3rd \\ \hline
-    End & May 8th \\ \hline
-    Schedule & May 3rd Use cases creation \\ \hline
-    & May 4th PGO \\ \hline
-    & May 5th CNPGO \\ \hline
-    & May 6th SPGO \\ \hline
-    & May 7th PPO \\ \hline
+    Start & 3rd May  \\ \hline
+    End & 8th May  \\ \hline
+    Schedule & 3rd May: Use cases creation \\ \hline
+    & 4th May: PGO \\ \hline
+    & 5th May: CNPGO \\ \hline
+    & 6th May: SPGO \\ \hline
+    & 7th May: PPO \\ \hline
 }
 
 Actors:
@@ -825,8 +827,8 @@ O - Operator
     Delivarables & Performance reports  \\ \hline
     Duration & 4 h for each Operator \\ \hline
     Tester & Miroslav Šiřina \\ \hline
-    Start & May 9th \\ \hline
-    Schedule & May 9th analysis and test report. \\ \hline
+    Start & 9th May \\ \hline
+    Schedule &  9th May: analysis and test report. \\ \hline
 }
 
 
