@@ -22,6 +22,8 @@ TBD - Poděkování, motto
 
 TBD - adjust the test theory to test process
 
+TBD - describe tools
+
 TBD - create scales for evaluation
 
 TBD - navrhout doporučení, rozhodovací strom
@@ -401,7 +403,7 @@ Maturity in the context of software refers to the degree to which a system is fu
 Usability is a key aspect of software design that focuses on user experience. It refers to the ability of a system to achieve certain goals for certain users in a particular context of use.
 \n{3}{Learnability}
 How easy it is for users to learn how to use the system.
-\n{3}{Operabilitiy}
+\n{3}{Operability}
 How easy is it for users to successfully use the system.
 \n{2}{Maintenance}
 Activities that are performed after the software is deployed to ensure its correct functionality and performance. Maintenance may include bug fixes, adding new features, performance optimization, updates for compatibility with new systems, etc. Ignoring software maintenance can lead to increased repair costs and reduced system performance over time. Additionally, it can cause system instability, increased vulnerability to security threats, and eventually, potential system failure.
@@ -446,7 +448,7 @@ The following criteria described in Chapter \ref{chap:metrics} will be subjected
     \item	CU: Usability
           \begin{itemize}
               \item	CU1: Learnability
-              \item  CU2: Operabilitiy
+              \item  CU2: Operability
           \end{itemize}
     \item	CM: Maintenance
           \begin{itemize}
@@ -543,8 +545,19 @@ According to the priorities stated in the general test plan, the first test proc
 
 \obr{Test process}{fig:testingTestProcess}{1}{graphics/test_process-2.png}
 
+\n{2}{Tools}
+\begin{enumerate}
+    \item \textbf{Bash}: Most of the test cases during the testing process are scripted using the Bourne Again Shell (Bash).
+    \item \textbf{Git}: One of the test procedures is employing Git for repository management and version control.
+    \item \textbf{Kubectl}: The Kubectl tool is employed for managing the Kubernetes cluster.
+    \item \textbf{Kustomize}: Tool for customizing Kubernetes configurations without changing base resources.
+    \item \textbf{Terraform}: Terraform is leveraged to simplify the deployment and replication of the GKE cluster.
+    \item \textbf{Trivy}: The Trivy security scanner is utilized for vulnerability analysis of the Operators' images.
+    \item \textbf{Snyk}: Snyk is also utilized for vulnerability analysis of the Operator's images.
+\end{enumerate}
+
 \n{2}{Static test process}
-The static test process was divided into three separate subprocesses, each with its own testing process.
+The static test process was divided into three separate subprocesses, each with its own test plan.
 \n{3}{Reliability and maintenance}
 Reliability and maintenance testing consists of two parts: renewal and maturity. Both of these parts form the first static testing process because they share the same test items and therefore dividing them into separate processes doesn't make sense. This process was designed to provide the necessary information for decision-making regarding the maintenance quality and maturity level of the Operators. A detailed test plan and further specifics of this process can be found in Appendix A II.
 
@@ -571,7 +584,8 @@ The results of this repository analysis are presented in Table \ref{tab:operator
     Issues fixed	&   1755	& 691 &	1514	& 282 \\ \hline
     Commits	&   5582	& 3362 &	7208	& 4689 \\ \hline
 }
-\n{3}{Learnability}
+\n{3}{Usability: Learnability}
+\label{chap:learnability}
 The learnability testing process was divided into two distinct aspects: the first one being the training required to operate with the Operators, and the second one being the presence of examples concerning Postgres life cycle events in the Operator's documentation. Following the guidelines of the test plan (available in Appendix A III), a checklist was created. The documentation for each Operator was thoroughly reviewed, resulting in the findings presented in Tables \ref{tab:operatorTestTraining} and \ref{tab:operatorTestDocExamples}.
 
 \tab{Training needed}{tab:operatorTestTraining}{1}{|l|l|l|l|l|}{
@@ -600,16 +614,21 @@ The learnability testing process was divided into two distinct aspects: the firs
 \n{3}{Security}
 To proceed with the security testing, a vulnerability analysis test plan was created (which can be found in Appendix A IV), and the process was carried out according to this plan.
 
-According to test plan, the test items for this process were identified, the test tool was downloaded, and a test procedure was developed which consisted of four test cases - one for each operator (details in Appendix A IV). Each operator was then tested according to this procedure, with the overal vulnerability results presented in Table \ref{tab:operatorTestVulnTrivy}.
+According to test plan, the test items for this process were identified, the test tool was downloaded, and a test procedure was developed which consisted of four test cases - one for each operator (details in Appendix A IV).
+Each operator was then tested according to this procedure, with the overal vulnerability results presented in Table \ref{tab:operatorTestVulnTrivy}.
 
-Trivy was unable to detect any vulnerabilities in CNPG's container image utilizing Debian 11.6. The rest of the operators are using the Red Hat 8.7 container image, which resulted in almost identical vulnerability scores.
+During this test rocess the security scanner Trivy was unable to detect any vulnerabilities in CNPG's container image utilizing Debian 11.6.
+The rest of the operators are using the Red Hat 8.7 container image, which resulted in almost identical vulnerability scores.
 Unfortunately, the implementation of Red Hat 8.7 in both PGO and SPGO has a high vulnerability with openssl-libs (CVE-2023-0286).
 More details about this vulnerability can be found here: \url{https://avd.aquasec.com/nvd/2023/cve-2023-0286/}.
 
-The absence of any detected vulnerabilities in CNPGO by Trivy raised a question: Is Trivy accurately scanning this image? To address this concern, the test plan was updated to include an additional test case. This test involved scanning the base image of CNPGO to ascertain if Trivy could detect any vulnerabilities in Debian 11.6.
-Debian results can be interpreted in two ways. The first interpretation suggests that CNPG might be using Debian but has effectively removed or mitigated the vulnerable parts. The second interpretation considers the possibility that Trivy may not be able to accurately identify Debian vulnerabilities within CNPGO.
+The absence of any detected vulnerabilities in CNPGO by Trivy raised a question: Is Trivy accurately scanning this image? To address this concern, the test plan was updated to include an additional test case.
+This test involved scanning the base image of CNPGO to ascertain if Trivy could detect any vulnerabilities in Debian 11.6.
 
-To eliminate the second interpretation an additional vulnerability analysis tool, Snyk, was incorporated into the testing process. The test plan was subsequently adjusted, and the images were scanned using Snyk. This alternative method produced results similar to those from the Trivy scanning for each Operator. However, there were exceptions in terms of High severity issues; Snyk identified three additional vulnerabilities in the SSL libraries of PGO and SPGO and provided different results for Debian.
+Debian image was scanned with the results presented in Table \ref{tab:operatorTestVulnTrivy} which can be interpreted in two ways. The first interpretation suggests that CNPG might be using Debian but has effectively removed or mitigated the vulnerable parts. The second interpretation considers the possibility that Trivy may not be able to accurately identify Debian vulnerabilities within CNPGO.
+
+To eliminate the second interpretation an additional vulnerability analysis tool, Snyk, was incorporated into the testing process. The test plan was subsequently adjusted, and the images were scanned using Snyk. This alternative method produced results similar to those from the Trivy scanning for each Operator. However, there were exceptions in terms of High severity issues;
+Snyk identified three additional vulnerabilities in the openssl-libs of PGO and SPGO and provided different results for Debian.
 
 Complete results of Trivy and Snyk scans can be located in the thesis repository\footnote[6]{https://github.com/Ovec/Bachelors-thesis} folder at \url{tests/vulnerability_analysis}. The overall results are presented in Table \ref{tab:operatorTestVulnTrivy} and \ref{tab:operatorTestVulnSnyk}
 
@@ -639,29 +658,113 @@ The dynamic test process was divided into two separate subprocesses, each with i
 test plan.
 
 \n{3}{Environments}
-Two environments were leveraged for the dynamic test process, each designed for specific test types based on resource requirements:
+Two environments were used for the dynamic test process, each designed for specific test types based on resource requirements:
 
 \begin{enumerate}
-    \item \textbf{Kind Kubernetes Cluster}: Kind is a tool that creates Kubernetes clusters within Docker, was used for less resource-intensive tests. This setup was run on a first-generation M1 MacBook Air equipped with 8GB of RAM and a 500GB disk, utilizing a specific Docker configuration.
-    \item \textbf{Google Kubernetes Engine (GKE)}: More resource-demanding tests, such as performance testing, were conducted on a robust Google Kubernetes Engine cluster, comprising three e2-standard-2 nodes. Each node was configured with 2 virtual CPUs and 8GB of RAM. Additionally, a standalone Postgres node with pgbench was deployed to this cluster for performance measurements.
+    \item \textbf{Kind Kubernetes Cluster}: Kind is a tool that creates Kubernetes clusters within Docker, was used for less resource-intensive tests. This setup was run on a first-generation M1 MacBook Air equipped with 8GB of RAM and a 500GB disk.
+    \item \textbf{Google Kubernetes Engine (GKE)}: More resource-demanding tests, such as performance testing, were conducted on a robust Google Kubernetes Engine cluster, consisting of three e2-standard-2 nodes. Each node with 2 virtual CPUs and 8GB of RAM. Additionally, a standalone Postgres node with pgbench was deployed to this cluster for performance measurements.
 \end{enumerate}
 
 The configurations for Kind and the Terraform plans used for deploying the GKE cluster, as well as the commands used for both deployments, can be found in the repository directory located at \url{tests/environments}.
 
-\n{3}{Usability}
+\n{3}{Usability: Operability}
+
+The operability testing process was divided into two distinct aspects: the first one
+being ease of use, and the second one being the quality of provided monitoring.
+Following the guidelines of the test plan, use cases derived from Postgres lifecycle and testing procedure was created (all available in Appendix A V).
 
 \n{4}{Ease of use}
 \label{chap:easeOfUse}
+Testing the ease of use involved testing each Operator for the functionality outlined by the use cases and quantifying the number of commands required to implement these functions.
+This form of testing tested the functional aspects of the Operator in conjunction with its ease of use.
+To achieve this, three types of shell scripts were utilized: before.sh, test.sh, and cleanup.sh.
+
+The before.sh script prepared the environment for the test, the test.sh script executed the test itself, and the cleanup.sh script restored the environment to its state prior to the test.
+The precondition for testing the Operators was a functioning Kubernetes cluster with kubectl configured for this cluster.
+Additionally, to perform tests on the Postgres clusters, it was necessary for the Operator to be installed in the cluster.
+
+In cases where it was necessary to verify functionality, this verification was made manually.
+
+\n{5}{SPGO}
+The reason why SPGO has a zero value in most test cases is due to its user-friendly interface.
+Most tasks can be accomplished directly within this interface, eliminating the need for using the terminal.
+Even complex tasks, such as performing a major version upgrade, can be easily carried out via this user interface.
+An example of this user interface is shown in Figure \ref{fig:spgoUI7}.
+Additional images can be found in the repository folder at \url{doc/graphics/monitoring/SPGO}.
+
+\obr{SPGO's user interface}{fig:spgoUI7}{1}{graphics/monitoring/SPGO/spgo_ui7.png}
+
+\n{5}{Cluster major version upgrade}
+The upgrade to a new major version appears to be the most challenging task for each Operator. While SPGO handled the cluster upgrade seamlessly, PGO required four steps to proceed with the major version upgrade. On the other hand, CNPGO claimed to be capable of an "Offline import of existing PostgreSQL databases, including major upgrades of PostgreSQL". This process involves dumping the database and restoring it to a new cluster, which can be done with any cluster and is not considered a major upgrade. PPO declared in their documentation that they are capable of automatic updates even between versions. However, this Jira issue (\url{https://jira.percona.com/projects/K8SPG/issues/K8SPG-254?filter=allopenissues}) suggests otherwise.
+
+\n{5}{PPO}
+During the cluster update test case, specifically the update of max\_wal\_size, PPO experienced a failure.
+Despite updating the cluster configuration, the max\_wal\_size of Postgres remained unchanged.
+PPO also was the only operator that did not support the PostGis extension for PostgreSQL.
+
+\n{5}{CNPGO}
+During the testing procedure, it was noted that CNPGO didn't require the CNPG plugin, as initially mentioned in Chapter \ref{chap:learnability}, to perform any operation. Consequently, the necessity for training related to this plugin was reevaluated, leading to its removal. The updated results are presented in Table \ref{tab:operatorTestUpdatedTraining}.
+
+
+
+\tab{Ease of use}{tab:operatorTestEaseOfUse}{.5}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Operator installation & 2 & 1 & 2 & 3 \\ \hline
+    Cluster installation & 1 &	2 &	0 &	1\\ \hline
+    Cluster monitoring & 2 & 4 & 3 & 5 \\ \hline
+    Cluster vertical scaling & 1 &	1 &	0 &	1 \\ \hline
+    Cluster horizontal scaling & 1 & 1 & 0 & 1\\ \hline
+    Cluster connection pooling & 1 & 1 & 0 & 0 \\ \hline
+    Cluster extension install & 1	& 1 & 0 & - \\ \hline
+    Cluster number of connections increase & 1 &	1 &	0 &	2 \\ \hline
+    Cluster max\_wall\_size increase & 1 & 1 & 0 & - \\ \hline
+    Cluster scheduled backup & 1 & 1 & 0 & 1 \\ \hline
+    Cluster ad-hoc backup & 2	& 1 & 0 & 1 \\ \hline
+    Cluster restore & 2 & 1 & 1 & 1 \\ \hline
+    Cluster minor version upgrade & 1 &	1 &	0 &	1 \\ \hline
+    Cluster major version upgrade & 4 &	- & 0 & - \\ \hline
+    Operator uninstall & 1	& 1 & 1 & 1 \\ \hline
+    Cluster uninstall  & 1 & 1 & 0	& 1 \\ \hline
+}
+
+\tab{Training needed: udpated}{tab:operatorTestUpdatedTraining}{1}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    1st training & Kubectl & Kubectl & Kubectl & Kubectl \\ \hline
+    2nd training & Kustomize & Helm	& Helm & Helm\\ \hline
+}
+
 
 \n{4}{Monitoring}
+During the monitoring deployment test case, screenshots of each monitoring system were taken. The results are presented in Table \ref{tab:operatorTestMonitoring}.
+These screenshots can be found in the repository folder at \url{doc/graphics/monitoring}.
 
+All of the operators, except for PPO, use the traditional Grafana Prometheus monitoring stack, while PPO uses the Percona Monitoring and Management solution.
+This Percona monitoring system is quite extensive, but its coverage of parameters is comparable to that of the less extensive CNPGO monitoring system.
+
+\tab{Monitoring}{tab:operatorTestMonitoring}{.5}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    Health & Yes &	Yes &	Yes &	Yes\\ \hline
+    Query performance & Yes	& Yes	& No	& Yes\\ \hline
+    Number of connections & Yes	& Yes	& Yes	 &Yes \\ \hline
+    Locks & Yes	& Yes	& Yes	& Yes \\ \hline
+    Index hit  & No	& No	& No	& No\\ \hline
+    Cache hit & Yes	& No	& Yes	& Yes \\ \hline
+    Disk space usage & Yes	& Yes	& No	& Yes \\ \hline
+    CPU and memory usage & Yes	& Yes	& Yes	& Yes \\ \hline
+    WAL generation rate & Yes	& Yes & No	& Yes \\ \hline
+    Replication lag & Yes	& Yes	& No	& No \\ \hline
+    Errors and logs & No	& No	& No	& Yes \\ \hline
+    Backup and recovery & Yes	& Yes	& Yes	& No \\ \hline
+}
 
 \n{3}{Performance}
-To measure the performance of the Postgres cluster, an Operator was deployed to the Kubernetes cluster. Subsequently, a Postgres cluster was established, consisting of three nodes (one primary and two replicas), along with three connection pooler instances.
+To measure the performance of the Postgres cluster, an Operator was deployed to the GKE cluster. Subsequently, a high availability Postgres cluster was established, consisting of three nodes (one primary and two replicas), along with three connection pooler instances.
 A simplified representation of this cluster configuration is depicted in Figure \ref{fig:testingGKEperformance}.
 
 \obr{Kubernetes performance setup}{fig:testingGKEperformance}{1}{graphics/performance_setup.png}
-
 
 For each Operator test, the Kubernetes cluster was recreated to ensure a clean starting point. A Postgres cluster with three nodes (one primary and two replicas) was deployed, along with three connection pooler instances.
 
@@ -776,7 +879,6 @@ Learnability testing, which is one part of usability, aims to assess the ease wi
 The training required presented in Table \ref{tab:operatorTraining} was calculated as the additional training needed to work with each operator, over and above knowledge of Kubectl (the Kubernetes command-line tool).
 Each additional tool required to work successfully with the operator resulted in a 5\% score decrease.
 
-\textcolor{red}{TBD - this must be in testing. Learnability testing table must be update in dynamic testing becuase it was relized that the cnpg plugin is not necessary for cnpg to operate.}
 % In this regard, CNPGO was at a disadvantage because, according to its documentation, the Cnpg plugin is necessary to uninstall it. PGO also faced a similar issue as it utilizes the simple Kustomize tool to customize its manifest with a namespace.
 
 \tab{Training needed}{tab:operatorTraining}{1}{|l|l|l|l|l|}{
