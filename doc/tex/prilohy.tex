@@ -434,14 +434,16 @@ Lessons Learned: Future projects should be prepared for a high level of diversit
     Test type &	Static \\ \hline
     Test approach &	Vulnerability analysis \\ \hline
     Exit criteria & Completed analysis  \\ \hline
-    Tools & Trivy security scanner \\ \hline
+    Tools & Trivy security scanner, Snyk security scanner \\ \hline
     Delivarables & Sum of vulnerabilities, vulnerability reports  \\ \hline
     Duration & 4 h for each Operator \\ \hline
     Tester & Miroslav Šiřina \\ \hline
     Start & 2nd May \\ \hline
     End & 18th May \\ \hline
     Schedule & 2nd May: analysis and test report. \\ \hline
-    Revisions & 18th May: Rev No. 2 - added test cases STC5. \\ \hline
+    Revisions & 18th May: Rev No. 2 - added test case STC5. \\ \hline
+    & 19th May: Rev No. 3 - added test cases STC5 - STC10. \\ \hline
+    & 19th May: Rev No. 3 - Snyk introduced \\ \hline
 }
 \n{2}{Test items}
 Test items for the procedure were following:
@@ -457,11 +459,16 @@ Trivy security scaner version: 0.39.0, Vulnerability DB for all test cases excep
 
 \n{2}{Test procedures}
 \begin{itemize}
-    \item STC1 - trivy image registry.developers.crunchydata.com/crunchydata/postgres-operator:ubi8-5.3.1-0
-    \item STC2 - trivy image ghcr.io/cloudnative-pg/cloudnative-pg:1.20.0
-    \item STC3 - trivy image stackgres/operator:1.4.3
-    \item STC4 - trivy image percona/percona-postgresql-operator:1.4.0-postgres-operator
-    \item STC5 - trivy image debian:11.6
+    \item STC1 - Vulnerability analysis of PGO
+    \item STC2 - Vulnerability analysis of CNPGO
+    \item STC3 - Vulnerability analysis of SPGO
+    \item STC4 - Vulnerability analysis of PPO
+    \item STC5 - Vulnerability analysis of Debian
+    \item STC6 - Vulnerability analysis of PGO
+    \item STC7 - Vulnerability analysis of CNPGO
+    \item STC8 - Vulnerability analysis of SPGO
+    \item STC9 - Vulnerability analysis of PPO
+    \item STC10 - Vulnerability analysis of Debian
 \end{itemize}
 
 \n{2}{Test completition report}

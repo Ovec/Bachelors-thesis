@@ -598,23 +598,36 @@ The learnability testing process was divided into two distinct aspects: the firs
 \n{3}{Security}
 To proceed with the security testing, a vulnerability analysis test plan was created (which can be found in Appendix A IV), and the process was carried out according to this plan.
 
-According to test plan, the test items for this process were identified, the test tool was downloaded, and a test procedure was developed which consisted of four test cases - one for each operator (details in Appendix A IV). Each operator was then tested according to this procedure, with the overal vulnerability results depicted in Table \ref{tab:operatorTestVuln}.
+According to test plan, the test items for this process were identified, the test tool was downloaded, and a test procedure was developed which consisted of four test cases - one for each operator (details in Appendix A IV). Each operator was then tested according to this procedure, with the overal vulnerability results presented in Table \ref{tab:operatorTestVulnTrivy}.
 
 Trivy was unable to detect any vulnerabilities in CNPG's container image utilizing Debian 11.6. The rest of the operators are using the Red Hat 8.7 container image, which resulted in almost identical vulnerability scores.
 Unfortunately, the implementation of Red Hat 8.7 in both PGO and SPGO has a high vulnerability with openssl-libs (CVE-2023-0286).
 More details about this vulnerability can be found here: \url{https://avd.aquasec.com/nvd/2023/cve-2023-0286/}.
 
 The absence of any detected vulnerabilities in CNPGO by Trivy raised a question: Is Trivy accurately scanning this image? To address this concern, the test plan was updated to include an additional test case. This test involved scanning the base image of CNPGO to ascertain if Trivy could detect any vulnerabilities in Debian 11.6.
+Debian results can be interpreted in two ways. The first interpretation suggests that CNPG might be using Debian but has effectively removed or mitigated the vulnerable parts. The second interpretation considers the possibility that Trivy may not be able to accurately identify Debian vulnerabilities within CNPGO.
 
-Complete results of Trivy scans can be located in the thesis repository\footnote[6]{https://github.com/Ovec/Bachelors-thesis} folder at \url{tests/vulnerability_analysis}. The overall results are presented in Table \ref{tab:operatorTestVuln}
+To eliminate the second interpretation an additional vulnerability analysis tool, Snyk, was incorporated into the testing process. The test plan was subsequently adjusted, and the images were scanned using Snyk. This alternative method produced results similar to those from the Trivy scanning for each Operator. However, there were exceptions in terms of High severity issues; Snyk identified three additional vulnerabilities in the SSL libraries of PGO and SPGO and provided different results for Debian.
 
-\tab{Vulnerability analysis results}{tab:operatorTestVuln}{1}{|l|l|l|l|l|l|}{
+Complete results of Trivy and Snyk scans can be located in the thesis repository\footnote[6]{https://github.com/Ovec/Bachelors-thesis} folder at \url{tests/vulnerability_analysis}. The overall results are presented in Table \ref{tab:operatorTestVulnTrivy} and \ref{tab:operatorTestVulnSnyk}
+
+\tab{Trivy vulnerability analysis results}{tab:operatorTestVulnTrivy}{1}{|l|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO & Debian 11.6 \\ \hline
     Critical &	0	& 0 &	0 &	0 &	1 \\ \hline
     High &	1 &	0 &	1 &	0&	17 \\ \hline
     Medium &	40 &	0 &	41 &	35&	6  \\ \hline
     Low &	36 &	0 &	36 &	36&	59  \\ \hline
+    Unkown &	0 &	0 &	0 &	0 &	0 \\ \hline
+}
+
+\tab{Snyk vulnerability analysis results}{tab:operatorTestVulnSnyk}{1}{|l|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO & Debian 11.6 \\ \hline
+    Critical & 0 & 0 &	0 &	0 &	0 \\ \hline
+    High & 4 &	0 &	4 &	0 &	1 \\ \hline
+    Medium &38 &	0 &	39 &	36 &	2  \\ \hline
+    Low &	39 &	0 &	39 &	39 &	48 \\ \hline
     Unkown &	0 &	0 &	0 &	0 &	0 \\ \hline
 }
 
@@ -724,9 +737,7 @@ Overall, the learnability scores are quite high, suggesting that all of the oper
 }
 
 \n{2}{Security}
-The results of vulnerability analysis depicted in Table \ref{tab:operatorTestVuln} were quantified in the following manner: the presence of a critical vulnerability was scored as 0\%, a high severity vulnerability as 20\%, medium as 40\%, low as 60\%, unknown as 80\%, and no vulnerabilities as 100\%. CNPGO was the only operator with zero detected vulnerabilities, thus achieving a full score and can be considered secure. PPO, having only medium and lower severity vulnerabilities, can also be considered reasonably secure. However, both PGO and SPGO, which had high-severity vulnerabilities, can be seen as less secure compared to CNPGO and PPO.
-
-TBD: there are certainly some bugs in Debian but the Trivy was unable to find any. Why?
+The results of vulnerability analysis presented in Table \ref{tab:operatorTestVulnTrivy} and \ref{tab:operatorTestVulnSnyk} were quantified in the following manner: the presence of a critical vulnerability was scored as 0\%, a high severity vulnerability as 20\%, medium as 40\%, low as 60\%, unknown as 80\%, and no vulnerabilities as 100\%. CNPGO was the only operator with zero detected vulnerabilities, thus achieving a full score and can be considered secure. PPO, having only medium and lower severity vulnerabilities, can also be considered reasonably secure. However, both PGO and SPGO, which had high-severity vulnerabilities, can be seen as less secure compared to CNPGO and PPO.
 
 \tab{Vulnerability analysis}{tab:operatorVuln}{1}{|l|l|l|l|l|}{
     \hline
