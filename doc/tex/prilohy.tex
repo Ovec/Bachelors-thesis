@@ -160,7 +160,7 @@ Test items for the procedure were following:
 \n{2}{Test tools}
 Excel sheet
 
-\n{2}{Test procedures}
+\n{2}{Test procedure}
 \begin{itemize}
     \item MRC1 - PGOREPO walkthrough
     \item MRC2 - CNPGOREPO walkthrough
@@ -194,7 +194,7 @@ Lessons Learned: The necessity to deviate from the initial test plan underlines 
     \hline
     Test plan ID & tp2 \\ \hline
     Revision & 1 \\ \hline
-    Introducton & Checklist-based documentations walkthrough \\ \hline
+    Introducton & Checklist-based documentations review \\ \hline
     Test items & Operator's documentations \\ \hline
     Covered criteria  & CU1 \\ \hline
     Test type &	Static \\ \hline
@@ -207,7 +207,7 @@ Lessons Learned: The necessity to deviate from the initial test plan underlines 
     Schedule & 1st May: documentations walkthrough and test report. \\ \hline
 }
 
-\textbf{Checklist}
+\n{2}{Checklist}
 \begin{itemize}
     \item Instalation
     \item Minor upgrade to new version
@@ -221,7 +221,17 @@ Lessons Learned: The necessity to deviate from the initial test plan underlines 
     \item Uninstall
     \item Training needed
 \end{itemize}
-\textbf{Test results}
+
+\n{2}{Test procedure}
+\begin{itemize}
+    \item LC1 - PGODOC checklist-based review
+    \item LC2 - CNPGODOC checklist-based review
+    \item LC3 - SPGODOC checklist-based review
+    \item LC4 - PPODOC checklist-based review
+\end{itemize}
+
+
+\n{2}{Test results}
 
 PGO
 Documentation
@@ -315,7 +325,7 @@ Uninstall
 
 \url{https://cloudnative-pg.io/documentation/1.19/cnpg-plugin/#destroy}
 
-Notes: Uninstall example use cnpg plugin
+Notes: Uninstall example use cnpg plugin. Helm is needed to install monitoring.
 
 SPGO
 Documentation
@@ -362,7 +372,7 @@ Uninstall
 
 \url{https://stackgres.io/doc/1.4/administration/uninstall/}
 
-Notes: helm is needed to install monitoring
+Notes: Helm is needed to install monitoring.
 
 PPO
 Documentation
@@ -407,6 +417,8 @@ Configuration Update
 Uninstall
 Not found
 
+Notes: Helm is needed to install monitoring.
+
 \textbf{Test completition report}
 
 Testing performed: Checklist-based Testing
@@ -441,8 +453,8 @@ Lessons Learned: Future projects should be prepared for a high level of diversit
     Start & 2nd May \\ \hline
     End & 18th May \\ \hline
     Schedule & 2nd May: analysis and test report. \\ \hline
-    Revisions & 18th May: Rev No. 2 - added test case STC5. \\ \hline
-    & 19th May: Rev No. 3 - added test cases STC5 - STC10. \\ \hline
+    Revisions & 19th May: Rev No. 2 - added test case STC5. \\ \hline
+    & 19th May: Rev No. 3 - added test cases STC6 - STC10. \\ \hline
     & 19th May: Rev No. 3 - Snyk introduced \\ \hline
 }
 \n{2}{Test items}
@@ -457,7 +469,7 @@ Test items for the procedure were following:
 \n{2}{Test tools}
 Trivy security scaner version: 0.39.0, Vulnerability DB for all test cases except STC5 from 2nd May. Vulnerability DB for STC5 from 18th May.
 
-\n{2}{Test procedures}
+\n{2}{Test procedure}
 \begin{itemize}
     \item STC1 - Vulnerability analysis of PGO
     \item STC2 - Vulnerability analysis of CNPGO
@@ -474,7 +486,7 @@ Trivy security scaner version: 0.39.0, Vulnerability DB for all test cases excep
 \n{2}{Test completition report}
 Testing performed: Vulnerability analysis
 
-Deviations from planed testing: None
+Deviations from planed testing: Described in revisions.
 
 Test completion evaluation: The testing process was successful.
 
@@ -818,7 +830,7 @@ O - Operator
 % \obr{SPGO user interface}{fig:spgoUI15}{1}{graphics/monitoring/SPGO/spgo_ui15.png}
 
 
-\priloha{Test Plan No. 5}
+\priloha{Test Process No. 5}
 
 \tab{Test plan No. 5}{tab:testplan5}{1}{|l|l|}{
     \hline
@@ -826,7 +838,7 @@ O - Operator
     Revision & 1 \\ \hline
     Introducton & Performance analysis \\ \hline
     Test items & Operator deployed GKE in the cluster \\ \hline
-    Covered criteria  & C1 \\ \hline
+    Covered criteria  & CP \\ \hline
     Test type &	Dynamic \\ \hline
     Test approach &	Performance analysis \\ \hline
     Exit criteria & Completed analysis  \\ \hline
@@ -838,12 +850,10 @@ O - Operator
     Schedule &  9th May: analysis and test report. \\ \hline
 }
 
-
-\textbf{Test completition report}
-
+\n{2}{Test completition report}
 Testing performed: Performance analysis
 
-Deviations from planed testing: SPGO analysis too
+Deviations from planed testing: SPGO analysis took too long
 
 Test completion evaluation: None
 
@@ -851,10 +861,8 @@ Factors that blocked progress: Deploying SPGO proved challenging due to the fact
 
 Test Result Analysis: The tests provided valuable data about performanc of Postgres deployed by Operators.
 
-\textbf{Test results}
-
-PGO
-
+\n{2}{Test results}
+\n{3}{PGO}
 pgbench (15.2)
 
 starting vacuum...end.
@@ -939,7 +947,7 @@ initial connection time = 750.453 ms
 
 tps = 538.511794 (without initial connection time)
 
-CNPG
+\n{3}{CNPGO}
 
 pgbench (15.2)
 
@@ -1049,7 +1057,7 @@ pgbench: error: Run was aborted; the above results are incomplete.
 
 command terminated with exit code 2
 
-PPO
+\n{3}{PPO}
 
 pgbench (15.2, server 14.7 - Percona Distribution)
 
@@ -1135,7 +1143,7 @@ initial connection time = 574.644 ms
 
 tps = 387.793393 (without initial connection time)
 
-SPGO
+\n{3}{SPGO}
 
 pgbench (15.2, server 15.1 (OnGres 15.1-build-6.18))
 

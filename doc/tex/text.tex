@@ -22,6 +22,8 @@ TBD - Poděkování, motto
 
 TBD - adjust the test theory to test process
 
+TBD - create scales for evaluation
+
 TBD - navrhout doporučení, rozhodovací strom
 
 % ============================================================================ %
@@ -634,12 +636,79 @@ Complete results of Trivy and Snyk scans can be located in the thesis repository
 \n{2}{Dynamic test process}
 
 The dynamic test process was divided into two separate subprocesses, each with its own
-testing process.
+test plan.
 
 \n{3}{Environments}
+Two environments were leveraged for the dynamic test process, each designed for specific test types based on resource requirements:
+
+\begin{enumerate}
+    \item \textbf{Kind Kubernetes Cluster}: Kind is a tool that creates Kubernetes clusters within Docker, was used for less resource-intensive tests. This setup was run on a first-generation M1 MacBook Air equipped with 8GB of RAM and a 500GB disk, utilizing a specific Docker configuration.
+    \item \textbf{Google Kubernetes Engine (GKE)}: More resource-demanding tests, such as performance testing, were conducted on a robust Google Kubernetes Engine cluster, comprising three e2-standard-2 nodes. Each node was configured with 2 virtual CPUs and 8GB of RAM. Additionally, a standalone Postgres node with pgbench was deployed to this cluster for performance measurements.
+\end{enumerate}
+
+The configurations for Kind and the Terraform plans used for deploying the GKE cluster, as well as the commands used for both deployments, can be found in the repository directory located at \url{tests/environments}.
 
 \n{3}{Usability}
+
+\n{4}{Ease of use}
+\label{chap:easeOfUse}
+
+\n{4}{Monitoring}
+
+
 \n{3}{Performance}
+To measure the performance of the Postgres cluster, an Operator was deployed to the Kubernetes cluster. Subsequently, a Postgres cluster was established, consisting of three nodes (one primary and two replicas), along with three connection pooler instances.
+A simplified representation of this cluster configuration is depicted in Figure \ref{fig:testingGKEperformance}.
+
+\obr{Kubernetes performance setup}{fig:testingGKEperformance}{1}{graphics/performance_setup.png}
+
+
+For each Operator test, the Kubernetes cluster was recreated to ensure a clean starting point. A Postgres cluster with three nodes (one primary and two replicas) was deployed, along with three connection pooler instances.
+
+To standardize the setup across each cluster, configurations were calibrated in line with recommendations provided by the pgTune\footnote[7]{https://pgtune.leopard.in.ua} website. The adjusted settings were as follows:
+\begin{itemize}
+    \item max\_connections: 200
+    \item shared\_buffers: 1536MB
+    \item effective\_cache\_size: 4608MB
+    \item maintenance\_work\_mem: 384MB
+    \item checkpoint\_completion\_target: 0.9
+    \item wal\_buffers: 16MB
+    \item default\_statistics\_target: 100
+    \item random\_page\_cost: 4
+    \item effective\_io\_concurrency: 2
+    \item work\_mem: 3932kB
+    \item min\_wal\_size: 1GB
+    \item max\_wal\_size: 4GB
+\end{itemize}
+
+After the creation of the Postgres cluster, each cluster was tested using the pgBench tool, a PostgreSQL benchmarking utility. This tool was configured to execute 10,000 transactions across 25 concurrent clients and utilizing 10 threads. This benchmark was directed towards the Postgres cluster's pooler service. This procedure was replicated twice more for thoroughness.
+
+The results presented in Table \ref{tab:operatorPerformance} only display the transactions per second, as these offer a sufficient indication of the Operator's performance. For a comprehensive view of the results from this benchmark, along with the test process details, please refer to Appendix A VI.
+
+The commands executed throughout this procedure, along with the complete configuration of the operators, can be located in the \url{tests/performance} directory in the repository.
+
+\n{3}{Issues with CNPGO}
+CNPGO was the only one unable to execute 250,000 transactions in each run due to an error (client 6 script 0 aborted in command 4 query 0: FATAL: query wait timeout, SSL connection has been closed unexpectedly).
+This error usually occurs when a query takes too long to execute, leading to a timeout. The SSL connection is then closed unexpectedly, causing the transaction to fail. This might suggest that CNPGO is struggling with performance or network stability in this particular scenario.
+
+\n{3}{Issues with SPGO}
+The possible reason for SPGO's low transactions per second score is that a cluster profile is needed to deploy an SPGO cluster. When this profile was correctly set, Google Kubernetes Engine was unable to deploy the cluster. By gradually reducing these values, the available resources were eventually found, but these settings were probably too low for optimal performance (500m CPU and 2Gi RAM). Despite the cluster showing that it had more memory and CPU allocable, as may be seen in Figure \ref{fig:testingGKEnodes}, the reduced resource allocation might have constrained SPGO's performance.
+
+\n{3}{Issues with PPO}
+As mentioned in Chapter~\ref{chap:easeOfUse}, changes to PPO's configuration do not affect the cluster, therefore, the cluster was not modified during this test. This means that the performance results for PPO are based on its default configuration settings.
+
+
+\tab{Performance analysis}{tab:operatorTestPerformance}{1}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO \\ \hline
+    First run &	544.91 tps	& 403.70 tps	& 284.39 tps &	401.46 tps \\ \hline
+    Second run &	543.29 tps &	402.54 tps &	279.89 tps &	392.04 tps\\ \hline
+    Third run &	538.51 tps &	392.63 tps &	309.16 tps &	387.79 tps \\ \hline
+    Mean &	542.24 tps &	399.62 tps &	291.15 tps &	393.77 tps \\ \hline
+}
+
+\obr{GKE nodes details}{fig:testingGKEnodes}{1}{graphics/gke_nodes.png}
+
 
 \n{1}{Evaluation}
 
@@ -826,60 +895,23 @@ It can be derived that all operators, with the exception of SPGO, offer high-qua
 
 \n{2}{Performance}
 
-\obr{Kubernetes performance setup}{fig:testingGKEperformance}{1}{graphics/performance_setup.png}
+TBD - finish, write some deeper evaluation
 
-In order to perform performance testing, it was necessary to create a more robust cluster than the Kind cluster on MacBook Air. This was achieved by creating a Google Kubernetes Engine cluster with three e2-standard-2 nodes. Each node was equipped with 2 virtual CPUs and 8 GB of RAM. A standalone Postgres node with pgbench was also deployed to the cluster. A simplified version of this cluster is depicted in Figure \ref{fig:testingGKEperformance}. The Terraform plans for this deployment can be found in the \url{tests/environments/gke} repository directory.
-
-For each Operator test, the Kubernetes cluster was recreated to ensure a clean starting point. A Postgres cluster with three nodes (one primary and two replicas) was deployed, along with three connection pooler instances.
-
-Cluster configurations were also adjusted according to the recommendations from the pgTune website. The adjusted settings were as follows:
-\begin{itemize}
-    \item max\_connections: 200
-    \item shared\_buffers: 1536MB
-    \item effective\_cache\_size: 4608MB
-    \item maintenance\_work\_mem: 384MB
-    \item checkpoint\_completion\_target: 0.9
-    \item wal\_buffers: 16MB
-    \item default\_statistics\_target: 100
-    \item random\_page\_cost: 4
-    \item effective\_io\_concurrency: 2
-    \item work\_mem: 3932kB
-    \item min\_wal\_size: 1GB
-    \item max\_wal\_size: 4GB
-\end{itemize}
-
-This configuration was implemented to standardize each cluster configuration.
-
-After the deployment of the Postgres cluster, each Operator was tested using the pgBench tool, a PostgreSQL benchmarking utility. This tool was configured to execute 10,000 transactions across 25 concurrent clients and utilizing 10 threads. This benchmark was directed towards the Postgres cluster's pooler service. This procedure was replicated twice more for thoroughness.
-
-The results depicted in Table \ref{tab:operatorPerformance} only display the transactions per second, as these offer a sufficient indication of the operators' performance. For a comprehensive view of the results from this benchmark, along with the Test Completion Report, please refer to Appendix A VI.
-
-The commands executed throughout this procedure, along with the complete configuration of the operators, can be located in the \url{tests/performance} directory in the repository.
-
-\n{3}{Issues with CNPGO}
-CNPGO was the only one unable to execute 250,000 transactions in each run due to an error (client 6 script 0 aborted in command 4 query 0: FATAL: query wait timeout, SSL connection has been closed unexpectedly).
-This error usually occurs when a query takes too long to execute, leading to a timeout. The SSL connection is then closed unexpectedly, causing the transaction to fail. This might suggest that CNPGO is struggling with performance or network stability in this particular scenario.
-
-\n{3}{Issues with SPGO}
-The possible reason for SPGO's low transactions per second score is that a cluster profile is needed to deploy an SPGO cluster. When this profile was correctly set, Google Kubernetes Engine was unable to deploy the cluster. By gradually reducing these values, the available resources were eventually found, but these settings were probably too low for optimal performance (500m CPU and 2Gi RAM). Despite the cluster showing that it had more memory and CPU allocable, as may be seen in Figure \ref{fig:testingGKEnodes}, the reduced resource allocation might have constrained SPGO's performance.
-
-\n{3}{Issues with PPO}
-As described in Chapter~\ref{chap:testOperatbility}, changes to PPO's configuration do not affect the cluster, therefore, the cluster was not modified during this test. This means that the performance results for PPO are based on its default configuration settings.
+According to the results presented in Table \ref{tab:operatorTestPerformance} the most performant Operator PGO received a score of 100\% in this test, while the other operators were assigned scores proportionally based on their performance.
 
 
-\tab{Performance analysis}{tab:operatorPerformance}{1}{|l|l|l|l|l|}{
+% The results presented in Table \ref{tab:operatorTestPerformance}
+% The most performant Operator PGO received a score of 100\% in this test, while the other operators were assigned scores proportionally based on their performance.
+
+
+\tab{Operator's performance}{tab:operatorPerformance}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
-    First run &	544.91 tps	& 403.70 tps	& 284.39 tps &	401.46 tps \\ \hline
-    Second run &	543.29 tps &	402.54 tps &	279.89 tps &	392.04 tps\\ \hline
-    Third run &	538.51 tps &	392.63 tps &	309.16 tps &	387.79 tps \\ \hline
-    Mean &	542.24 tps &	399.62 tps &	291.15 tps &	393.77 tps \\ \hline  \hline
     Performance &	100\%	& 74\%	& 54\%	& 73\% \\ \hline
 }
 
-The most performant Operator PGO received a score of 100\% in this test, while the other operators were assigned scores proportionally based on their performance.
 
-\obr{GKE nodes details}{fig:testingGKEnodes}{1}{graphics/gke_nodes.png}
+
 
 
 \n{2}{Usability}
