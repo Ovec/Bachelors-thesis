@@ -6,12 +6,6 @@
 \nn{Introduction}
 It is essential for the database server to be as close as possible to the applications that are using it. This reduces the number of men in the middle between the database and the application, which reduces database access latency and thus reduces overall application latency and increases security. The mass migration of applications to Kubernetes clusters implies a necessary shift of Postgres to Kubernetes. This thesis defines Postgres, Kubernetes, and their operators. It then further describes the lifecycle of a Postgres cluster, and searches for operators capable of managing this lifecycle. It establishes metrics by which it tests and evaluates these operators.  The result of this thesis is the recommendation of a suitable operator based on the defined metrics.
 
-TBD - remove
-
-The cloud has made our work easier. We no longer have to physically connect new machines to the network, configure network connections, add disks, or even plug in virtual ones. Kubernetes, together with the cloud, can automatically allocate new resources for our applications and, thanks to operators, can even create entire database clusters with high availability. Thanks to operators, it can also automatically set up scaling or backups. It can even restore an entire database system from a backup. This paper is focused on Kubernetes operators for the popular Postgres database management system. Its goal is to find operators for Postgres. To evaluate their pros and cons. To test them and recommend the best one.
-
-TBD - remove end
-
 TBD - switch to Czech layout
 
 TBD - Motto
@@ -24,9 +18,6 @@ TBD - adjust the test theory to test process
 
 TBD - describe tools
 
-TBD - create scales for evaluation
-
-TBD - navrhout doporučení, rozhodovací strom
 
 % ============================================================================ %
 \cast{Theory}
@@ -34,8 +25,6 @@ TBD - navrhout doporučení, rozhodovací strom
 \n{1}{Background}
 This chapter introduces the key technologies used in this thesis including Postgres, Kubernetes, and Kubernetes operators.
 \n{2}{Postgres}
-TBD: Connect image with text
-
 PostgreSQL is a powerful object-relational database management system (ORDBMS) derived from the POSTGRES package written at the University of California at Berkeley. \cite{docuPgwhatIsPg} \cite{pg14introduction} The first version of POSTGRES was released in June 1989. POSTGRES has been used in many applications, including financial data analysis systems, asteroid tracking databases, medical information database, and several geographic information systems. The size of external community users has nearly doubled by 1993. \cite{docuPgBriefHistory}
 
 POSTGRES was using its POSTQUEL query language from version, until Andrew Yu and Jolly Chen introduced SQL to POSTGRES in 1995. The name has changed to Postgres95. Postgres95 was completely ANSI C code reduced by 25 \% and was 30 – 50 \% faster than Postgres 4.2.  \cite{docuPgBriefHistory}
@@ -48,27 +37,22 @@ More than 30 years after the first version Postgres has been considered the most
 
 
 \n{3}{Write Ahead Log}
-Write-ahead Logging (WAL) used by Postgres is a standard technique to ensure data integrity. Its main concept is that changes in data files (where tables and indexes are stored) must only be written after they are logged (saved to a log file). That means the database is updated after the changes are written to disk. In the event of a system crash, all transactions will be recovered from the disk. \cite{docuPgWal}
+Write-ahead Logging (WAL) is esential Postgres technique to ensure data integrity. Its main concept is that changes in data files (where tables and indexes are stored) must only be written after they are logged (saved to a log file). That means the database is updated after the changes are written to disk. In the event of a system crash, all transactions will be recovered from the disk. \cite{docuPgWal}
 
 Although WAL is primarily designed for recovery after a database server crash, its design also allows any changes to the database server state to be replayed backward. A copy of the log is also a form of backup. Thus, for recovery to a point in time, only logs that have been saved to that point in time can be restored. This technique is called Point-In-Time Recovery (PITR). \cite{DocuPgPITR} These log files can also be streamed to other nodes to serve as a replica or remote backup. \cite{pg14replication}
-
-TBD: describe synchronous and asynchronus replication
 
 \n{3}{Backup and restore}
 A full set of backup commands is included in Postgres. Among the simple backup commands are pg\_dump and pg\_dumpall, which enable one or more databases to be saved in SQL format. A wide range of configuration options are available for these commands, including compression for large databases or exporting only the database schema. To restore a database from a file at a later time, the psql command can be used, which is capable of restoring a database from its dump. \cite{DocuPgDump} These commands are also helpful with migration from one major Postges version to another because the dumped files are plain SQL commands.
 
-The backup options in Postgres are quite limited. Postgres allows to set up of a backup command that runs after the next log file is created, database dumps, and log streaming. For more advanced backup techniques, additional software such as PgBackRest must be used. \cite{DocuPgPITR}
+However the backup options in Postgres are quite limited. Postgres allows to set up of a backup command that runs after the next log file is created, database dumps, and log streaming. For more advanced backup techniques, like scheduled backup or cloud backup, additional software such as PgBackRest must be utilized. \cite{DocuPgPITR}
 
 \n{4}{PgBackRest}
 PgBackRest is a reliable and simple backup and restore solution that provides many features on top of classic Postgres backup and restore tools like parallel backup options with compression, local or remote backups, cloud backup (S3. Azure and Google Cloud), or backup encryption. Full, incremental, or differential backup is also supported. \cite{PGbackRest}
 
-TBD: why is it here? Conect to crunhy and operatores
-
-
 \n{3}{High Availability}
 The basic structure of a database cluster consists of one or more database servers, which can be called nodes. In Postgres there are two types of nodes, Primary node and Standby node.  A Primary node is such a node that allows reading and writing information. The newly written information is then streamed to the Standby nodes. Standby nodes are read-only, they do not allow writing. \cite{pg14replication}
 
-Achieving high availability with Postgres is possible by using more than one node in the cluster. Two options are possible here. A single Primary node option, where the Primary node is read and write enabled, and the other nodes are Standby nodes. If the Primary node is unavailable, then the Standby node is promoted to the Primary node. This event is called failover. In this variant, the Primary node streams the logs to the Standby nodes. The second option is to use multiple Primary nodes. However, conflicts can occur because all Primary nodes allow concurrent writes. \cite{docuPgHA}
+Achieving high availability with Postgres is possible by using more than one node in the cluster. Two options are possible here. A single Primary node option, where the Primary node is read and write enabled, and the other nodes are Standby nodes. If the Primary node is unavailable, then the Standby node is promoted to the Primary node. If this event is planned it is called a switchover event, otherwise it is a failover. In this variant, the Primary node streams the logs to the Standby nodes. The second option is to use multiple Primary nodes. However, conflicts can occur because all Primary nodes allow concurrent writes. \cite{docuPgHA}
 \n{4}{Patroni}
 Since Postgres does not provide any software that can detect that a node is unavailable, it is necessary to use software outside of Postgres \cite{docuPgFailover}, such as Patroni.
 Patroni is a popular open-source tool created by Zalando to achieve high availability of Postgres clusters. Patroni uses a distributed configuration source such as ZooKeeper, Etcd, Consul, or Kubernetes for its operation. Patroni can automatically adjust the settings of all managed nodes, therefore it can automate failover and make it seamless. \cite{PalarkMigratingPg} \cite{PatroniDocu}
@@ -113,12 +97,11 @@ Node components in a Kubernetes cluster run on each node and provide crucial fun
 
 \n{3}{Kubernetes Concepts}
 \label{chap:kubeConcepts}
-\textcolor{cyan}{RepliceSet extension - operators p. 28 (Replica is general and appllication agnostic) }
 
 Pod is the smallest deployable unit that can be created in Kubernetes. \cite{docuKubePods} A Pod in Kubernetes is comprised of multiple containers and storage volumes that are run together within the same execution environment. As a result, all containers included in a single Pod will always run on the same machine. \cite{kubeUpAndRunningPods}
 A Pod's specifications are outlined in a Pod manifest, which is simply a JSON or YAML text file that represents the Kubernetes API object. Kubernetes follows a declarative configuration approach, where the system's desired state is defined in a configuration file, and the service then implements the necessary changes to make the desired state a reality. \cite{docuKubeStaticPod}
 
-ReplicaSet’s purpose is to ensure a consistent number of replica Pods are running at all times. It is commonly used to guarantee a specified number of identical Pods are available. However, a Deployment is a more advanced concept that oversees ReplicaSets and provides a more streamlined way to make updates to Pods. It also offers additional features. As a result, it's advisable to use Deployments instead of directly utilizing ReplicaSets, unless you have specific update requirements or don't need to make updates at all. \cite{docuKubeReplicaset}
+ReplicaSet's purpose is to ensure a consistent number of replica Pods are running at all times. It is commonly used to guarantee a specified number of identical Pods are available. However, a Deployment is a more advanced concept that oversees ReplicaSets and provides a more streamlined way to make updates to Pods. It also offers additional features. As a result, it's advisable to use Deployments instead of directly utilizing ReplicaSets, unless there is a need for specific update requirements or no need for updates at all. \cite{docuKubeReplicaset}
 
 Service is an abstraction layer and defines a group of Pods and the method to access them (often referred to as a micro-service). The group of Pods targeted by a Service is usually specified through a selector. The Service abstraction makes this possible by enabling the decoupling of components. \cite{docuKubeSevice} Kubernetes includes built-in service discovery mechanisms. When a service is created in Kubernetes, it is automatically assigned an IP address and DNS name. Clients and other services can use this name or address to access the service within the Kubernetes cluster. \cite{docuKubeSevice}
 
@@ -134,17 +117,9 @@ However, to work with CR, custom controllers that can work with these resources 
 
 \obr{Kubernetes controller \cite{operatorWhitepaper} }{}{1}{graphics/Kubernetes_controller.png}
 
-\textcolor{red}{TBD - show that Kubernetes can run stateless very well, maybe from operator book}
-
-
-\textcolor{cyan}{TBD - Read https://containerjournal.com/kubecon-cnc-eu-2022/why-run-postgres-in-Kubernetes/}
-
-\textcolor{cyan}{TBD - Read data on Kubernetes https://dok.community/dokc-2021-report/}
-
-
 \n{2}{Running Postgres in Kubernetes}
 \label{chap:postgresInKube}
-Kubernetes cannot know all complex stateful applications, which can contain a large number of nodes and have a wide range of uses while remaining general-purpose. The goal of Kubernetes is to provide an abstraction covering basic application concepts and providing options for extensions for more complex applications and their specific operations. Kubernetes cannot and should not know all the possible settings and operations that, for example, a Postgres cluster needs to run. \cite{operatorsTeaches}
+Due to its universality Kubernetes cannot know all complex stateful applications, which can contain a large number of nodes and have a wide range of uses while remaining general-purpose. The goal of Kubernetes is to provide an abstraction covering basic application concepts and providing options for extensions for more complex applications and their specific operations. Kubernetes cannot and should not know all the possible settings and operations that, for example, a Postgres cluster needs to run. \cite{operatorsTeaches}
 
 The easiest way to run Postgres in Kubernetes is through the StatefulSet just mentioned. This StatefulSet can start a Postgres pod, create a persistent volume, and connect this volume to the pod. A stateful set can do this for all replicas set in its configuration. It can also scale up or down. Unfortunately, however, all independent Postgres instances created by StatefulSet controller are not synchronized in any manner.
 
@@ -399,22 +374,22 @@ Kubernetes?'" According to Tom Gilb \cite{gilb1988principles}, the main issue in
 Performance is a qualitative parameter of a system, defined by the efficiency with which the system utilizes allocated resources. In the case of Postgres, performance can be expressed as the number of transactions executed per unit of time. A higher transaction rate is indicative of superior performance.
 \n{2}{Reliability}
 Reliability is a qualitative parameter that determines the degree of system dependability. If a system cannot be relied upon, it cannot be utilized effectively. Therefore, reliability is a critical parameter of any system.
-\n{3}{Maturity}
-Maturity in the context of software refers to the degree to which a system is fully developed, perfected and reliable. A mature system is typically characterized by stability, reliability, robustness, and well-defined, predictable behavior based on its previous operation and iterations.
+% \n{3}{Maturity}
+% Maturity in the context of software refers to the degree to which a system is fully developed, perfected and reliable. A mature system is typically characterized by stability, reliability, robustness, and well-defined, predictable behavior based on its previous operation and iterations.
 \n{2}{Usability}
 Usability is a key aspect of software design that focuses on user experience. It refers to the ability of a system to achieve certain goals for certain users in a particular context of use.
-\n{3}{Learnability}
-How easy it is for users to learn how to use the system.
-\n{3}{Operability}
-How easy is it for users to successfully use the system.
+% % \n{3}{Learnability}
+% How easy it is for users to learn how to use the system.
+% \n{3}{Operability}
+% How easy is it for users to successfully use the system.
 \n{2}{Maintenance}
 Activities that are performed after the software is deployed to ensure its correct functionality and performance. Maintenance may include bug fixes, adding new features, performance optimization, updates for compatibility with new systems, etc. Ignoring software maintenance can lead to increased repair costs and reduced system performance over time. Additionally, it can cause system instability, increased vulnerability to security threats, and eventually, potential system failure.
-\n{3}{Renewal}
-Renewal is considered a crucial aspect of software maintenance, playing a significant role in maintaining the relevance of a software system over time. Essentially, this process ensures that the software is consistently updated to align with current standards and technologies.
+% \n{3}{Renewal}
+% Renewal is considered a crucial aspect of software maintenance, playing a significant role in maintaining the relevance of a software system over time. Essentially, this process ensures that the software is consistently updated to align with current standards and technologies.
 \n{2}{Security}
 Security refers to the measures, practices, and technologies employed to protect the system and its data from threats and attacks.
-\n{3}{Vulnerabilities}
-Vulnerability refers to a weakness in a system that can be exploited by a threat actor, such as a hacker, to perform unauthorized actions within a computer system. This can involve gaining access to the system's features and data, or disrupting the system's normal functioning.
+% \n{3}{Vulnerabilities}
+% Vulnerability refers to a weakness in a system that can be exploited by a threat actor, such as a hacker, to perform unauthorized actions within a computer system. This can involve gaining access to the system's features and data, or disrupting the system's normal functioning.
 
 
 \n{1}{Testing methodology}
@@ -439,25 +414,81 @@ Therefore, the test process derived from this methodology as every test process 
 Operators available for Postgres lifecycle management the main scope of this methodology is to deliver test process that will produce test reports that will form the base for this evaluation.
 
 \n{2}{Criteria}
-The following criteria described in Chapter \ref{chap:metrics} will be subjected to testing. These criteria should provide a solid basis for the decision-making process. To keep track of these criteria, each one has been assigned an ID. The list of identified criteria is as follows:
+Some criteria are well measurable on their own, while others require further breakdown into multiple sub-criteria in order to obtain data. The criteria have been divided according to Figure \ref{fig:criteriaDivision}.
+
+\obr{Criteria division}{fig:criteriaDivision}{1}{graphics/test_methodology-2.png}
+% The following criteria described in Chapter \ref{chap:metrics} will be subjected to testing. These criteria should provide a solid basis for the decision-making process. 
+To keep track of these criteria, each one has been assigned an ID. The list of identified criteria is as follows:
 
 \begin{itemize}
     \item	CP: Performance
+          \begin{itemize}
+              \item	CP1: Performance analysis
+          \end{itemize}
     \item	CR: Reliability
           \begin{itemize}
               \item	CR1: Maturity
+                    \begin{itemize}
+                        \item	CR1A: Popularity
+                        \item	CR1B: Fixed issues
+                    \end{itemize}
           \end{itemize}
     \item	CU: Usability
           \begin{itemize}
               \item	CU1: Learnability
+                    \begin{itemize}
+                        \item	CU1A: Documentation examples
+                        \item	CU1B: Required training
+                    \end{itemize}
+
               \item  CU2: Operability
+                    \begin{itemize}
+                        \item	CU2A: Ease of use
+                        \item	CU2B: Monitoring
+                    \end{itemize}
           \end{itemize}
     \item	CM: Maintenance
           \begin{itemize}
               \item	CM1: Renewal
           \end{itemize}
     \item	CS: Security
+          \begin{itemize}
+              \item	CS1: Vulnerability analysis
+          \end{itemize}
 \end{itemize}
+
+\n{3}{Performance testing}
+Performance testing must be conducted using performance analysis. To test the performance, an environment must be set up in which the deployed operator creates a high-availability (HA) Postgres cluster consisting of three nodes.
+The test environment must be recreated for each operator being evaluated. Additionally, an equal number of pooler nodes must be created. It is essential that the settings of all Postgres clusters are the same, and only the HA service cluster must be tested.
+The performance tests must be carried out at least three times to ensure accurate and reliable results.
+
+\n{3}{Reliability testing}
+Reliability must be tested through operator maturity testing.
+\n{4}{Maturity testing}
+Determining the maturity of operators must be done by assessing their popularity. Popularity can serve as an indicator of maturity because widespread recognition and usage of a product often imply reliability, efficiency, and the ability to meet user requirements. Popularity will be determined by considering the number of stars in the operators' repositories.
+
+Furthermore, the ratio of the number of open issues to the number of resolved issues will be examined. This data will also be gathered from the operators' repositories.
+
+By considering both popularity and the ratio of resolved issues, valuable insights can be gained regarding the maturity level of the operators.
+
+\n{3}{Usability testing}
+Usability must be tested through operator learnability testing and operability testing.
+
+\n{4}{Learnability testing}
+To determine the learnability of operators, a list of Postgres lifecycle events must be created, and the operator documentation must be examined to ensure that it provides examples for each Postgres lifecycle event. Throughout this process, the number of tools required to successfully use the operator must be recorded to determine the level of training needed.
+
+Learnability testing, which is a crucial aspect of usability testing, must be conducted to assess the ease with which new users can understand and use the operator. The testing aims to achieve two primary objectives. Firstly, it must identify the presence of examples in the documentation, as learning facilitated by examples is generally more effective. Secondly, it must gauge the level of learning required to operate the system effectively.
+
+By conducting thorough learnability testing, valuable insights can be obtained regarding the user-friendliness and accessibility of the operators, contributing to the overall evaluation of their usability.
+
+\n{4}{Operability testing}
+To test the operability of the operator, the testing methodology involves creating use cases derived from the Postgres lifecycle, developing corresponding test cases for these use cases, and determining the number of commands necessary to accomplish the desired functionality. Additionally, a comprehensive list of required monitoring items must be compiled, and the test case incorporating monitoring activities assesses whether the operator's monitoring adequately encompasses these items. This comprehensive approach ensures that the operability of the operator is thoroughly assessed, taking into account its functionality, and monitoring capabilities.
+
+\n{3}{Maintenance testing}
+Maintenance testing must be performed by measuring the number of commits in the operator's repository. The ratio of these commits to the number of days since the repository was created must be determined. This approach is necessary to calculate the number of commits per unit of time, which is crucial in assessing the rate at which the software is being renewed.
+
+\n{3}{Security testing}
+Security testing must be conducted by analyzing the vulnerability of the docker image for each individual operator. As the overall cluster comprises multiple docker containers with various dependencies such as Postgres, pooling, backups, etc., to streamline the testing process, only the operator image will be subjected to vulnerability analysis. This approach allows focusing on the specific security aspects of the operator without testing the dependencies separately.
 
 
 \n{2}{Test management process}
@@ -837,12 +868,6 @@ This included the popularity of the operators, the number of issues they had, an
 The maturity was then determined based on the popularity of the operators and the ratio of resolved issues.
 
 \n{4}{Popularity}
-TBD - (start) move this to methodology
-
-Popularity can be considered an indicator of maturity because broad recognition and use of a product often suggest that the product is reliable, efficient, and capable of meeting user requirements. In the context of software, popular software tends to be more thoroughly tested, leading to the identification and correction of bugs, and therefore greater stability and maturity.
-
-TBD - (end) move this to methodology
-
 After examining the popularity by the number of stars, it is clear that PGO far exceeds the others (results presented in Table \ref{tab:operatorMaturity}). In contrast, CNPGO shows much lower popularity.
 The remaining operators show marginal levels of popularity to the level of popularity that PGO or CNPGO have received.
 If the ranking were based solely on a popularity contest, PGO would clearly win. However, the evaluation requires a more comprehensive examination beyond simply measuring popularity.
@@ -854,12 +879,6 @@ If the ranking were based solely on a popularity contest, PGO would clearly win.
 }
 
 \n{4}{Fixed issues}
-TBD - (start) move this to methodology
-
-The number of issues resolved is often considered a sign of a software project's maturity, as it indicates that the developers are actively maintaining the software, responding to user feedback, and fixing problems as they arise. A high number of resolved issues indicates that the project has faced and overcome challenges, which may indicate that the software has been "battle tested" and improved over time.
-
-TBD - (end) move this to methodology
-
 As presented in Table \ref{tab:operatorMaturity}, PGO, CNPGO, and PPO are shown to have resolved a significant number of issues, with PGO registering the highest ratio of fixed issues. On the other hand, despite being less popular and more recent than PGO, SPGO has a larger number of reported issues, many of which remain unresolved (445 in total). This might suggest that the development of SPGO is still in progress.
 \tab{Operators issues}{tab:operatorIssues}{1}{|l|l|l|l|l|}{
     \hline
@@ -885,12 +904,6 @@ The results for CNPGO are good, while those for SPGO and PPO can be regarded as 
 
 \n{3}{Maintenance}
 \n{4}{Renewal}
-TBD - (start) move this to methodology
-
-Software renewal, a key aspect of software maintenance, is often essential to ensure that the software continues to be effective and efficient in light of changing user needs, technological progress, and evolving industry standards. Commits to the repository represent incremental changes in the project. Therefore, the number of commits per unit of time indicates the rate at which the software is being renewed.
-
-TBD - (end) move this to methodology
-
 The overall renewal rate of the operators, as presented in Table \ref{tab:operatorRenewal}, was calculated based on the number of commits since the repository's creation date. SPGO achieved the highest average ratio of commits per day, at 5.03.
 
 Interestingly, this contrasts with the operator Fixed Issues, where SPGO scored the lowest, suggesting that it is still in the development stage.

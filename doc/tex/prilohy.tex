@@ -45,8 +45,8 @@
               \item Degree of independence: No connection between tested Operators and tester. Tester is fully independent.
               \item Metrics to be collected:
                     \begin{itemize}
-                        \item Static testing: Vulnerability analysis (number of vulnerabilities and their severity), Repository review (sum of issues, sum of repaired issues, sum of stars, sum of commits), Documentation review (examples, training needed),
-                        \item Dynamic testing:  Sum of passed, ignored and failed tests. Performance described by transactions per second.
+                        \item Static testing: Vulnerability analysis (number of vulnerabilities and their severity), Repository review (sum of issues, sum of repaired issues, sum of stars, sum of commits, repository creation date), Documentation review (examples, training needed),
+                        \item Dynamic testing:  The sum of the commands required to achieve functionality. Covered monitoring. Performance described by transactions per second.
                     \end{itemize}
               \item Test data requirements:
                     \begin{itemize}
@@ -533,7 +533,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Operator installation}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCA1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Prepared Kubernetes cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -547,7 +547,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Basic cluster creation}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCA2}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -562,7 +562,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Monitoring installation}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCC1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A, CU2B}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -576,7 +576,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Vertical scaling}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCD1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -590,7 +590,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Horizontal scaling}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCE1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -604,7 +604,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Connection pooling}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCF1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -618,7 +618,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Configuration update - extension installation}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCG1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -632,7 +632,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Configuration update - connections increase}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCG2}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator, created cluster, installed pooler}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -646,7 +646,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Configuration update - max wal size}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCG3}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -660,7 +660,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Cluster scheduled backup}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCH1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -675,7 +675,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Cluster ad-hoc backup}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCH2}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -689,7 +689,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Cluster restore}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCI1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created backup}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -703,7 +703,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Minor upgrade}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCJ1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created lower minor version cluster. }                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -718,7 +718,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Major upgrade}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCK1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created lower major version cluster. }                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -733,7 +733,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Operator uninstallation}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCL1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
@@ -747,7 +747,7 @@ O - Operator
     \hline
     Use case name  & \multicolumn{2}{|l|}{Cluster uninstallation}  \\ \hline
     Use case ID  & \multicolumn{2}{|l|}{UCM1}  \\ \hline
-    Traceability & \multicolumn{2}{|l|}{CU2}                                                   \\ \hline
+    Traceability & \multicolumn{2}{|l|}{CU2A}                                                   \\ \hline
     Precondition & \multicolumn{2}{|l|}{Installed Operator and created cluster}                                                    \\ \hline
     \multicolumn{3}{|l|}{Scenario}                                                 \\ \hline
     Step No.     & Actor                       & Description                                          \\ \hline
