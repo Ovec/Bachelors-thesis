@@ -62,6 +62,7 @@ Patroni is a popular open-source tool created by Zalando to achieve high availab
 Using more than one node allows to direct traffic to a node that is less busy and thus achieve load balancing. Postgres doesn't come with any software that allows splitting the load on different nodes, so it is necessary to use an external load balancer such as HA Proxy or pgBouncer. The load balancer then acts as an intermediary between the database and the client and directs the traffic to the available nodes according to the set rules. These load balancers also enable connection pooling which is a technique for managing and reusing database connections to increase performance and reduce overhead. Connection pooling involves creating a pool of pre-created connections that can be shared and reused by multiple client requests, instead of creating a new connection for each request. This removes the overhead of creating a new process each time a client connects to Postgres and allows the client to use resources that would otherwise be used to service multiple requests (or complete them faster). \cite{PerconaBlogConnectionPooling}
 
 \n{2}{Kubernetes}
+\label{chap:kubernetes}
 Kubernetes, also known as K8s, is an open-source platform for automating deployment, scaling, and management of containerized applications. It provides a way to manage and orchestrate containers, which are units of software that package up an application and its dependencies into a single, isolated package that can run consistently on any infrastructure. \cite{vayghan2019Kubernetes}
 
 As described by Kubernetes Documentation \cite{docuKubeComponents} Kubernetes provides several key features, including:
@@ -119,21 +120,25 @@ However, to work with CR, custom controllers that can work with these resources 
 
 \n{2}{Running Postgres in Kubernetes}
 \label{chap:postgresInKube}
-Due to its universality Kubernetes cannot know all complex stateful applications, which can contain a large number of nodes and have a wide range of uses while remaining general-purpose. The goal of Kubernetes is to provide an abstraction covering basic application concepts and providing options for extensions for more complex applications and their specific operations. Kubernetes cannot and should not know all the possible settings and operations that, for example, a Postgres cluster needs to run. \cite{operatorsTeaches}
+Kubernetes cannot know all complex stateful applications, which can contain a large number of nodes and have a wide range of uses while remaining general-purpose.
+The goal of Kubernetes is to provide an abstraction covering basic application concepts and providing options for extensions for more complex applications and their specific operations.
+Kubernetes cannot and should not know all the possible settings and operations that, for example, a Postgres cluster needs to run. \cite{operatorsTeaches}
 
-The easiest way to run Postgres in Kubernetes is through the StatefulSet just mentioned. This StatefulSet can start a Postgres pod, create a persistent volume, and connect this volume to the pod. A stateful set can do this for all replicas set in its configuration. It can also scale up or down. Unfortunately, however, all independent Postgres instances created by StatefulSet controller are not synchronized in any manner.
+The easiest way to run Postgres in Kubernetes is through the StatefulSet mentioned in Chapter \ref{chap:kubeComponents}. This StatefulSet can start a Postgres pod, create a persistent volume, and connect this volume to the pod. A stateful set can do this for all replicas set in its configuration. It can also scale up or down. Unfortunately, however, all independent Postgres instances created by StatefulSet controller are not synchronized in any manner.
 
-This basic setup may be sufficient for running a single node, but it is no longer sufficient fro managing the whole Postgres lifecycle. For managing whole Postgres lifecycle it is necessary to install other applications in the Kubernetes cluster and then configure the entire Postgres cluster to work with them. This represents a large amount of work and subsequent maintenance that Kubernetes operators can facilitate.
+While this simple approach may be sufficient for running a single node, it is no longer sufficient for managing the whole Postgres lifecycle.
+For managing whole Postgres lifecycle it is necessary to install additional applications in the Kubernetes cluster and then configure the Postgres to work with them. This represents a large amount of work and subsequent maintenance that Kubernetes operators can facilitate.
 
-\n{2}{Database System Lifecycle}
+\n{2}{Database system lifecycle}
 \label{chap:lifecycle}
-The database system itself is a software like any other. It is therefore also subject to the same life cycle as software.
-As depicted in figure \ref{fig:applifecycle} application lifecycle consists of three main parts. It is the governance part, development, and operations. For this thesis, only the operations part is relevant because it is the only part we are able to control.
-\obr{Application Life Cycle \cite{ALM}}{fig:applifecycle}{1}{graphics/aplication-lifecycle.png}
+The database system itself is a software like any other. It is therefore also subject to the same lifecycle as software.
+As depicted in figure \ref{fig:applifecycle} application lifecycle consists of three main parts. It is the governance part, development, and operations.
+For this thesis, the focus will be specifically on the operations part, as it is the only controllable aspect considered for testing and evaluation.
+\obr{Application Lifecycle \cite{ALM}}{fig:applifecycle}{1}{graphics/aplication-lifecycle.png}
 
 Operation is the process of running and managing the application, which starts with deployment and continues until the application is taken out of service. This aspect of the application lifecycle management covers the release of the application into production, ongoing monitoring, and other related tasks. \cite{ALM}
 
-Therefore the complete database life cycle can be outlined by following events:
+Therefore the complete database system lifecycle can be outlined by following events:
 \begin{itemize}
     \item System installation
     \item System upgrade to a newer version (major and minor)
@@ -148,10 +153,9 @@ Therefore the complete database life cycle can be outlined by following events:
 \pagebreak
 \n{2}{Operators}
 \label{chap:operators}
-As described in chapter~\ref{chap:postgresInKube}, Kubernetes can run stateless applications very well. But its general purpose makes running complex stateful applications on top of it quite challenging.
+Kubernetes can run stateless applications very well. But its general purpose makes running complex stateful applications on top of it quite challenging.
 
-
-This has changed in 2016 when CoreOS came up with operators as a way to deploy complex applications with state such as databases, caches, or monitoring systems. \cite{IArchiveCOSoperators}
+However, this has changed in 2016 when CoreOS came up with operators as a way to deploy complex applications with state such as databases, caches, or monitoring systems. \cite{IArchiveCOSoperators}
 
 An operator is a special kind of software that extends the Kubernetes API and has a particular knowledge of managed resource that Kubernetes does not have. The operator also serves as a packaging mechanism for distributing applications including their dependencies in Kubernetes. The operator can manage, restore, update or monitor the resource. It can also manage very complex applications. The Kubernetes operator thus replaces the human operator after which it is named, who would otherwise take care of these tasks. \cite{operatorsPreface} \cite{IArchiveCOSoperators}
 
@@ -169,14 +173,14 @@ As described by operator White Paper \cite{operatorWhitepaper} and depicted in f
 
 \obr{Operator pattern \cite{operatorWhitepaper} }{fig:operatorPatern}{1}{graphics/operator_patern.png}
 
-Like human operators, Kubernetes operators can have a level of manual skill ranging from basic software installation and setup skills to a high level where they can scale software vertically or horizontally to automatically change the configuration or detect abnormalities. All operator maturity levels are depicted in the figure \ref{fig:operatorCapabilities}. The highest level can only be reached by programming the operator in the GO programming language or by using the Ansible automation tool. \cite{operatorsOframework}
+Like human operators, Kubernetes operators can have a level of manual skill ranging from basic software installation and setup skills to a high level where they can scale software vertically or horizontally to automatically change the configuration or detect abnormalities. All operator maturity levels are depicted in the Figure \ref{fig:operatorCapabilities}. The highest level can only be reached by programming the operator in the GO programming language or by using the Ansible automation tool. \cite{operatorsOframework}
 
 \obr{Operator maturity levels described by Operator Framework \cite{OFrameworkMaturity}}{fig:operatorCapabilities}{1}{graphics/operator_capabilities.png}
 
-As stated in the Operator white paper, \cite{operatorWhitepaper} the operator should be able to cover the complete life cycle of the managed resource as defined in the previous chapter without the need for external installation or upgrade intervention. Specifically as follows:
+As stated in the Operator white paper, \cite{operatorWhitepaper} the operator should be able to cover the complete lifecycle of the managed resource as defined in the previous chapter without the need for external installation or upgrade intervention. Specifically as follows:
 \begin{itemize}
     \item Install or take ownership of the controlled application.
-    \item Upgrade the managed application, including the monitoring of the upgrade process. It should also be able to roll back in case of failure. He should record the status of the upgrade.
+    \item Upgrade the managed application, including the monitoring of the upgrade process. It should also be able to roll back in case of failure.
     \item Back up the managed application and log when the application was last backed up and the status of that backup.
     \item Restore the application from the backup.
     \item Provide monitoring of the managed application.
@@ -185,11 +189,11 @@ As stated in the Operator white paper, \cite{operatorWhitepaper} the operator sh
     \item Uninstall or disconnect from the application.
 \end{itemize}
 
-These are all capabilities that an operator should have at the highest level No. 5 - Autopilot. For lifecycle management described in previous chapter, the minimum level of operator capabilities must be at least level No. 4 - Deep Insights with an option to scale.
+These are all capabilities that an operator should have at the highest level No. 5 - Autopilot. For lifecycle management described in Chapter \ref{chap:lifecycle}, the minimum level of operator capabilities must be at least level No. 4 - Deep Insights with an option to scale.
 
 The Kubernetes cluster is divided into individual namespaces that separate the objects and names in the cluster and can have constraints applied to them. This partitioning makes it easier to share the cluster between users or entire teams. The object name must be unique within a namespace, but not between namespaces.  An operator usually operates in its own namespace so it has a Namespace Scope, but it can also operate in the whole cluster in which case it will be a Cluster Scope operator. Namespace Scope operators are more flexible and easier to upgrade due to their independence from the rest of the cluster. Operator rights are further restricted by the so-called Role-Based Acceess Control (RBAC), which grants the rights assigned to the operator. \cite{ operatorsAtK8sIface}
 
-The following options are advised by the Operator white paper \cite{operatorWhitepaper} in case the operator is to be used for controlling the resource:
+The following options are advised by the Operator white paper \cite{operatorWhitepaper} in case the operator is to be used for managing the resource:
 \begin{itemize}
     \item	Consultation with the creator of the resource to be controlled about the possibilities of using the operator.
     \item	The search for public operator registries that provide a platform for publishing operators and the underlying documentation.
@@ -200,15 +204,15 @@ The following options are advised by the Operator white paper \cite{operatorWhit
 \label{chap:objectives}
 The objective of this thesis is to conduct an extensive evaluation of various Kubernetes operators available for Postgres lifecycle management.
 
-The ultimate aim is to provide clear and comprehensive recommendations on which operators are best suited to meet different stakeholder needs and preferences. This thesis intends to serve as a valuable resource that can guide stakeholders in making informed decisions about choosing the right operator for their specific operational context and requirements.
+The ultimate goal of the thesis is to deliver clear and comprehensive recommendations regarding the selection of operators that are best suited for managing the lifecycle of Postgres system based on defined metrics. This thesis intends to serve as a valuable resource that can guide stakeholders in making informed decisions about choosing the right operator for their specific operational context and requirements.
 
 Furthermore, it aims to contribute to the broader knowledge base about Kubernetes operators and their application in managing Postgres databases in a cloud-native environment.
 
 
 \n{1}{Resource questions}
-\label{chap:resoourceQuestions}
-Having defined the thesis objective and established a thorough understanding of PostgreSQL, Kubernetes, the PostgreSQL lifecycle, and operators in previous chapters, we are now in a position to formulate research questions.
-These questions are designed to enable a deeper exploration into the complexities of managing Postgres in a Kubernetes environment via operators.
+\label{chap:resourceQuestions}
+With the thesis objective defined and a comprehensive understanding of Postgres, Kubernetes, the Postgres lifecycle, and operators established in previous chapters, the research questions can now be formulated.
+These questions are aimed at facilitating a deeper exploration of the intricacies involved in managing Postgres in a Kubernetes environment through the use of operators.
 
 \begin{enumerate}
     \item What operators exist for lifecycle management of Postgres in Kubernetes?
@@ -222,11 +226,11 @@ These questions are designed to enable a deeper exploration into the complexitie
 This chapter aims to answer the first research question: 'What operators exist for lifecycle management of Postgres in Kubernetes?'"
 As recommended in chapter~\ref{chap:operators} the selection of the operator should first be consulted with the manufacturer of the controlled source. Postgres offers the following Kubernetes operators in its software catalog \cite{docuPgSwCatalogue}: CloudNativePG, EDB Postgres for Kubernetes a Kubegres.
 
-The next step involved a search of the operators' registers. In particular the Operator Hub. \cite{operatorHubPGSearch} Operator Hub presents nine operators with varying levels of capabilities, including Crunchy Postgres for Kubernetes by Crunchy Data, EDB Postgres for Kubernetes by EnterpriseDB Corporation, Ext Postgres Operator by movetokube.com, Percona Operator for PostgreSQL by Percona, Postgres-Operator by Zalando SE, Postgresql Operator by Openlabs, PostgreSQL Operator by Dev4Ddevs.com and StackGres by OnGres.
+The next recommended step is to search operator registries. In particular the Operator Hub. \cite{operatorHubPGSearch} Operator Hub presents eight operators with varying levels of capabilities, including Crunchy Postgres for Kubernetes by Crunchy Data, EDB Postgres for Kubernetes by EnterpriseDB Corporation, Ext Postgres Operator by movetokube.com, Percona Operator for PostgreSQL by Percona, Postgres-Operator by Zalando SE, Postgresql Operator by Openlabs, PostgreSQL Operator by Dev4Ddevs.com and StackGres by OnGres.
 
-A deeper internet search revealed Stolon operator. \cite{PalarkComparingKubernetes}
+By further research the Stolon operator was revealed. \cite{PalarkComparingKubernetes}
 
-Of the thirteen operators available, only five meet the minimum capability requirement of Deep Insight, namely: Crunchy Postgres for Kubernetes, EDB Postgres for Kubernetes, Percona operator for PostgreSQL, CloudNativePG operator, and StackGres operator. As a result, only these five will be subjected to deeper research, testing, and evaluation.
+Of the twelve operators available, only five meet the minimum capability requirement of Deep Insight with a possibility to scale defined in Chapter \ref{chap:operators}, namely: Crunchy Postgres for Kubernetes, EDB Postgres for Kubernetes, Percona operator for PostgreSQL, CloudNativePG operator, and StackGres operator. As a result, only these five will be subjected to deeper research, testing, and evaluation.
 
 \pagebreak
 \n{2}{Crunchy Postgres for Kubernetes}
@@ -239,10 +243,10 @@ PGO’s capabilities are the following:
     \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique with Primary and Standby architecture. \cite{CrunchyDocHA}
     \item \textbf{Postgres updates:} PGO is able to apply minor patches \cite{CrunchyDocMinorUpdates}, and major upgrades since version 5.1. \cite{CrunchyBlogUpdates}
     \item \textbf{Backups:} PGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), ad hoc backups, backup compression, and backup encryption. \cite{CrunchyDocBackups}
-    \item \textbf{Disaster Recovery:} PGO is capable of Point In Time recovery, in place Point in Time Recovery, restore of an individual database. \cite{CrunchyDocDisasterRecovery}
+    \item \textbf{Disaster Recovery:} PGO is capable of Point-In-Time recovery, in place Point-In-Time Recovery, restore of an individual database. \cite{CrunchyDocDisasterRecovery}
     \item \textbf{Cloning:} PGO is able to clone cluster. \cite{CrunchyDocDisasterRecovery}
     \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager. \cite{CrunchyDocMonitoring}
-    \item \textbf{Connection Pooling:} PgBouncer connection pooler from Postgres is part of PGO. \cite{CrunchyDocConnectionPooling}
+    \item \textbf{Connection Pooling:} PgBouncer connection pooler is part of PGO. \cite{CrunchyDocConnectionPooling}
     \item  \textbf{Customization:} PGO provides a wide area of Postgres customization. \cite{CrunchyDocCustomisation}
 \end{itemize}
 
@@ -261,12 +265,14 @@ The current stable version of PGO is 5.3.1 was released on 17th February 2023. \
 PGO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PGO is considered to have the highest capability level, labeled as Autopilot. \cite{operatorHubCrunchy}
 
 \n{2}{EDB Postgres for Kubernetes}
-The EDB Postgres for Kubernetes (EDBO) is a fully supported operator that has been designed, developed, and maintained by EnterpriseDB Corporation. It provides comprehensive coverage of the entire lifecycle of highly available PostgreSQL database clusters with a Primary/Standby architecture, utilizing native streaming replication. The operator is based on the open-source CloudNativePG operator and offers additional benefits. \cite{operatorHubEDB}
+The EDB Postgres for Kubernetes (EDBO) is a operator that has been designed, developed, and maintained by EnterpriseDB Corporation.
+It provides comprehensive coverage of the entire lifecycle of highly available Postgres database clusters with a Primary/Standby architecture,
+utilizing native streaming replication. The operator is based on the open-source CloudNativePG operator and offers additional benefits. \cite{operatorHubEDB}
 
 EDBO is distributed under the EDB Limited Usage License Agreement, a proprietary license that is specific to software provided by EnterpriseDB Corporation. A license key is always required for the operator to work longer than 30 days. \cite{EDBdocuLicence} Due to the restrictive nature of the license EDBO will no longer be subject to testing and evaluation but its key component CloudNativePG will.
 
 \n{2}{CloudNativePG}
-The CloudNativePG operator (CNPGO) is an operator that is available as an open-source solution and aims to manage PostgreSQL workloads across various Kubernetes clusters running in private, public, hybrid, or multi-cloud environments. The operator aligns with DevOps principles and concepts like immutable infrastructure and declarative configuration. \cite{CNPGdocu}
+The CloudNativePG operator (CNPGO) is an operator that is available as an open-source solution and aims to manage Postgres workloads across various Kubernetes clusters running in private, public, hybrid, or multi-cloud environments. The operator aligns with DevOps principles and concepts like immutable infrastructure and declarative configuration. \cite{CNPGdocu}
 
 Initially developed by EDB, CNPGO was later made available to the public as an open-source software under the Apache License 2.0. In April 2022, the project was submitted to CNCF Sandbox for further development and community engagement. \cite{CNPGdocu}
 
@@ -276,8 +282,8 @@ CNPGO’s capabilities are the following:
     \item \textbf{High Availability:} High availability is achieved by adding additional nodes. PGO uses a synchronous replication technique with Primary and Standby architecture. \cite{CNPGdocuReplication}
     \item \textbf{Direct database imports:} CNPGO provides direct database import from remote Postgres server by using pg\_dump and pg\_restore even on different Postgres versions. \cite{CNPGdocuDatabaseImports}
     \item \textbf{Postgres updates:} CNPGO is able to apply minor patches. \cite{CNPGdocuUpdates} Major updates are possible by Direct database imports\footnote[2]{Due to its nature Direct database imports cannot be considered as major upgrade option.}.
-    \item \textbf{Backups:} CNPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), on-demand backups, and backup encryption \cite{CNPGdocuBackup}\cite{CNPGdocuTDE}. Due to EDB’s backup software Barman backup compression is available also. \cite{CNPGdocuBackup}
-    \item \textbf{Disaster Recovery:} CNPGO is capable of Point In Time recovery. \cite{CNPGdocuBackup}
+    \item \textbf{Backups:} CNPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob), on-demand backups, and backup encryption \cite{CNPGdocuBackup}\cite{CNPGdocuTDE}.
+    \item \textbf{Disaster Recovery:} CNPGO is capable of Point-In-Time recovery. \cite{CNPGdocuBackup}
     \item \textbf{Cloning:} CNPGO is able to create cluster replicas. \cite{CNPGdocuReplication}
     \item \textbf{Monitoring:} Monitoring can be provided by the additional installation of Prometheus, and Grafana, and Alertmanager. \cite{CNPGdocuQuickstart}
     \item \textbf{Connection Pooling:} Provided by native Postgres pooler PgBouncer. \cite{CNPGdocuConnectionPooling}
@@ -307,7 +313,7 @@ SPGO’s capabilities are the following \cite{OnGres}:
     \item \textbf{High Availability:} High availability is achieved by adding additional nodes with Primary and Standby architecture.
     \item \textbf{Postgres updates:} SPGO is able to apply minor patches. Major updates are possible by SGDbOps \cite{SPGODocuMajorUpdates}.
     \item \textbf{Backups:} SPGO backup capabilities features: automatic backup schedules, backup to multiple locations, backup to cloud providers (AWS S3, Google Cloud Storage, Azure Blob)
-    \item \textbf{Disaster Recovery:} SPGO is capable of Point In Time recovery.
+    \item \textbf{Disaster Recovery:} SPGO is capable of Point-In-Time recovery.
     \item \textbf{Cloning:} SPGO is able to create cluster replicas.
     \item \textbf{Monitoring:} Monitoring is provided by Prometheus, Grafana, and Alertmanager.
     \item \textbf{Connection Pooling:} Is provided by PgBouncer.
@@ -326,7 +332,7 @@ SPGO consists of the following key components \cite{PostgresOnKubernetes}:
 
 \obr{SPGO’s architecture \cite{SPGOdocuArchitecture}}{}{1}{graphics/SPGO_architecture.png}
 
-The current stable version of SPGO is 1.4.3\footnote[3]{Version 1.5.0 has also been released, it is not yet production-ready yet. Therefore will not be tested or evaluated.} was released on 24th January 2022. \cite{SPGOgitlabChangelog} SPGO is distributed under the AGPL3 open-source license. \cite{SPGODocuLicence}
+The current stable version of SPGO is 1.4.3\footnote[3]{Version 1.5.0 has also been released, it is not production-ready yet. Therefore will not be tested or evaluated.} was released on 20th February 2022. \cite{SPGOgitlabChangelog} SPGO is distributed under the AGPL3 open-source license. \cite{SPGODocuLicence}
 With regards to capability, SPGO is considered to have the second highest capability level, labeled as Deep Insights. \cite{operatorHubStackgres}
 
 \n{2}{Percona operator for PostgreSQL}
@@ -344,23 +350,22 @@ Differences between PGO and PPO are the following:
     \item \textbf{Monitoring:} PPO is not using the usual monitoring stack consisting of Prometheus and Grafana but their own Percona Monitoring and Management. \cite{PerconaDocuMonitoring}
 \end{itemize}
 
-The current stable version of PPO is 1.4.0 was released on 31st March 2023\footnote[4]{Version 2.0.0 has also been released, it is not yet production-ready yet. Therefore will not be tested or evaluated.}. \cite{PerconaDocuV2} PPO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PPO is considered to have the second highest capability level, labeled as Deep Insights. \cite{operatorHubPercona}
+The current stable version of PPO is 1.4.0 was released on 31st March 2023\footnote[4]{Version 2.0.0 has also been released, it is not production-ready yet. Therefore will not be tested or evaluated.}. \cite{PerconaDocuV2} PPO is distributed under the Apache License 2.0, an open-source license that allows for both commercial and non-commercial use. With regards to capability, PPO is considered to have the second highest capability level, labeled as Deep Insights. \cite{operatorHubPercona}
 
-\n{2}{Summary}
-\tab{Summary of selected 0perators}{tab:operatorsSummary}{1}{|l|l|l|l|}{
+\n{2}{Summary and key differences}
+\tab{Summary of selected operators}{tab:operatorsSummary}{1}{|l|l|l|l|}{
     \hline operator & Maturity level & Current production version & Release date\\ \hline
     PGO & Autopilot & 5.3.1 & 17th February 2023\\ \hline
     CNPGO & Autopilot & 1.20.0 & 27th April 2023\\ \hline
-    SPGO & Deep Insights & 1.4.3 & 23th February 2022\\ \hline
+    SPGO & Deep Insights & 1.4.3 & 20th February 2022\\ \hline
     PPO & Deep Insights & 1.4.0 & 31st March 2023\\ \hline
 }
 
-\n{2}{Key differences}
 \tab{Key differences between selected operators}{tab:operatorsDiffences}{1}{|l|l|l|l|l|}{
     \hline Feature & PGO & CNPGO & SPGO & PPO\\ \hline
-    In place Point in time recovery & Yes & No & No & No\\ \hline
+    In place Point-In-Time recovery & Yes & No & No & No\\ \hline
     Individual database restore & Yes & No & No & No\\ \hline
-    Operator user interface & No & No & Yes & No\\ \hline
+    User interface & No & No & Yes & No\\ \hline
     Major version upgrade & Yes & No & Yes & Yes\\ \hline
     Supported Postgres versions & v11 - v15 & v11 - v15 & v12 - v15 & v12 - v14\\ \hline
 }
@@ -368,28 +373,33 @@ The current stable version of PPO is 1.4.0 was released on 31st March 2023\footn
 \n{1}{Metrics}
 \label{chap:metrics}
 This chapter aims to answer the second research question: 'What metrics are suitable for comparing Opereators for lifecycle management in
-Kubernetes?'" According to Tom Gilb \cite{gilb1988principles}, the main issue in software attribute requirements is identified not in their functionality, but in their quality. Gilb differentiates these attribute requirements into two categories: Resources (people, time, money), which are always finite, and qualities or benefits, which are always fewer than desired. Knowledge about the functionality that an operator must provide to achieve a certain level of capabilities is obtained from Chapter~\ref{chap:operators}. The most significant functional properties of operators have been detailed in Chapter~\ref{chap:searchForoperators}. With the lifecycle of Postgres and the capabilities of operators now understood, what remains to be examined are their qualitative properties. The upcoming testing will be focused on the proposed qualitative metrics.
+Kubernetes?'" According to Tom Gilb \cite{gilb1988principles}, the main issue in software attribute requirements is identified not in their functionality, but in their quality. Gilb differentiates these attribute requirements into two categories: Resources (people, time, money), which are always finite, and qualities or benefits (security, performance, usability), which are always fewer than desired.
+
+Knowledge about the functionality that an operator must provide to achieve a certain level of capabilities is obtained from Chapter~\ref{chap:operators}. The most significant functional properties of operators have been detailed in Chapter~\ref{chap:searchForoperators}. With the lifecycle of Postgres and the capabilities of operators now understood, what remains to be examined are their qualitative properties. The upcoming testing will be focused on the proposed qualitative metrics.
 
 \n{2}{Performance}
 Performance is a qualitative parameter of a system, defined by the efficiency with which the system utilizes allocated resources. In the case of Postgres, performance can be expressed as the number of transactions executed per unit of time. A higher transaction rate is indicative of superior performance.
+
+By striving for high-performance levels, stakeholders can ensure that Postgres system effectively meet the demands of applications, deliver efficient data processing, and provide a satisfactory user experience.
+
 \n{2}{Reliability}
-Reliability is a qualitative parameter that determines the degree of system dependability. If a system cannot be relied upon, it cannot be utilized effectively. Therefore, reliability is a critical parameter of any system.
-% \n{3}{Maturity}
-% Maturity in the context of software refers to the degree to which a system is fully developed, perfected and reliable. A mature system is typically characterized by stability, reliability, robustness, and well-defined, predictable behavior based on its previous operation and iterations.
+Reliability is a critical parameter in evaluating the effectiveness of any system. It refers to the degree of reliability and consistency that can be placed on a system to consistently perform its intended functions. A reliable system can be trusted to operate without faults or interruptions and to deliver the expected results under normal operating conditions.
+
+Relying on the system is essential for smooth operations, productivity and customer satisfaction. A system that is not reliable carries risks of outages, data corruption, errors and potential financial or reputational losses.
+
 \n{2}{Usability}
-Usability is a key aspect of software design that focuses on user experience. It refers to the ability of a system to achieve certain goals for certain users in a particular context of use.
-% % \n{3}{Learnability}
-% How easy it is for users to learn how to use the system.
-% \n{3}{Operability}
-% How easy is it for users to successfully use the system.
+Usability is a key aspect of software design that prioritises user experience and satisfaction. It includes the ability of the system to meet specific user goals in a particular context of use. A usable software system is intuitive and effective because it allows users to achieve their goals with ease and minimal cognitive effort.
+
+By prioritizing usability the stakeholders can promote increased productivity, reduce user errors, and ultimately increase user satisfaction and adoption.
+
 \n{2}{Maintenance}
 Activities that are performed after the software is deployed to ensure its correct functionality and performance. Maintenance may include bug fixes, adding new features, performance optimization, updates for compatibility with new systems, etc. Ignoring software maintenance can lead to increased repair costs and reduced system performance over time. Additionally, it can cause system instability, increased vulnerability to security threats, and eventually, potential system failure.
-% \n{3}{Renewal}
-% Renewal is considered a crucial aspect of software maintenance, playing a significant role in maintaining the relevance of a software system over time. Essentially, this process ensures that the software is consistently updated to align with current standards and technologies.
+
 \n{2}{Security}
-Security refers to the measures, practices, and technologies employed to protect the system and its data from threats and attacks.
-% \n{3}{Vulnerabilities}
-% Vulnerability refers to a weakness in a system that can be exploited by a threat actor, such as a hacker, to perform unauthorized actions within a computer system. This can involve gaining access to the system's features and data, or disrupting the system's normal functioning.
+Software security is a key aspect of modern technology systems. It involves implementing measures to protect software and related data from unauthorized access, manipulation or misuse.
+Effective software security requires a proactive approach which addresses potential vulnerabilities and mitigates risks throughout the software lifecycle. This includes secure coding practices, regular security testing and auditing, timely patching and updates, and robust access control mechanisms.
+
+By prioritising software security, stakeholders can protect sensitive information, maintain the integrity of their systems and protect themselves from potential security breaches and malicious activity.
 
 
 \n{1}{Testing methodology}
@@ -413,12 +423,13 @@ It is important to notice at the beginning of this chapter that testing as descr
 Therefore, the test process derived from this methodology as every test process will not exhaustively test the operators and will be depended on thesis context, author bias, and author skills. Because The objective of this thesis is to conduct an extensive evaluation of various Kubernetes
 Operators available for Postgres lifecycle management the main scope of this methodology is to deliver test process that will produce test reports that will form the base for this evaluation.
 
-\n{2}{Criteria}
-Some criteria are well measurable on their own, while others require further breakdown into multiple sub-criteria in order to obtain data. The criteria have been divided according to Figure \ref{fig:criteriaDivision}.
+\n{2}{Criterias}
+Some metrics are well measurable on their own, while others require further breakdown into multiple sub-metrics in order to obtain the results.
+The metrics definied in Chapter \Ref{chap:metrics} have been divided to criterias according to Figure \ref{fig:criteriaDivision}.
 
-\obr{Criteria division}{fig:criteriaDivision}{1}{graphics/test_methodology-2.png}
+\obr{Criterias breakdown}{fig:criteriaDivision}{1}{graphics/test_methodology-2.png}
 % The following criteria described in Chapter \ref{chap:metrics} will be subjected to testing. These criteria should provide a solid basis for the decision-making process. 
-To keep track of these criteria, each one has been assigned an ID. The list of identified criteria is as follows:
+To keep track of these criterias, each one has been assigned an ID. The list of identified criterias is as follows:
 
 \begin{itemize}
     \item	CP: Performance
@@ -459,15 +470,16 @@ To keep track of these criteria, each one has been assigned an ID. The list of i
 
 \n{3}{Performance testing}
 Performance testing must be conducted using performance analysis. To test the performance, an environment must be set up in which the deployed operator creates a high-availability (HA) Postgres cluster consisting of three nodes.
-The test environment must be recreated for each operator being evaluated. Additionally, an equal number of pooler nodes must be created. It is essential that the settings of all Postgres clusters are the same, and only the HA service cluster must be tested.
+The test environment must be recreated for each operator being evaluated. Additionally, an equal number of pooler nodes must be created. It is essential that the settings of all Postgres clusters are the same, and only the HA service must be tested.
 The performance tests must be carried out at least three times to ensure accurate and reliable results.
 
 \n{3}{Reliability testing}
 Reliability must be tested through operator maturity testing.
 \n{4}{Maturity testing}
-Determining the maturity of operators must be done by assessing their popularity. Popularity can serve as an indicator of maturity because widespread recognition and usage of a product often imply reliability, efficiency, and the ability to meet user requirements. Popularity will be determined by considering the number of stars in the operators' repositories.
+Determining the maturity of operators must be done by assessing their popularity and the ratio of fixed issues. Popularity can serve as an indicator of maturity because widespread recognition and usage of a product often imply reliability, efficiency, and the ability to meet user requirements.
+Popularity must be determined by considering the number of stars in the operators' repositories.
 
-Furthermore, the ratio of the number of open issues to the number of resolved issues will be examined. This data will also be gathered from the operators' repositories.
+Furthermore, the ratio of the number of open issues to the number of resolved issues must be examined. This results shall also be gathered from the operator’s repositories.
 
 By considering both popularity and the ratio of resolved issues, valuable insights can be gained regarding the maturity level of the operators.
 
@@ -475,20 +487,23 @@ By considering both popularity and the ratio of resolved issues, valuable insigh
 Usability must be tested through operator learnability testing and operability testing.
 
 \n{4}{Learnability testing}
-To determine the learnability of operators, a list of Postgres lifecycle events must be created, and the operator documentation must be examined to ensure that it provides examples for each Postgres lifecycle event. Throughout this process, the number of tools required to successfully use the operator must be recorded to determine the level of training needed.
+To determine the learnability of operators, a list of Postgres lifecycle events (described in Chapter \Ref{chap:lifecycle}) must be created, and the operator documentation must be examined to ensure that it provides examples for each Postgres lifecycle event. Throughout this process, the number of tools required to successfully use the operator must be recorded to determine the level of training needed.
 
-Learnability testing, which is a crucial aspect of usability testing, must be conducted to assess the ease with which new users can understand and use the operator. The testing aims to achieve two primary objectives. Firstly, it must identify the presence of examples in the documentation, as learning facilitated by examples is generally more effective. Secondly, it must gauge the level of learning required to operate the system effectively.
+Learnability testing, which is a crucial aspect of usability testing, must be conducted to assess the ease with which new users can understand and use the operator. The testing aims to achieve two primary objectives. Firstly, it must identify the presence of examples in the documentation, as learning facilitated by examples is generally more effective. Secondly, it must measure the level of learning required to operate the system effectively.
 
 By conducting thorough learnability testing, valuable insights can be obtained regarding the user-friendliness and accessibility of the operators, contributing to the overall evaluation of their usability.
 
 \n{4}{Operability testing}
-To test the operability of the operator, the testing methodology involves creating use cases derived from the Postgres lifecycle, developing corresponding test cases for these use cases, and determining the number of commands necessary to accomplish the desired functionality. Additionally, a comprehensive list of required monitoring items must be compiled, and the test case incorporating monitoring activities assesses whether the operator's monitoring adequately encompasses these items. This comprehensive approach ensures that the operability of the operator is thoroughly assessed, taking into account its functionality, and monitoring capabilities.
+To test the operability of the operator, the testing methodology involves creating use cases derived from the Postgres lifecycle (Chapter \Ref{chap:lifecycle}), developing corresponding test cases for these use cases, and determining the number of commands necessary to accomplish the desired functionality.
+Configuration updates must consist of at least three types of updates: extension installation, change of Postgres configuration parameter, and change of cluster component parameter. These updates are necessary to ensure the flexibility and adaptability of the system.
+
+Additionally, a comprehensive list of required monitoring items must be compiled, and the test case incorporating monitoring activities assesses whether the operator's monitoring adequately includes these items. This comprehensive approach ensures that the operability of the operator is thoroughly assessed, taking into account its functionality, and monitoring capabilities.
 
 \n{3}{Maintenance testing}
 Maintenance testing must be performed by measuring the number of commits in the operator's repository. The ratio of these commits to the number of days since the repository was created must be determined. This approach is necessary to calculate the number of commits per unit of time, which is crucial in assessing the rate at which the software is being renewed.
 
 \n{3}{Security testing}
-Security testing must be conducted by analyzing the vulnerability of the docker image for each individual operator. As the overall cluster comprises multiple docker containers with various dependencies such as Postgres, pooling, backups, etc., to streamline the testing process, only the operator image will be subjected to vulnerability analysis. This approach allows focusing on the specific security aspects of the operator without testing the dependencies separately.
+Security testing must be conducted by analyzing the vulnerability of the docker image for each individual operator. As the overall cluster comprises multiple docker containers with various dependencies such as Postgres, pooling, backups, etc., to streamline the testing process, only the operator image will be subjected to vulnerability analysis. This approach allows focusing on the specific security aspects of the operator without testing of the Postgres cluster dependencies.
 
 
 \n{2}{Test management process}
@@ -499,20 +514,8 @@ As depicted in Figure \ref{fig:ieeeTestProcess} testing has more than one manage
 
 Thesis test process will consist of one management process that will create two managed subprocesses, one for static testing and one for dynamic testing. This test management process will monitor and control subprocesses. Subprocesses will deliver all their deliverables to this main process.
 
-The main management consist of following tasks:
-\begin{itemize}
-    \item High-level test strategy
-    \item High-level test planning
-\end{itemize}
-
-Subprocess consist of following tasks:
-\begin{itemize}
-    \item Test strategy
-    \item Test planning
-\end{itemize}
-
 \n{2}{Test strategy and planning}
-The output of the test strategy and planing will be the test plan, as the basis for its creation will be the requirements created earlier. Details about activities are described by ISO/IEC/IEE 29119-3.
+The output of the test strategy and planing will be the test plan, as the basis for its creation will be the criterias created earlier. Details about activities are described by ISO/IEC/IEE 29119-3.
 
 As depicted on \ref{fig:ieeeTestProcess} test plan is not static but it changes according to monitoring.
 
@@ -539,7 +542,7 @@ The result of a properly designed test plan should be:
 \n{2}{Test monitoring and control process}
 The role of the test monitoring and control process is to observe the test process and detect deviations from the plan. This process controls the test process throughout its duration. The findings are then used to modify the test plan.
 
-To avoid unnecessary bureaucracy, where the manager and tester are the same person, and consequently the testing progress would be reported to the person who is also filing it, there will be no status reports during this process.
+To avoid unnecessary bureaucracy, where the manager and tester are the same person, and consequently the testing progress would be reported to the person who is also filing it, there will be no status reports during the test process.
 
 \n{2}{Test completion process}
 The test completion process as depicted in the figure \ref{fig:ieeeTestCompletition} will be used in testing after each test the test competition report will be created and delivered to a higher level.
@@ -552,7 +555,7 @@ According to ISTQB \cite{FoundationOfSoftwareTesting} there are two types of tes
 \obr{Dynamic test processes \cite{ieeeTestProcess}}{fig:ieeeTestDynamicTestProcess}{1}{graphics/test_dynamic_test_processes.png}
 
 \n{2}{Test design and implementation processes}
-Test design and implementation process must follow the process depicted in the figure \ref{fig:ieeeTestDesignAndImplementation}. Test design techniques should be used to derive test cases. Test cases must be traceable to requirements and must meet the ISO/IEC/IEE 29119-3 requirements. This process can be reentered multiple times and must meet the completion criteria specified in the test plan.
+Test design and implementation process must follow the process depicted in the figure \ref{fig:ieeeTestDesignAndImplementation}. Test design techniques should be used to derive test cases. Test cases must be traceable to criterias. This process can be reentered multiple times and must meet the completion criteria specified in the test plan.
 \obr{Test design and implementation \cite{ieeeTestProcess}}{fig:ieeeTestDesignAndImplementation}{1}{graphics/test_design_and_implementation.png}
 
 
@@ -560,15 +563,16 @@ Test design and implementation process must follow the process depicted in the f
 Based on the test plan all the environments must be established and well mainteained.
 
 \n{2}{Test execution process}
-Test execution process depicted in \ref{fig:ieeeTestExecutionProcess} must be followed. After the test execution, the execution log must be delivered. Details about activities are described by ISO/IEC/IEE 29119-3.
+Test execution process depicted in \ref{fig:ieeeTestExecutionProcess} must be followed. After the test execution, the execution log should be delivered. But since all roles are performed by the same person, the test execution log will not be created or delivered.
+Details about activities are described by ISO/IEC/IEE 29119-3.
 
 \obr{Test execution process \cite{ieeeTestProcess}}{fig:ieeeTestExecutionProcess}{1}{graphics/test_execution_process.png}
 
 \n{2}{Test incident report process}
-The process for reporting test incidents, as depicted in Figure \ref{fig:ieeeTestExecutionProcess}, must be followed. It is important to note that the purpose of testing is not to simply find incidents, but rather to test the capabilities of the system. As such, the term "finding" will be used in cases where it is more appropriate.
+The process for reporting test incidents, as depicted in Figure \ref{fig:ieeeTestExecutionProcess}, must be followed. It is important to note that the purpose of testing is not to finding incidents, but rather to test the capabilities of the system. As such, the term "finding" will be used in cases where it is more appropriate.
 
 \n{2}{Level of detail}
-Please note that this chapter provides only a high-level overview of the testing methodology. More detailed information can be found in ISO/IEC/IEEE 29119-2\footnote[5]{https://standards.ieee.org/ieee/29119-2/7498/}. If there are any doubts regarding the testing process, this standard should be used as a guide to ensure that all necessary aspects of testing are properly addressed.
+Please note that this chapter provides only a high-level overview of the testing methodology. More detailed information can be found in ISO/IEC/IEEE 29119-2\footnote[5]{https://standards.ieee.org/ieee/29119-2/7498/}. If there are any doubts regarding the testing process, this standard should be used as a guideline, but it is not necessary to strictly adhere to it in its entirety.
 
 \cast{APPLICATION OF THEORY}
 \n{1}{Test process}
@@ -580,15 +584,21 @@ According to the priorities stated in the general test plan, the first test proc
 \obr{Test process}{fig:testingTestProcess}{1}{graphics/test_process-2.png}
 
 \n{2}{Tools}
-\begin{enumerate}
-    \item \textbf{Bash}: Most of the test cases during the testing process are scripted using the Bourne Again Shell (Bash).
-    \item \textbf{Git}: One of the test procedures is employing Git for repository management and version control.
-    \item \textbf{Kubectl}: The Kubectl tool is employed for managing the Kubernetes cluster.
-    \item \textbf{Kustomize}: Tool for customizing Kubernetes configurations without changing base resources.
-    \item \textbf{Terraform}: Terraform is leveraged to simplify the deployment and replication of the GKE cluster.
-    \item \textbf{Trivy}: The Trivy security scanner is utilized for vulnerability analysis of the operators' images.
-    \item \textbf{Snyk}: Snyk is also utilized for vulnerability analysis of the operator's images.
-\end{enumerate}
+During the creation of the test plan, the following tools were identified as essential for conducting effective testing.
+\begin{itemize}
+    \item \textbf{Bash}: Bash, short for "Bourne Again SHell," is a command-line interpreter and scripting language used in Unix-like operating systems.
+    \item \textbf{Kubectl}: Command-line utility for managing Kubernetes clusters.
+    \item \textbf{Terraform}: Infrastructure as code tool for provisioning and managing cloud resources.
+    \item \textbf{Trivy}: Vulnerability scanner specifically designed for containerized environments.
+    \item \textbf{PgBench}: Benchmarking tool for Postgres systems that allows for the simulation of various database workloads to measure and evaluate performance.
+\end{itemize}
+
+Additional tools were identified and incorporated into the testing process at later stages.
+\begin{itemize}
+    \item \textbf{Git}: Distributed version control system.
+    \item \textbf{Kustomize}: Configuration management tool for Kubernetes.
+    \item \textbf{Snyk}: Security scanning tool that helps identify and fix vulnerabilities in open-source libraries and container images.
+\end{itemize}
 
 \n{2}{Static test process}
 The static test process was divided into three separate subprocesses, each with its own test plan.
@@ -599,12 +609,12 @@ Reliability and maintenance testing consists of two parts: renewal and maturity.
 During the test process, it was observed that PPO does not use the repository to track issues, instead it uses Jira. Another challenge arose when trying to determine the repository creation date and getting the number of commits in repository. Retrieving this data from Gitlab or Github proved to be quite difficult. As a workaround, all the repositories were cloned, and the date of the initial commit was obtained using the command mentioned in Listing \ref{lst:gitLogReverse}.
 Likewise, the total number of commits was determined using the command mentioned in Listing \ref{lst:commitsCount}. Due to these modifications, the test plan was subsequently revised.
 
-\begin{lstlisting}[language=bash, caption={Commits count}, label={lst:commitsCount}]
-        $ git rev-list --all -count
-    \end{lstlisting}
-
 \begin{lstlisting}[language=bash, caption={Reverse git log}, label={lst:gitLogReverse}]
         $ git log --reverse
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash, caption={Commits count}, label={lst:commitsCount}]
+    $ git rev-list --all -count
 \end{lstlisting}
 
 The results of this repository analysis are presented in Table \ref{tab:operatorTestRelAndMaint}. As can be seen, PGO and PPO share the same creation date. This is due to the fact that PPO is a fork of PGO, as metioned earlier in Chapter~\ref{chap:ppo}.
@@ -621,14 +631,14 @@ The results of this repository analysis are presented in Table \ref{tab:operator
 }
 \n{3}{Usability: Learnability}
 \label{chap:learnability}
-The learnability testing process was divided into two distinct aspects: the first one being the training required to operate with the operators, and the second one being the presence of examples concerning Postgres life cycle events in the operator's documentation. Following the guidelines of the test plan (available in Appendix A III), a checklist was created. The documentation for each operator was thoroughly reviewed, resulting in the findings presented in Tables \ref{tab:operatorTestTraining} and \ref{tab:operatorTestDocExamples}.
+The learnability testing process was divided into two distinct aspects: the first one being the training required to operate with the operators, and the second one being the presence of examples concerning Postgres lifecycle events in the operator's documentation. Following the guidelines of the test plan (available in Appendix A III), a checklist was created. The documentation for each operator was thoroughly reviewed, resulting in the findings presented in Tables \ref{tab:operatorTestTraining} and \ref{tab:operatorTestDocExamples}.
 
 \tab{Training needed}{tab:operatorTestTraining}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
     1st training & Kubectl & Kubectl & Kubectl & Kubectl \\ \hline
     2nd training & Kustomize & Helm	& Helm & Helm\\ \hline
-    3rd training & 	& Cnpg	&  & \\ \hline
+    3rd training & -	& Cnpg	& - & - \\ \hline
 }
 
 \tab{Documentation examples}{tab:operatorTestDocExamples}{1}{|l|l|l|l|l|}{
@@ -649,18 +659,18 @@ The learnability testing process was divided into two distinct aspects: the firs
 \n{3}{Security}
 To proceed with the security testing, a vulnerability analysis test plan was created (which can be found in Appendix A IV), and the process was carried out according to this plan.
 
-According to test plan, the test items for this process were identified, the test tool was downloaded, and a test procedure was developed which consisted of four test cases - one for each operator (details in Appendix A IV).
+The test items for this process were identified, the test tool was installed, and a test procedure was developed which consisted of four test cases - one for each operator (details in Appendix A IV).
 Each operator was then tested according to this procedure, with the overall vulnerability results presented in Table \ref{tab:operatorTestVulnTrivy}.
 
-During this test rocess the security scanner Trivy was unable to detect any vulnerabilities in CNPG's container image utilizing Debian 11.6.
+During this test process the security scanner Trivy was unable to detect any vulnerabilities in CNPG's container image utilizing Debian 11.6.
 The rest of the operators are using the Red Hat 8.7 container image, which resulted in almost identical vulnerability scores.
-Unfortunately, the implementation of Red Hat 8.7 in both PGO and SPGO has a high vulnerability with openssl-libs (CVE-2023-0286).
+Unfortunately, the implementation of Red Hat 8.7 in both PGO and SPGO has a high vulnerability in openssl-libs (CVE-2023-0286).
 More details about this vulnerability can be found here: \url{https://avd.aquasec.com/nvd/2023/cve-2023-0286/}.
 
 The absence of any detected vulnerabilities in CNPGO by Trivy raised a question: Is Trivy accurately scanning this image? To address this concern, the test plan was updated to include an additional test case.
 This test involved scanning the base image of CNPGO to ascertain if Trivy could detect any vulnerabilities in Debian 11.6.
 
-Debian image was scanned with the results presented in Table \ref{tab:operatorTestVulnTrivy} which can be interpreted in two ways. The first interpretation suggests that CNPG might be using Debian but has effectively removed or mitigated the vulnerable parts. The second interpretation considers the possibility that Trivy may not be able to accurately identify Debian vulnerabilities within CNPGO.
+Debian image was scanned with the results presented in Table \ref{tab:operatorTestVulnTrivy} which can be interpreted in two ways. The first interpretation suggests that CNPGO might be using Debian but has effectively removed or mitigated the vulnerable parts. The second interpretation considers the possibility that Trivy may not be able to accurately identify Debian vulnerabilities within CNPGO.
 
 To eliminate the second interpretation an additional vulnerability analysis tool, Snyk, was incorporated into the testing process. The test plan was subsequently adjusted, and the images were scanned using Snyk. This alternative method produced results similar to those from the Trivy scanning for each operator. However, there were exceptions in terms of High severity issues;
 Snyk identified three additional vulnerabilities in the openssl-libs of PGO and SPGO and provided different results for Debian.
@@ -696,8 +706,8 @@ test plan.
 Two environments were used for the dynamic test process, each designed for specific test types based on resource requirements:
 
 \begin{enumerate}
-    \item \textbf{Kind Kubernetes Cluster}: Kind is a tool that creates Kubernetes clusters within Docker, was used for less resource-intensive tests. This setup was run on a first-generation M1 MacBook Air equipped with 8GB of RAM and a 500GB disk.
-    \item \textbf{Google Kubernetes Engine (GKE)}: More resource-demanding tests, such as performance testing, were conducted on a robust Google Kubernetes Engine cluster, consisting of three e2-standard-2 nodes. Each node with 2 virtual CPUs and 8GB of RAM. Additionally, a standalone Postgres node with pgbench was deployed to this cluster for performance measurements.
+    \item \textbf{Kind Kubernetes Cluster}: Kind is a tool that creates Kubernetes clusters within Docker, Kind was utilized for less resource-intensive tests. This setup was run on a first-generation M1 MacBook Air equipped with 8GB of RAM and a 500GB disk.
+    \item \textbf{Google Kubernetes Engine (GKE)}: More resource-demanding tests, such as performance testing, were conducted on a robust Google Kubernetes Engine cluster, consisting of three e2-standard-2 nodes. Each node with 2 virtual CPUs and 8GB of RAM. Additionally, a standalone Postgres node with PgBench was deployed to this cluster for performance analysis.
 \end{enumerate}
 
 The configurations for Kind and the Terraform plans used for deploying the GKE cluster, as well as the commands used for both deployments, can be found in the repository directory located at \url{tests/environments}.
@@ -719,12 +729,12 @@ The before.sh script prepared the environment for the test, the test.sh script e
 The precondition for testing the operators was a functioning Kubernetes cluster with kubectl configured for this cluster.
 Additionally, to perform tests on the Postgres clusters, it was necessary for the operator to be installed in the cluster.
 
-In cases where it was necessary to verify functionality, this verification was made manually.
+In cases where it was necessary to verify functionality, this verification was made manually. Result are presented in Table \Ref{tab:operatorTestEaseOfUse}.
 
 \n{5}{SPGO}
 The reason why SPGO has a zero value in most test cases is due to its user-friendly interface.
 Most tasks can be accomplished directly within this interface, eliminating the need for using the terminal.
-Even complex tasks, such as performing a major version upgrade, can be easily carried out via this Graphical User Interface (GUI).
+Even complex tasks, such as performing a major version upgrade, can be easily carried out via this interface.
 An example of this user interface is shown in Figure \ref{fig:spgoUI7}.
 Additional images can be found in the repository folder at \url{doc/graphics/monitoring/SPGO}.
 
@@ -736,7 +746,7 @@ The upgrade to a new major version appears to be the most challenging task for e
 \n{5}{PPO}
 During the cluster update test case, specifically the update of max\_wal\_size, PPO experienced a failure.
 Despite updating the cluster configuration, the max\_wal\_size of Postgres remained unchanged.
-PPO also was the only operator that did not support the PostGis extension for PostgreSQL.
+PPO also was the only operator that did not support the PostGis extension for Postgres.
 
 \n{5}{CNPGO}
 During the testing procedure, it was noted that CNPGO didn't require the CNPG plugin, as initially mentioned in Chapter \ref{chap:learnability}, to perform any operation. Consequently, the necessity for training related to this plugin was reevaluated, leading to its removal. The updated results are presented in Table \ref{tab:operatorTestUpdatedTraining}.
@@ -806,7 +816,7 @@ A simplified representation of this cluster configuration is depicted in Figure 
 
 For each operator test, the Kubernetes cluster was recreated to ensure a clean starting point. A Postgres cluster with three nodes (one primary and two replicas) was deployed, along with three connection pooler instances.
 
-To standardize the setup across each cluster, configurations were calibrated in line with recommendations provided by the pgTune\footnote[7]{https://pgtune.leopard.in.ua} website. The adjusted settings were as follows:
+To standardize the settings across each cluster, configurations were calibrated in line with recommendations provided by the pgTune\footnote[7]{https://pgtune.leopard.in.ua} website. The adjusted settings were as follows:
 \begin{itemize}
     \item max\_connections: 200
     \item shared\_buffers: 1536MB
@@ -822,7 +832,7 @@ To standardize the setup across each cluster, configurations were calibrated in 
     \item max\_wal\_size: 4GB
 \end{itemize}
 
-After the creation of the Postgres cluster, each cluster was tested using the pgBench tool, a PostgreSQL benchmarking utility. This tool was configured to execute 10,000 transactions across 25 concurrent clients and utilizing 10 threads. This benchmark was directed towards the Postgres cluster's pooler service. This procedure was replicated twice more for thoroughness.
+After the creation of the Postgres cluster, each cluster was tested using the PgBench tool. This tool was configured to execute 10,000 transactions across 25 concurrent clients and utilizing 10 threads. This benchmark was directed towards the Postgres cluster's pooler service. This procedure was replicated twice more for thoroughness.
 
 The results presented in Table \ref{tab:operatorPerformance} only display the transactions per second, as these offer a sufficient indication of the operator's performance. For a comprehensive view of the results from this benchmark, along with the test process details, please refer to Appendix A VI.
 
@@ -852,9 +862,10 @@ As mentioned in Chapter~\ref{chap:easeOfUse}, changes to PPO's configuration do 
 
 
 \n{1}{Evaluation}
-This part of the thesis will address Research Question No. 4, as outlined in Chapter \ref{chap:resoourceQuestions}. It will utilize the findings presented in Chapter \ref{chap:testProces} to conduct a comprehensive evaluation of each quality attribute associated with the operators.
-Each attribute will be quantified and discussed in detail.
-The cumulative results and final assessment will be presented in the concluding chapter.
+This chapter aims to answer the fourth research question: ’How do the operators perform when evaluated according to the chosen metrics?’".
+It will utilize the findings presented in Chapter \ref{chap:testProces} to conduct a comprehensive evaluation of each quality attribute associated with the operators.
+Each criteria will be quantified and discussed in detail.
+The cumulative results will be presented at the end of this chapter.
 
 \n{2}{Measuring rule}
 In this chapter, the operators will be evaluated. When a dedicated measuring tool is not available, the operators will be compared against each other to provide a relative measure of their attributes.
@@ -868,10 +879,10 @@ This included the popularity of the operators, the number of issues they had, an
 The maturity was then determined based on the popularity of the operators and the ratio of resolved issues.
 
 \n{4}{Popularity}
-After examining the popularity by the number of stars, it is clear that PGO far exceeds the others (results presented in Table \ref{tab:operatorMaturity}). In contrast, CNPGO shows much lower popularity.
+After examining the popularity by the number of stars, it is clear that PGO far exceeds the others (results presented in Table \ref{tab:operatorPopularity}). In contrast, CNPGO shows much lower popularity.
 The remaining operators show marginal levels of popularity to the level of popularity that PGO or CNPGO have received.
 If the ranking were based solely on a popularity contest, PGO would clearly win. However, the evaluation requires a more comprehensive examination beyond simply measuring popularity.
-\tab{Popularity of operators}{tab:operatorMaturity}{1}{|l|l|l|l|l|}{
+\tab{Popularity of operators}{tab:operatorPopularity}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
     Popularity (stars)	& 3258	& 1198	 & 84 &	149 \\ \hline  \hline
@@ -879,7 +890,7 @@ If the ranking were based solely on a popularity contest, PGO would clearly win.
 }
 
 \n{4}{Fixed issues}
-As presented in Table \ref{tab:operatorMaturity}, PGO, CNPGO, and PPO are shown to have resolved a significant number of issues, with PGO registering the highest ratio of fixed issues. On the other hand, despite being less popular and more recent than PGO, SPGO has a larger number of reported issues, many of which remain unresolved (445 in total). This might suggest that the development of SPGO is still in progress.
+As presented in Table \ref{tab:operatorIssues}, PGO, CNPGO, and PPO are shown to have resolved a significant number of issues, with PGO registering the highest ratio of fixed issues. On the other hand, despite being less popular and more recent than PGO, SPGO has a larger number of reported issues, many of which remain unresolved (445 in total). This might suggest that the development of SPGO is still in progress.
 \tab{Operators issues}{tab:operatorIssues}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
@@ -888,18 +899,16 @@ As presented in Table \ref{tab:operatorMaturity}, PGO, CNPGO, and PPO are shown 
     Fixed issues ratio	&  93\% &	90\% &	77\% &	89\% \\ \hline
 }
 
-\n{3}{Overall maturity / reliability}
-The overall maturity of the operators was determined by averaging the maturity and the ratio of fixed issues.
-These results are presented in Table \ref{tab:operatorMaturity}.
-As maturity is the only subtest within the reliability category, it is thus used as the measure of reliability.
+\n{3}{Reliability}
+The overall reliability of the operators was determined maturity. These results are presented in Table \ref{tab:operatorReliability}.
 
 Due to its high popularity and impressive ratio of fixed issues, PGO's results are outstanding, suggesting that it can be considered the most reliable operator among all.
 The results for CNPGO are good, while those for SPGO and PPO can be regarded as fair.
 
-\tab{Operators maturity / reliability}{tab:operatorMaturity}{1}{|l|l|l|l|l|}{
+\tab{Operators reliability}{tab:operatorReliability}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
-    Overall maturity / reliability	& 97\%	& 64\% &	40\%	& 47\% \\ \hline
+    Reliability	& 97\%	& 64\% &	40\%	& 47\% \\ \hline
 }
 
 \n{3}{Maintenance}
@@ -930,18 +939,12 @@ and the second being the dynamic test process outlined in Chapter \ref{chap:oper
 The results from both processes will be evaluated in this chapter.
 
 \n{3}{Learnability}
-TBD - (start) move this to methodology
-
-Learnability testing, which is one part of usability, aims to assess the ease with which new users can understand and use a product. This particular testing was conducted with two primary objectives. The first objective was to identify the presence of examples in the documentation, as learning facilitated by examples is generally more effective than without. The second objective was to gauge the level of learning required to operate the system effectively.
-
-TBD - (end) move this to methodology
-
 Learnability was divided into two parts: one evaluating the required training for each operator, and the other assessing the presence of examples in the documentation.
 Both aspects are tested in Chapter \ref{chap:learnability}.
 
 \n{4}{Required training}
 The training required presented in Table \ref{tab:operatorTraining} was calculated as the additional training needed to work with each operator, over and above knowledge of Kubectl (the Kubernetes command-line tool).
-Each additional tool required to work successfully with the operator resulted in a 5\% score decrease.
+Each additional tool required to work successfully with the operator resulted in a 5\% score decrease. The choice of a 5\% score decrease for each additional tool required is a subjective decision made based on considerations of practicality, fairness, and relative impact. While
 
 Overall, the required training to work with operators is minimal. For PGO, the only additional software needed, apart from Kubectl—which is essential for working with Kubernetes clusters—is Kustomize.
 For the rest of the operators, Helm is required to install the monitoring stack. It can therefore be asserted that proficiency with Kubernetes equates to the ability to work with operators.
@@ -954,7 +957,7 @@ For the rest of the operators, Helm is required to install the monitoring stack.
 
 \n{4}{Documentation examples}
 As indicated in Table \ref{tab:operatorTestDocExamples}, examples in the documentation are prevalent across all operators. SPGO, however, is at a slight disadvantage.
-Despite having a Graphical User Interface capable of managing the entire cluster and efficiently handling all cluster operations, it does not provide examples for major and minor updates.
+Despite having a Graphical User Interface capable of managing the entire cluster and efficiently handling all cluster operations, it does not provide examples for major and minor upgrades.
 These could be easily configured via the GUI, making it beneficial if the provided examples indicate that the respective functionality can be conveniently implemented using the GUI.
 Given that there are ten examples, each one has been assigned a value contributing 10\% towards the total score.
 
@@ -1042,7 +1045,8 @@ Nevertheless, the overall usability of the operators is at a good level.
 }
 
 \n{2}{Security}
-The results of the vulnerability analysis, as presented in Table \ref{tab:operatorTestVulnTrivy} and \ref{tab:operatorTestVulnSnyk}, were quantified as follows: the presence of a critical vulnerability was scored as 0\%, high severity vulnerability as 20\%, medium as 40\%, low as 60\%, unknown as 80\%, and the absence of vulnerabilities as 100\%.
+The results of the vulnerability analysis, as presented in Table \ref{tab:operatorTestVulnTrivy} and \ref{tab:operatorTestVulnSnyk}, were quantified as follows:
+the absence of vulnerabilities was quantified as 100\%, while unknown vulnerabilities were assigned a score of 80\%. Vulnerabilities with low severity were rated at 60\%, medium severity at 40\%, high severity at 20\%, and critical vulnerabilities received a score of 0\%.
 
 CNPGO was the only operator with no detected vulnerabilities, thus achieving a full score and can be regarded as secure. PPO, having only medium and lower severity vulnerabilities, can also be considered relatively secure. However, both PGO and SPGO, which were found to have high-severity vulnerabilities, can be deemed less secure compared to CNPGO and PPO.
 \tab{Vulnerability analysis}{tab:operatorVuln}{1}{|l|l|l|l|l|}{
@@ -1052,7 +1056,7 @@ CNPGO was the only operator with no detected vulnerabilities, thus achieving a f
 }
 
 \n{2}{Performance}
-According to the results presented in Table \ref{tab:operatorTestPerformance} the most performant operator PGO received a score of 100\% in this test, while the other operators were assigned scores proportionally based on their performance.
+According to the results presented in Table \ref{tab:operatorTestPerformance} the most performant operator PGO received a score of 100\% in this test, while the other operators were assigned scores proportionally based on their performance relative to PGO.
 
 \tab{Operators performance}{tab:operatorPerformance}{1}{|l|l|l|l|l|}{
     \hline
@@ -1078,7 +1082,7 @@ According to these results, the CNPGO operator can be considered the highest qua
     Average &	68.8\% & 73.6\%	& 59.2\% & 53.6\% \\ \hline
 }
 
-\tab{Overall quality without security}{tab:operatorOveralQualityWithoutSecurity}{.5}{|l|l|l|l|l|}{
+\tab{Overall quality without security criteria}{tab:operatorOveralQualityWithoutSecurity}{.5}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
     Performance &	100\% & 74\% & 54\% & 73\% \\ \hline
@@ -1091,7 +1095,7 @@ According to these results, the CNPGO operator can be considered the highest qua
 % ============================================================================ %
 \nn{Conclusion}
 
-In this final chapter of the thesis, the objectives outlined in Chapter \ref{chap:objectives} are aimed to be met by delivering clear and comprehensive recommendations for stakeholders on which operators are best suited to meet varying needs and preferences.
+In this final chapter of the thesis, the objectives outlined in Chapter \ref{chap:objectives} are aimed to be met by delivering clear and comprehensive recommendations for stakeholders on which operators are best suited based on defined metrics.
 
 The metrics for comparing operators were established in the previous chapters, and the operators were tested against these metrics, with the measured values being evaluated.
 
@@ -1099,9 +1103,9 @@ According to these results, the best choice is the CloudNativePG (CNPGO) operato
 
 The evaluation considers security as a crucial parameter due to its considerable impact on the operator scores.
 
-If the security parameter is disregarded, the most notable performer is the Crunchy Postgres for Kubernetes (PGO), which achieved the highest scores in performance and reliability. Interestingly, without the security factor, the StackGres operator would surpass the CNPGO, as it scored highest in the maintenance attribute and was rated as the most usable operator, largely due to its Graphical User Interface.
+In the scenario where all operators reach an equal level of security (expressed in the Table \Ref{tab:operatorOveralQualityWithoutSecurity}), the most notable performer would be the Crunchy Postgres for Kubernetes (PGO), which achieved the highest scores in performance and reliability. Interestingly, without the security factor, the StackGres operator would surpass the CNPGO, as it scored highest in the maintenance attribute and was rated as the most usable operator, largely due to its Graphical User Interface.
 
-The Percona Operator for PostgreSQL (PPO) cannot be recommended due to its underperformance across all evaluated categories. With the lowest scores across the board, its overall performance falls short in comparison to the other operators, making it the least suitable option based on our evaluation criteria.
+The Percona Operator for PostgreSQL (PPO) cannot be recommended due to its underperformance across all evaluated categories. With the lowest scores across the board, its overall performance falls short in comparison to the other operators, making it the least suitable option based on evaluation criterias.
 
 
 
