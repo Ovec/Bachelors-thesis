@@ -8,15 +8,11 @@ It is essential for the database server to be as close as possible to the applic
 
 TBD - switch to Czech layout
 
-TBD - Motto
-
 TBD - Czech abstract, English abstract
 
 TBD - Poděkování, motto
 
 TBD - adjust the test theory to test process
-
-TBD - describe tools
 
 
 % ============================================================================ %
@@ -202,9 +198,9 @@ The following options are advised by the Operator white paper \cite{operatorWhit
 
 \n{1}{Thesis objective}
 \label{chap:objectives}
-The objective of this thesis is to conduct an extensive evaluation of various Kubernetes operators available for Postgres lifecycle management.
+The objective of this thesis is to conduct an evaluation of various Kubernetes operators available for Postgres lifecycle management.
 
-The ultimate goal of the thesis is to deliver clear and comprehensive recommendations regarding the selection of operators that are best suited for managing the lifecycle of Postgres system based on defined metrics. This thesis intends to serve as a valuable resource that can guide stakeholders in making informed decisions about choosing the right operator for their specific operational context and requirements.
+The goal of the thesis is to deliver clear and comprehensive recommendations regarding the selection of operators that are best suited for managing the lifecycle of Postgres system based on defined metrics. This thesis intends to serve as a valuable resource that can guide stakeholders in making informed decisions about choosing the right operator for their specific operational context and requirements.
 
 Furthermore, it aims to contribute to the broader knowledge base about Kubernetes operators and their application in managing Postgres databases in a cloud-native environment.
 
@@ -423,13 +419,12 @@ It is important to notice at the beginning of this chapter that testing as descr
 Therefore, the test process derived from this methodology as every test process will not exhaustively test the operators and will be depended on thesis context, author bias, and author skills. Because The objective of this thesis is to conduct an extensive evaluation of various Kubernetes
 Operators available for Postgres lifecycle management the main scope of this methodology is to deliver test process that will produce test reports that will form the base for this evaluation.
 
-\n{2}{Criterias}
+\n{2}{Criteria}
 Some metrics are well measurable on their own, while others require further breakdown into multiple sub-metrics in order to obtain the results.
-The metrics definied in Chapter \Ref{chap:metrics} have been divided to criterias according to Figure \ref{fig:criteriaDivision}.
+The metrics definied in Chapter \Ref{chap:metrics} have been divided to criteria according to Figure \ref{fig:criteriaDivision}.
 
-\obr{Criterias breakdown}{fig:criteriaDivision}{1}{graphics/test_methodology-2.png}
-% The following criteria described in Chapter \ref{chap:metrics} will be subjected to testing. These criteria should provide a solid basis for the decision-making process. 
-To keep track of these criterias, each one has been assigned an ID. The list of identified criterias is as follows:
+\obr{Criteria breakdown}{fig:criteriaDivision}{1}{graphics/test_methodology-2.png}
+To keep track of these criteria, each one has been assigned an ID. The list of identified criteria is as follows:
 
 \begin{itemize}
     \item	CP: Performance
@@ -504,7 +499,7 @@ Maintenance testing must be performed by measuring the number of commits in the 
 
 \n{3}{Security testing}
 Security testing must be conducted by analyzing the vulnerability of the docker image for each individual operator. As the overall cluster comprises multiple docker containers with various dependencies such as Postgres, pooling, backups, etc., to streamline the testing process, only the operator image will be subjected to vulnerability analysis. This approach allows focusing on the specific security aspects of the operator without testing of the Postgres cluster dependencies.
-
+However, in case of unusual results, other docker containers utilized by the operator may be subject of the vulnerability analysis as well.
 
 \n{2}{Test management process}
 According to the IEEE Standard for Software Test Documentation \cite{ieeeTestProcess}, test management processes have three main test processes: test strategy and planning, test monitoring and control, and test completion.
@@ -515,7 +510,7 @@ As depicted in Figure \ref{fig:ieeeTestProcess} testing has more than one manage
 Thesis test process will consist of one management process that will create two managed subprocesses, one for static testing and one for dynamic testing. This test management process will monitor and control subprocesses. Subprocesses will deliver all their deliverables to this main process.
 
 \n{2}{Test strategy and planning}
-The output of the test strategy and planing will be the test plan, as the basis for its creation will be the criterias created earlier. Details about activities are described by ISO/IEC/IEE 29119-3.
+The output of the test strategy and planing will be the test plan, as the basis for its creation will be the criteria created earlier. Details about activities are described by ISO/IEC/IEE 29119-3.
 
 As depicted on \ref{fig:ieeeTestProcess} test plan is not static but it changes according to monitoring.
 
@@ -555,7 +550,7 @@ According to ISTQB \cite{FoundationOfSoftwareTesting} there are two types of tes
 \obr{Dynamic test processes \cite{ieeeTestProcess}}{fig:ieeeTestDynamicTestProcess}{1}{graphics/test_dynamic_test_processes.png}
 
 \n{2}{Test design and implementation processes}
-Test design and implementation process must follow the process depicted in the figure \ref{fig:ieeeTestDesignAndImplementation}. Test design techniques should be used to derive test cases. Test cases must be traceable to criterias. This process can be reentered multiple times and must meet the completion criteria specified in the test plan.
+Test design and implementation process must follow the process depicted in the figure \ref{fig:ieeeTestDesignAndImplementation}. Test design techniques should be used to derive test cases. Test cases must be traceable to criterion. This process can be reentered multiple times and must meet the completion criteria specified in the test plan.
 \obr{Test design and implementation \cite{ieeeTestProcess}}{fig:ieeeTestDesignAndImplementation}{1}{graphics/test_design_and_implementation.png}
 
 
@@ -662,20 +657,10 @@ To proceed with the security testing, a vulnerability analysis test plan was cre
 The test items for this process were identified, the test tool was installed, and a test procedure was developed which consisted of four test cases - one for each operator (details in Appendix A IV).
 Each operator was then tested according to this procedure, with the overall vulnerability results presented in Table \ref{tab:operatorTestVulnTrivy}.
 
-During this test process the security scanner Trivy was unable to detect any vulnerabilities in CNPG's container image utilizing Debian 11.6.
+During this test process the security scanner Trivy was unable to detect any vulnerabilities in CNPGO's container image utilizing Debian 11.6.
 The rest of the operators are using the Red Hat 8.7 container image, which resulted in almost identical vulnerability scores.
 Unfortunately, the implementation of Red Hat 8.7 in both PGO and SPGO has a high vulnerability in openssl-libs (CVE-2023-0286).
 More details about this vulnerability can be found here: \url{https://avd.aquasec.com/nvd/2023/cve-2023-0286/}.
-
-The absence of any detected vulnerabilities in CNPGO by Trivy raised a question: Is Trivy accurately scanning this image? To address this concern, the test plan was updated to include an additional test case.
-This test involved scanning the base image of CNPGO to ascertain if Trivy could detect any vulnerabilities in Debian 11.6.
-
-Debian image was scanned with the results presented in Table \ref{tab:operatorTestVulnTrivy} which can be interpreted in two ways. The first interpretation suggests that CNPGO might be using Debian but has effectively removed or mitigated the vulnerable parts. The second interpretation considers the possibility that Trivy may not be able to accurately identify Debian vulnerabilities within CNPGO.
-
-To eliminate the second interpretation an additional vulnerability analysis tool, Snyk, was incorporated into the testing process. The test plan was subsequently adjusted, and the images were scanned using Snyk. This alternative method produced results similar to those from the Trivy scanning for each operator. However, there were exceptions in terms of High severity issues;
-Snyk identified three additional vulnerabilities in the openssl-libs of PGO and SPGO and provided different results for Debian.
-
-Complete results of Trivy and Snyk scans can be located in the thesis repository\footnote[6]{https://github.com/Ovec/Bachelors-thesis} folder at \url{tests/vulnerability_analysis}. The overall results are presented in Table \ref{tab:operatorTestVulnTrivy} and \ref{tab:operatorTestVulnSnyk}
 
 \tab{Trivy vulnerability analysis results}{tab:operatorTestVulnTrivy}{1}{|l|l|l|l|l|l|}{
     \hline
@@ -687,6 +672,14 @@ Complete results of Trivy and Snyk scans can be located in the thesis repository
     Unkown &	0 &	0 &	0 &	0 &	0 \\ \hline
 }
 
+The absence of any detected vulnerabilities in CNPGO by Trivy raised a question: Is Trivy accurately scanning this image? To address this concern, the test plan was updated to include an additional test case.
+This test involved scanning the base image of CNPGO to ascertain if Trivy could detect any vulnerabilities in Debian 11.6.
+
+Debian image was scanned with the results presented in Table \ref{tab:operatorTestVulnTrivy} which can be interpreted in two ways. The first interpretation suggests that CNPGO might be using Debian but has effectively removed or mitigated the vulnerable parts. The second interpretation considers the possibility that Trivy may not be able to accurately identify Debian vulnerabilities within CNPGO.
+
+To eliminate the second interpretation an additional vulnerability analysis tool, Snyk, was incorporated into the testing process. The test plan was subsequently adjusted, and the images were scanned using Snyk. This alternative method produced results similar to those from the Trivy scanning for each operator. However, there were exceptions in terms of High severity issues;
+Snyk identified three additional vulnerabilities in the openssl-libs of PGO and SPGO and provided different results for Debian.
+
 \tab{Snyk vulnerability analysis results}{tab:operatorTestVulnSnyk}{1}{|l|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO & Debian 11.6 \\ \hline
@@ -696,6 +689,26 @@ Complete results of Trivy and Snyk scans can be located in the thesis repository
     Low &	39 &	0 &	39 &	39 &	48 \\ \hline
     Unkown &	0 &	0 &	0 &	0 &	0 \\ \hline
 }
+
+Even after conducting these two testing rounds, it was surprising to find that the CNPGO operator did not have any vulnerabilities. Presumably, this indicates that the operator is currently free from vulnerabilities as of the testing date. However, to ensure that this false result does not create the impression that no vulnerabilities would be introduced into the Kubernetes cluster when deploying a Postgres cluster using this operator, an additional round of testing was carried out. This series of tests involved deploying the operator onto a Kubernetes cluster, creating a Postgres cluster with primary and standby replicas, a connection pooler, and a backup.
+To ensure consistency in the Postgres versions, Postgres version 14.7 was utilized whenever possible. In cases where version 14.7 was not feasible, version 14 was employed, and the choice of version was left to the discretion of the operator.
+
+The entire cluster was then scanned using Trivy, and the number of vulnerabilities in the namespace where the Postgres cluster was deployed was recorded in Table \ref{tab:operatorTestVulnK8s}. In cases where it was evident that the vulnerabilities were the same in both replicas, only one instance of the vulnerability was counted.
+
+\tab{Results of the Postgres cluster deployment using the operator}{tab:operatorTestVulnK8s}{1}{|l|l|l|l|l|}{
+    \hline
+    & PGO	& CNPGO	& SPGO & PPO\\ \hline
+    Critical & 0 &	5 &	0 &	0 \\ \hline
+    High & 54 &	55 &	16 &	10 \\ \hline
+    Medium & 1171 &	26 &	461 &	467  \\ \hline
+    Low &	2334 &	115 &	433 &	744 \\ \hline
+    Unkown &	0 &	0 &	0 &	0  \\ \hline
+}
+During this testing, a significant number of additional vulnerabilities were identified, particularly critical vulnerabilities in the CNPGO's image ghcr.io/cloudnative-pg/postgresql:14.7. One recurring vulnerability was found in Python 3.9 (CVE-2021-29921), and more information about it can be found at \url{https://avd.aquasec.com/nvd/cve-2021-29921}. Additionally, a vulnerability was discovered in SQlite (CVE-2019-8457), and further details can be found at \url{https://avd.aquasec.com/nvd/cve-2019-8457}.
+
+Due to the presence of multiple docker containers (up to 6) within clusters created by operators, it is crucial to assess the severity of errors in the cluster rather than simply counting the number of errors. This is necessary as some errors may occur repeatedly, leading to inflated error counts. Furthermore, it is important to note that the same vulnerabilities can be present multiple times within a single image. For instance, the critical Python 3.9 bug (CVE-2021-29921) was identified four times in the CNPGO Postgres 14.7 image.
+
+Complete results of Trivy and Snyk scans can be located in the thesis repository\footnote[6]{https://github.com/Ovec/Bachelors-thesis} folder at \url{tests/vulnerability_analysis}. The overall results are presented in Tables \ref{tab:operatorTestVulnTrivy}, \ref{tab:operatorTestVulnSnyk} and \ref{tab:operatorTestVulnK8s}
 
 \n{2}{Dynamic test process}
 
@@ -864,7 +877,7 @@ As mentioned in Chapter~\ref{chap:easeOfUse}, changes to PPO's configuration do 
 \n{1}{Evaluation}
 This chapter aims to answer the fourth research question: ’How do the operators perform when evaluated according to the chosen metrics?’".
 It will utilize the findings presented in Chapter \ref{chap:testProces} to conduct a comprehensive evaluation of each quality attribute associated with the operators.
-Each criteria will be quantified and discussed in detail.
+Each criterion will be quantified and discussed in detail.
 The cumulative results will be presented at the end of this chapter.
 
 \n{2}{Measuring rule}
@@ -1045,14 +1058,20 @@ Nevertheless, the overall usability of the operators is at a good level.
 }
 
 \n{2}{Security}
-The results of the vulnerability analysis, as presented in Table \ref{tab:operatorTestVulnTrivy} and \ref{tab:operatorTestVulnSnyk}, were quantified as follows:
-the absence of vulnerabilities was quantified as 100\%, while unknown vulnerabilities were assigned a score of 80\%. Vulnerabilities with low severity were rated at 60\%, medium severity at 40\%, high severity at 20\%, and critical vulnerabilities received a score of 0\%.
+The results of the vulnerability analysis, as presented in Table \ref{tab:operatorTestVulnTrivy} and \ref{tab:operatorTestVulnK8s}, were assigned quantitative scores based on the severity of the vulnerabilities. The absence of vulnerabilities was given a score of 100\%, unknown vulnerabilities received a score of 80\%, vulnerabilities with low severity were rated at 60\%, medium severity at 40\%, high severity at 20\%, and critical vulnerabilities were assigned a score of 0\%. It is worth noting that the results from Table \ref{tab:operatorTestVulnSnyk} were not included separately, as they were the same as the results from Table \ref{tab:operatorTestVulnTrivy}.
+The results from both tables were quantified, and the average score was calculated to provide an overall result, which is displayed in Table \ref{tab:operatorVuln}.
 
-CNPGO was the only operator with no detected vulnerabilities, thus achieving a full score and can be regarded as secure. PPO, having only medium and lower severity vulnerabilities, can also be considered relatively secure. However, both PGO and SPGO, which were found to have high-severity vulnerabilities, can be deemed less secure compared to CNPGO and PPO.
+Although CNPGO was the only operator that did not have any vulnerabilities, its dependencies for cluster creation do contain critical vulnerabilities. PGO and SPGO operators have high severity vulnerabilities both in the operators themselves and in the Postgres cluster they create. The PPO operator has the highest vulnerability of medium severity, but the cluster created by it contains high severity vulnerabilities.
+
+Evaluating the extent to which these vulnerabilities pose a threat to the overall security of the Kubernetes cluster, both externally and internally, is beyond the scope of this thesis and depends on whether the Postgres cluster will be accessible from the internet or only within the Kubernetes environment and other parts of the Kubernetes cluster.
+From the perspective of this thesis, it can be concluded that the CNPGO operator itself is not vulnerable, but it creates a highly vulnerable Postgres cluster. Other operators are vulnerable and create vulnerable clusters.
+
 \tab{Vulnerability analysis}{tab:operatorVuln}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
-    Security &	20\% &	100\%	& 20\%	& 40\% \\ \hline
+    Operator vulnerabilities &	20\%	& 100\%	 & 20\%	& 40\% \\ \hline
+    Cluster vulnerabilities &	20\%	& 0\%	& 20\%	 & 20\% \\ \hline \hline
+    Security &	20\% &	50\%	& 20\%	& 30\% \\ \hline
 }
 
 \n{2}{Performance}
@@ -1067,45 +1086,43 @@ According to the results presented in Table \ref{tab:operatorTestPerformance} th
 
 \n{2}{Overall quality of the operators}
 The overall quality, according to the metric defined in Chapter \ref{chap:metrics}, was calculated as the average of these metrics and is presented in Table \ref{tab:operatorOveralQuality}.
-According to these results, the CNPGO operator can be considered the highest quality among the evaluated operators, followed by PGO, SPGO, and finally PPO.
+According to these results, the PGO operator can be considered the highest quality among the evaluated operators, followed by CNPGO, SPGO, and finally PPO.
 
 
-
-\tab{Overall quality of operators}{tab:operatorOveralQuality}{.5}{|l|l|l|l|l|}{
+\tab{Overall quality of the operators}{tab:operatorOveralQuality}{1}{|l|l|l|l|l|}{
     \hline
     & PGO	& CNPGO	& SPGO & PPO \\ \hline
     Performance &	100\% & 74\% & 54\% & 73\% \\ \hline
-    Reliability &	97\% & 64\% & 40\% & 47\%\\ \hline
-    Usability &	78\% &	73\% &	82\% &	67\% \\ \hline
-    Maintenance &	49\% & 57\% & 100\% & 41\% \\ \hline
-    Security &	20\% & 100\% & 20\% & 40\% \\ \hline \hline
-    Average &	68.8\% & 73.6\%	& 59.2\% & 53.6\% \\ \hline
+    Reliability &	97\% & 64\% & 40\% & 47\%  \\ \hline
+    Usability &	78\% &	73\% &	82\% &	67\%  \\ \hline
+    Maintenance &	49\% & 57\% & 100\% & 41\%   \\ \hline
+    Security &	20\% & 50\% & 20\% & 30\%  \\ \hline \hline
+    Overall quality &	68.8\%	& 63.6\% & 59.2\% &	51.6\%   \\ \hline
 }
 
-\tab{Overall quality without security criteria}{tab:operatorOveralQualityWithoutSecurity}{.5}{|l|l|l|l|l|}{
-    \hline
-    & PGO	& CNPGO	& SPGO & PPO \\ \hline
-    Performance &	100\% & 74\% & 54\% & 73\% \\ \hline
-    Reliability &	97\% & 64\% & 40\% & 47\%\\ \hline
-    Usability &	78\% &	73\% &	82\% &	67\% \\ \hline
-    Maintenance &	49\% & 57\% & 100\% & 41\% \\ \hline \hline
-    Average &	81\% & 	67\% & 	69\% & 	57\%   \\ \hline
-}
 
 % ============================================================================ %
 \nn{Conclusion}
 
-In this final chapter of the thesis, the objectives outlined in Chapter \ref{chap:objectives} are aimed to be met by delivering clear and comprehensive recommendations for stakeholders on which operators are best suited based on defined metrics.
+In this final chapter of the thesis, the objective outlined in Chapter \ref{chap:objectives} is aimed to be met by delivering clear and comprehensive recommendations for stakeholders on which operators are best suited based on defined metrics.
 
 The metrics for comparing operators were established in the previous chapters, and the operators were tested against these metrics, with the measured values being evaluated.
 
-According to these results, the best choice is the CloudNativePG (CNPGO) operator, as it received the highest overall score and demonstrated a standout performance in the security category, where other operators received significantly lower scores.
+Each operator possesses its strengths and weaknesses across different metrics. The optimal choice depends on which factors are of the greatest importance to the stakeholders.
 
-The evaluation considers security as a crucial parameter due to its considerable impact on the operator scores.
+\begin{itemize}
+    \item If performance is a priority, PGO excels, achieving the highest scores (100\%) and can therefore be considered the best choice in terms of performance.
+    \item When reliability is a key consideration, PGO again achieves top marks (97\%), marking it as the most reliable operator.
+    \item If ease of use is a significant criterion, SPGO boasts the highest score (82\%), suggesting it as the most user-friendly operator.
+    \item If maintenance is a crucial aspect, SPGO obtains the highest scores (100\%), indicating it as the most appropriate operator for this factor.
+          % \item With regard to security, the operator standing out is CNPGO. This doesn't imply it holds high scores in security, but among the options, it tends to outperform the others.
+\end{itemize}
 
-In the scenario where all operators reach an equal level of security (expressed in the Table \Ref{tab:operatorOveralQualityWithoutSecurity}), the most notable performer would be the Crunchy Postgres for Kubernetes (PGO), which achieved the highest scores in performance and reliability. Interestingly, without the security factor, the StackGres operator would surpass the CNPGO, as it scored highest in the maintenance attribute and was rated as the most usable operator, largely due to its Graphical User Interface.
+According to the overall results the PGO is leading with the highest score (68.8\%). Nevertheless, it's essential to bear in mind the significance of individual categories and their relevance to the stakeholder's specific needs.
 
-The Percona Operator for PostgreSQL (PPO) cannot be recommended due to its underperformance across all evaluated categories. With the lowest scores across the board, its overall performance falls short in comparison to the other operators, making it the least suitable option based on evaluation criterias.
+Regarding the security aspect, only a vulnerability analysis has been performed, which does not provide a comprehensive view of security. Furthermore, it remains undetermined what effects these vulnerabilities may have on the cluster, both externally and internally. With this metric in mind, we suggest further research in future studies.
+
+The Percona Operator for PostgreSQL (PPO) cannot be recommended due to its underperformance across all evaluated categories. With the lowest scores across the board, its overall performance falls short in comparison to the other operators, making it the least suitable option based on evaluation criteria.
 
 
 
