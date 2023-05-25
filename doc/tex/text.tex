@@ -4,12 +4,34 @@
 
 % ============================================================================ % 
 \nn{Introduction}
-It is essential for the database server to be as close as possible to the applications that are using it. This reduces the number of men in the middle between the database and the application, which reduces database access latency and thus reduces overall application latency and increases security. The mass migration of applications to Kubernetes clusters implies a necessary shift of Postgres to Kubernetes. This thesis defines Postgres, Kubernetes, and their operators. It then further describes the lifecycle of a Postgres cluster, and searches for operators capable of managing this lifecycle. It establishes metrics by which it tests and evaluates these operators.  The result of this thesis is the recommendation of a suitable operator based on the defined metrics.
+Databases are an integral part of most systems and play a significant role in our lives. One of the most widely used database systems is Postgres, which was founded in the 1980s and continues to be the industry leader, employed in a wide range of applications. However, with the emergence of Kubernetes and the extensive migration of software systems to this orchestrator, the need to transition to Kubernetes for Postgres has arisen.
 
-TBD - switch to Czech layout
+While Kubernetes is a versatile platform originally designed for deploying stateless microservice applications, it alone cannot fulfill all the requirements for achieving the high availability demanded on Postgres. To address this, CoreOS introduced the operator pattern, enabling the management of complex stateful applications that require synchronization between their nodes. An operator is a specialized software that extends the Kubernetes API and possesses specific knowledge of managing resources that Kubernetes lacks.
 
-TBD - VLNKA
+By utilizing the operator pattern, it becomes possible to achieve various functionalities for Postgres, such as high availability, backup to different cloud storage, Point-In-Time recovery, vertical or horizontal scaling, and upgrading to a new version of Postgres without human operator intervention. This eliminates the need for tedious and repetitive manual work, which is replaced by the Kubernetes Operator.
 
+The focus of this thesis is to identify the appropriate Postgres lifecycle operators, establish metrics for creating a testing methodology, conduct tests, evaluate the results, and provide clear and comprehensive recommendations on selecting operators that align best with the defined metrics.
+
+\n{1}{Thesis objective}
+\label{chap:objectives}
+The objective of this thesis is to conduct an evaluation of various Kubernetes operators available for Postgres lifecycle management.
+
+The goal of the thesis is to deliver clear and comprehensive recommendations regarding the selection of operators that are best suited for managing the lifecycle of Postgres system based on defined metrics. This thesis intends to serve as a valuable resource that can guide stakeholders in making informed decisions about choosing the right operator for their specific operational context and requirements.
+
+Furthermore, it aims to contribute to the broader knowledge base about Kubernetes operators and their application in managing Postgres databases in a cloud-native environment.
+
+
+\n{1}{Resource questions}
+\label{chap:resourceQuestions}
+With the thesis objective defined and a comprehensive understanding of Postgres, Kubernetes, the Postgres lifecycle, and operators established in previous chapters, the research questions can now be formulated.
+These questions are aimed at facilitating a deeper exploration of the intricacies involved in managing Postgres in a Kubernetes environment through the use of operators.
+
+\begin{enumerate}
+    \item What operators exist for lifecycle management of Postgres in Kubernetes?
+    \item What metrics are suitable for comparing Opereators for lifecycle management in Kubernetes?
+    \item What approach should be taken to determine the degree to which the metrics are met?
+    \item How do the operators perform when evaluated according to the chosen metrics?
+\end{enumerate}
 
 
 
@@ -25,7 +47,8 @@ POSTGRES was using its POSTQUEL query language from version, until Andrew Yu and
 
 It was clear by 1996 that the name would not stand the test of time therefore it has been renamed to PostgreSQL. As stated by PostgreSQL documentation \cite{docuPgBriefHistory}: “Many people continue to refer to PostgreSQL as “Postgres” (now rarely in all capital letters) because of tradition or because it is easier to pronounce. This usage is widely accepted as a nickname or alias.“ This thesis will use Postgres as an alias for PostgreSQL as well.
 
-More than 30 years after the first version Postgres has been considered the most used ORDBMS for professional developers by Stack Overflow survey \cite{so2022survey}. According to Riggs and Ciolli \cite{pg14introduction}: “The PostgreSQL feature set attracts serious users who have serious applications. Financial services companies may be PostgreSQL's largest user group, although governments, telecommunication companies, and many other segments are strong users as well.“ It is fully ACID compliant \cite{juba2015learningTransactionIsolation} and supports many kinds of data models such as relational, document, and key/value. \cite{pg14introduction}
+More than 30 years after the first version Postgres has been considered the most used ORDBMS for professional developers by Stack Overflow survey \cite{so2022survey}. According to Riggs and Ciolli \cite{pg14introduction}: “The PostgreSQL feature set attracts serious users who have serious applications. Financial services companies may be PostgreSQL's largest user group, although governments, telecommunication companies, and many other segments are strong users as well.“ It is fully ACID compliant \cite{juba2015learningTransactionIsolation}
+and supports many kinds of data models such as relational, document, and key/value. \cite{pg14introduction} The Postgres architecture can be observed in Figure \ref{fig:Postgres_architecture}
 
 \obr{Postgres Architecture \cite{HusseinMediumPostgres} }{fig:Postgres_architecture}{1}{graphics/Postgres_architecture.png}
 
@@ -53,7 +76,7 @@ Patroni is a popular open-source tool created by Zalando to achieve high availab
 
 
 \n{3}{Load Balancing and Connection Pooling}
-Using more than one node allows to direct traffic to a node that is less busy and thus achieve load balancing. Postgres doesn't come with any software that allows splitting the load on different nodes, so it is necessary to use an external load balancer such as HA Proxy or pgBouncer. The load balancer then acts as an intermediary between the database and the client and directs the traffic to the available nodes according to the set rules. These load balancers also enable connection pooling which is a technique for managing and reusing database connections to increase performance and reduce overhead. Connection pooling involves creating a pool of pre-created connections that can be shared and reused by multiple client requests, instead of creating a new connection for each request. This removes the overhead of creating a new process each time a client connects to Postgres and allows the client to use resources that would otherwise be used to service multiple requests (or complete them faster). \cite{PerconaBlogConnectionPooling}
+Using more than one node allows to direct traffic to a node that is less busy and thus achieve load balancing. Postgres doesn't come with any software that allows splitting the load on different nodes, so it is necessary to use an external load balancer such as HA Proxy or pgBouncer. The load balancer then acts as an intermediary between the database and the client and directs the traffic to the available nodes according to the set rules. These load balancers also enable connection pooling which is a technique for managing and reusing database connections to increase performance and reduce overhead. Connection pooling involves creating a pool of pre-created connections that can be shared and reused by multiple client requests, instead of creating a new connection for each request. This removes the overhead of creating a new process each time a client connects to Postgres and allows the client to use resources that would otherwise be used to service multiple requests (or complete them faster). \cite{PerconaBlogConnectionPooling}
 
 \n{2}{Kubernetes}
 \label{chap:kubernetes}
@@ -72,9 +95,10 @@ As described by Kubernetes Documentation \cite{docuKubeComponents} Kubernetes pr
 \n{3}{Kubernetes Components}
 \label{chap:kubeComponents}
 Kubernetes cluster is composed of a set of worker machines that run containerized applications called nodes. Each cluster must have at least one node. \cite{docuKubeComponents}
-\obr{The components of a Kubernetes cluster \cite{docuKubeComponents}}{}{1}{graphics/Kubernetes_cluster_components.png}
+\obr{The components of a Kubernetes cluster \cite{docuKubeComponents}}{fig:kubeComponents}{1}{graphics/Kubernetes_cluster_components.png}
 
-The Kubernetes control plane is the management system of a Kubernetes cluster, responsible for maintaining the desired state of the cluster. It consists of multiple components that work together to manage the cluster and its resources, including pods, services, and volumes. The key components of control plane are \cite{masteringKubernetesConcepts}:
+The Kubernetes control plane is the management system of a Kubernetes cluster, responsible for maintaining the desired state of the cluster.
+As depicted in Figure \ref{fig:Postgres_architecture} it consists of multiple components that work together to manage the cluster and its resources, including pods, services, and volumes. The key components of control plane are \cite{masteringKubernetesConcepts}:
 \begin{itemize}
     \item \textbf{kube-APIserver:} Acts as the front-end for the Kubernetes API and exposes the API to other components. \cite{docuKubeComponents}
     \item \textbf{Etcd:} Highly available distributed key-value store that serves as the backing store for the cluster's configuration data. \cite{Dobies2020}
@@ -104,13 +128,13 @@ Containers and pods in Kubernetes are ephemeral. When a container is terminated,
 
 Kubernetes version 1.5 came with a new object called StatefulSet that allows a set of stateful pods to be deployed and managed. Each pod has a unique, stable network identity and a persistent storage volume. This enables stateful applications like databases to be run on Kubernetes. Advantages of using StatefulSets include predictable naming schemes, ordered pod creation and deletion, and unique persistent storage. \cite{docuKubeStatefulSet} \cite{githubKube15}
 
-In version 1.7, Kubernetes introduced the Custom Resources extension to its API. \cite{githubIBMCr} This extension allows Kubernetes to use user-defined resources that are not native to Kubernetes as if they were native. \cite{NewStackCRDs} Custom resources (CR) is an extension to the Kubernetes API that extends the deployment with additional parameters that are not part of it. CR stores these parameters and allows the API server to access them just like the native Kubernetes parts. CR is created in the Kubernetes cluster using a definition called Custom Resource Definition (CRD). \cite{operatorsAtK8sIface}
+In version 1.7, Kubernetes introduced the Custom Resources extension to its API. \cite{githubIBMCr} This extension allows Kubernetes to use user-defined resources that are not native to Kubernetes as if they were native. \cite{NewStackCRDs} Custom resources (CR) is an extension to the Kubernetes API that extends the deployment with additional parameters that are not part of it. CR stores these parameters and allows the API server to access them just like the native Kubernetes parts. CR is created in the Kubernetes cluster using a definition called Custom Resource Definition (CRD). \cite{operatorsAtK8sIface}
 
-Kuberentes controllers are control loops\footnote[1]{A control loop is a process that continuously monitors the state of a system, compares it to a desired state, and makes adjustments to bring the system closer to the desired state.} that constantly check the state of their controlled objects. If the controlled objects are not in the desired state, the controller performs actions to get the controlled objects into that state. For example, restart a crashed node, add a new replica, modify settings, etc. \cite{docuKubeControllers}
+Kuberentes controllers (depicted in Figure \Ref{fig:kubeControler}) are control loops\footnote[1]{A control loop is a process that continuously monitors the state of a system, compares it to a desired state, and makes adjustments to bring the system closer to the desired state.} that constantly check the state of their controlled objects. If the controlled objects are not in the desired state, the controller performs actions to get the controlled objects into that state. For example, restart a crashed node, add a new replica, modify settings, etc. \cite{docuKubeControllers}
 However, to work with CR, custom controllers that can work with these resources must be created, these controllers are called Custom Controllers. \cite{docuKubeCR}
 
 
-\obr{Kubernetes controller \cite{operatorWhitepaper} }{}{1}{graphics/Kubernetes_controller.png}
+\obr{Kubernetes controller \cite{operatorWhitepaper} }{fig:kubeControler}{1}{graphics/Kubernetes_controller.png}
 
 \n{2}{Running Postgres in Kubernetes}
 \label{chap:postgresInKube}
@@ -126,7 +150,7 @@ For managing whole Postgres lifecycle it is necessary to install additional appl
 \n{2}{Database system lifecycle}
 \label{chap:lifecycle}
 The database system itself is a software like any other. It is therefore also subject to the same lifecycle as software.
-As depicted in figure \ref{fig:applifecycle} application lifecycle consists of three main parts. It is the governance part, development, and operations.
+As depicted in Figure \ref{fig:applifecycle} application lifecycle consists of three main parts. It is the governance part, development, and operations.
 For this thesis, the focus will be specifically on the operations part, as it is the only controllable aspect considered for testing and evaluation.
 \obr{Application Lifecycle \cite{ALM}}{fig:applifecycle}{1}{graphics/aplication-lifecycle.png}
 
@@ -149,16 +173,17 @@ Therefore the complete database system lifecycle can be outlined by following ev
 \label{chap:operators}
 Kubernetes can run stateless applications very well. But its general purpose makes running complex stateful applications on top of it quite challenging.
 
-However, this has changed in 2016 when CoreOS came up with operators as a way to deploy complex applications with state such as databases, caches, or monitoring systems. \cite{IArchiveCOSoperators}
+However, this has changed in 2016 when CoreOS came up with operators (depicted in Figure \Ref{fig:operatorDefinition}) as a way to deploy complex applications with state such as databases, caches, or monitoring systems. \cite{IArchiveCOSoperators}
 
-An operator is a special kind of software that extends the Kubernetes API and has a particular knowledge of managed resource that Kubernetes does not have. The operator also serves as a packaging mechanism for distributing applications including their dependencies in Kubernetes. The operator can manage, restore, update or monitor the resource. It can also manage very complex applications. The Kubernetes operator thus replaces the human operator after which it is named, who would otherwise take care of these tasks. \cite{operatorsPreface} \cite{IArchiveCOSoperators}
+An operator is a special kind of software that extends the Kubernetes API and has a particular knowledge of managed resource that Kubernetes does not have.
+The operator also serves as a packaging mechanism for distributing applications including their dependencies in Kubernetes. The operator can manage, restore, update or monitor the resource. It can also manage very complex applications. The Kubernetes operator thus replaces the human operator after which it is named, who would otherwise take care of these tasks. \cite{operatorsPreface} \cite{IArchiveCOSoperators}
 
-\obr{Definition of Kubernetes operator \cite{IArchiveCOSoperators}}{}{1}{graphics/coreos_operator.png}
+\obr{Definition of Kubernetes operator \cite{IArchiveCOSoperators}}{fig:operatorDefinition}{1}{graphics/coreos_operator.png}
 
 CoreOS demonstrated the use of its operator on Etcd (described in the Kubernetes Components chapter). When new Etcd nodes are created, it is necessary to give them a DNS names and use the Etcd cluster management tools to add the new nodes to an existing cluster. CoreOS has automated these tasks with the Etcd operator so that all that is required is to increase the number of replicas in the operator CRD and the Etcd operator will perform these tasks instead of a human operator. \cite{IArchiveCOSoperators}
 By embedding the human operator's operational knowledge into the code, this ensures that these tasks are repeatable, testable and upgradable. It also ensures that the necessary operations are always performed, executed in the order in which they are supposed to be performed, and none are skipped. This reduces the number of hours spent on dull but essential work such as backups. \cite{operatorWhitepaper}
 
-As described by operator White Paper \cite{operatorWhitepaper} and depicted in figure \ref{fig:operatorPatern}, operator consists of the following parts
+As described by operator White Paper \cite{operatorWhitepaper} and depicted in Figure \ref{fig:operatorPatern}, operator consists of the following parts
 \begin{itemize}
     \item The managed application or infrastructure
     \item Software that has some specific knowledge of the managed application or infrastructure and allows the user to declaratively set the desired state
@@ -193,27 +218,6 @@ The following options are advised by the Operator white paper \cite{operatorWhit
     \item	The search for public operator registries that provide a platform for publishing operators and the underlying documentation.
     \item	The creation of own operator.
 \end{itemize}
-
-\n{1}{Thesis objective}
-\label{chap:objectives}
-The objective of this thesis is to conduct an evaluation of various Kubernetes operators available for Postgres lifecycle management.
-
-The goal of the thesis is to deliver clear and comprehensive recommendations regarding the selection of operators that are best suited for managing the lifecycle of Postgres system based on defined metrics. This thesis intends to serve as a valuable resource that can guide stakeholders in making informed decisions about choosing the right operator for their specific operational context and requirements.
-
-Furthermore, it aims to contribute to the broader knowledge base about Kubernetes operators and their application in managing Postgres databases in a cloud-native environment.
-
-
-\n{1}{Resource questions}
-\label{chap:resourceQuestions}
-With the thesis objective defined and a comprehensive understanding of Postgres, Kubernetes, the Postgres lifecycle, and operators established in previous chapters, the research questions can now be formulated.
-These questions are aimed at facilitating a deeper exploration of the intricacies involved in managing Postgres in a Kubernetes environment through the use of operators.
-
-\begin{enumerate}
-    \item What operators exist for lifecycle management of Postgres in Kubernetes?
-    \item What metrics are suitable for comparing Opereators for lifecycle management in Kubernetes?
-    \item What approach should be taken to determine the degree to which the metrics are met?
-    \item How do the operators perform when evaluated according to the chosen metrics?
-\end{enumerate}
 
 \n{1}{Operators for Lifecycle Management in Kubernetes}
 \label{chap:searchForoperators}
@@ -260,7 +264,7 @@ PGO is distributed under the Apache License 2.0, an open-source license that all
 
 \n{2}{EDB Postgres for Kubernetes}
 The EDB Postgres for Kubernetes (EDBO) is a operator that has been designed, developed, and maintained by EnterpriseDB Corporation.
-It provides comprehensive coverage of the entire lifecycle of highly available Postgres database clusters with a Primary/Standby architecture,
+It provides comprehensive coverage of the entire lifecycle of highly available Postgres database clusters with a Primary/Standby architecture,
 utilizing native streaming replication. The operator is based on the open-source CloudNativePG operator and offers additional benefits. \cite{operatorHubEDB}
 
 EDBO is distributed under the EDB Limited Usage License Agreement, a proprietary license that is specific to software provided by EnterpriseDB Corporation. A license key is always required for the operator to work longer than 30 days. \cite{EDBdocuLicence} Due to the restrictive nature of the license EDBO will no longer be subject to testing and evaluation but its key component CloudNativePG will.
@@ -462,7 +466,7 @@ To keep track of these criteria, each one has been assigned an ID. The list of i
 \end{itemize}
 
 \n{3}{Performance testing}
-Performance testing must be conducted using performance analysis. To test the performance, an environment must be set up in which the deployed operator creates a high-availability (HA) Postgres cluster consisting of three nodes.
+Performance testing must be conducted using performance analysis. To test the performance, an environment must be set up in which the deployed operator creates a high-availability (HA) Postgres cluster consisting of three nodes.
 The test environment must be recreated for each operator being evaluated. Additionally, an equal number of pooler nodes must be created. It is essential that the settings of all Postgres clusters are the same, and only the HA service must be tested.
 The performance tests must be carried out at least three times to ensure accurate and reliable results.
 
@@ -624,7 +628,7 @@ The results of this repository analysis are presented in Table \ref{tab:operator
 }
 \n{3}{Usability: Learnability}
 \label{chap:learnability}
-The learnability testing process was divided into two distinct aspects: the first one being the training required to operate with the operators, and the second one being the presence of examples concerning Postgres lifecycle events in the operator's documentation. Following the guidelines of the test plan (available in Appendix A III), a checklist was created. The documentation for each operator was thoroughly reviewed, resulting in the findings presented in Tables \ref{tab:operatorTestTraining} and \ref{tab:operatorTestDocExamples}.
+The learnability testing process was divided into two distinct aspects: the first one being the training required to operate with the operators, and the second one being the presence of examples concerning Postgres lifecycle events in the operator's documentation. Following the guidelines of the test plan (available in Appendix A III), a checklist was created. The documentation for each operator was thoroughly reviewed, resulting in the findings presented in Tables \ref{tab:operatorTestTraining} and \ref{tab:operatorTestDocExamples}.
 
 \tab{Training needed}{tab:operatorTestTraining}{1}{|l|l|l|l|l|}{
     \hline
@@ -717,7 +721,7 @@ test plan.
 Two environments were used for the dynamic test process, each designed for specific test types based on resource requirements:
 
 \begin{enumerate}
-    \item \textbf{Kind Kubernetes Cluster}: Kind is a tool that creates Kubernetes clusters within Docker, Kind was utilized for less resource-intensive tests. This setup was run on a first-generation M1 MacBook Air equipped with 8GB of RAM and a 500GB disk.
+    \item \textbf{Kind Kubernetes Cluster}: Kind is a tool that creates Kubernetes clusters within Docker, Kind was utilized for less resource-intensive tests. This setup was run on a first-generation M1 MacBook Air equipped with 8 GB of RAM and a 500 GB disk.
     \item \textbf{Google Kubernetes Engine (GKE)}: More resource-demanding tests, such as performance testing, were conducted on a robust Google Kubernetes Engine cluster, consisting of three e2-standard-2 nodes. Each node with 2 virtual CPUs and 8GB of RAM. Additionally, a standalone Postgres node with PgBench was deployed to this cluster for performance analysis.
 \end{enumerate}
 
@@ -745,7 +749,7 @@ In cases where it was necessary to verify functionality, this verification was m
 \n{5}{SPGO}
 The reason why SPGO has a zero value in most test cases is due to its user-friendly interface.
 Most tasks can be accomplished directly within this interface, eliminating the need for using the terminal.
-Even complex tasks, such as performing a major version upgrade, can be easily carried out via this interface.
+Even complex tasks, such as performing a major version upgrade, can be easily carried out via this interface.
 An example of this user interface is shown in Figure \ref{fig:spgoUI7}.
 Additional images can be found in the repository folder at \url{doc/graphics/monitoring/SPGO}.
 
@@ -823,11 +827,11 @@ This Percona monitoring system is quite extensive, but its coverage of parameter
 To measure the performance of the Postgres cluster, an operator was deployed to the GKE cluster. Subsequently, a high availability Postgres cluster was established, consisting of three nodes (one primary and two replicas), along with three connection pooler instances.
 A simplified representation of this cluster configuration is depicted in Figure \ref{fig:testingGKEperformance}.
 
-\obr{Kubernetes performance setup}{fig:testingGKEperformance}{1}{graphics/performance_setup.png}
+\obr{Kubernetes performance configuration}{fig:testingGKEperformance}{1}{graphics/performance_setup2.png}
 
 For each operator test, the Kubernetes cluster was recreated to ensure a clean starting point. A Postgres cluster with three nodes (one primary and two replicas) was deployed, along with three connection pooler instances.
 
-To standardize the settings across each cluster, configurations were calibrated in line with recommendations provided by the pgTune\footnote[7]{https://pgtune.leopard.in.ua} website. The adjusted settings were as follows:
+To standardize the settings across each cluster, configurations were calibrated in line with recommendations provided by the pgTune\footnote[7]{https://pgtune.leopard.in.ua}. The adjusted settings were as follows:
 \begin{itemize}
     \item max\_connections: 200
     \item shared\_buffers: 1536MB

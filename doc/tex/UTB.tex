@@ -436,13 +436,13 @@
 	\ifczech
 		\lhead{\b{UTB ve Zlíně, \ifthenelse{\equal{\fakulta}{FAI}}{Fakulta aplikované informatiky}{\ifthenelse{\equal{\fakulta}{FAME}}{Fakulta managementu a ekonomiky}{\ifthenelse{\equal{\fakulta}{FHS}}{Fakulta humanitních studií}{\ifthenelse{\equal{\fakulta}{FLKR}}{Fakulta logistiky a krizového řízení}{\ifthenelse{\equal{\fakulta}{FMK}}{Fakulta multimediálních komunikací}{\ifthenelse{\equal{\fakulta}{FT}}{Fakulta technologická}{\ifthenelse{\equal{\fakulta}{UNI}}{Univerzitní institut}{}}}}}}}}}
 	\else \ifenglish
-			\lhead{\b{UTB ve Zlíně, \ifthenelse{\equal{\fakulta}{FAI}}{Fakulta aplikované informatiky}{\ifthenelse{\equal{\fakulta}{FAME}}{Fakulta managementu a ekonomiky}{\ifthenelse{\equal{\fakulta}{FHS}}{Fakulta humanitních studií}{\ifthenelse{\equal{\fakulta}{FLKR}}{Fakulta logistiky a krizového řízení}{\ifthenelse{\equal{\fakulta}{FMK}}{Fakulta multimediálních komunikací}{\ifthenelse{\equal{\fakulta}{FT}}{Fakulta technologická}{\ifthenelse{\equal{\fakulta}{UNI}}{Univerzitní institut}{}}}}}}}}}
+			\lhead{\b{TBU in Zlín, \ifthenelse{\equal{\fakulta}{FAI}}{Faculty of Applied Informatics}{\ifthenelse{\equal{\fakulta}{FAME}}{Faculty of Management and Economics}{\ifthenelse{\equal{\fakulta}{FHS}}{Faculty of Humanities}{\ifthenelse{\equal{\fakulta}{FLKR}}{Faculty of Logistics and Crisis Management}{\ifthenelse{\equal{\fakulta}{FMK}}{Faculty of Multimedia Communications}{\ifthenelse{\equal{\fakulta}{FT}}{Faculty of Technology}{\ifthenelse{\equal{\fakulta}{UNI}}{University Institute}{}}}}}}}}}
 		\fi \fi
 }
 
 % Příkaz \logopracerok vloží na dané místo logo fakulty, typ práce a rok
 \newcommand{\logopracerok}{
-	\ifenglish
+	\ifczech
 		\iffai	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fai_logo_cz.png}}} \fi
 		\iffame	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fame_logo_cz.png}}} \fi
 		\iffhs	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/fhs_logo_cz.png}}} \fi
@@ -460,7 +460,7 @@
 			\ifuni	\put(82.2,-223.3){\makebox(84,16.4){\includegraphics[width=90mm]{graphics/logo/uni_logo_en.png}}} \fi
 		\fi \fi
 	\put(0,-205){\linethickness{1pt}\line(1,0){170}}
-	\ifenglish
+	\ifczech
 		\ifbp \put(4,-215){\makebox(69.5,4.5)[l]{\noindent\fontsize{16}{1}\usefont{OT1}{phv}{m}{n}Bakalářská práce}} \fi
 		\ifdp \put(4,-215){\makebox(69.5,4.5)[l]{\noindent\fontsize{16}{1}\usefont{OT1}{phv}{m}{n}Diplomová práce}} \fi
 	\else \ifenglish
